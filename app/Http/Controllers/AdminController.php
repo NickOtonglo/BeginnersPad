@@ -1,0 +1,865 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Listing;
+use App\ListingApplication;
+use App\Review;
+use App\ListingAdminLog;
+use App\AdminBookmark;
+use App\User;
+use App\UserManagementLog;
+use App\HelpTicket;
+use App\HelpTicketLog;
+use App\ListingEntry;
+use Illuminate\Support\Facades\Auth;
+use App\ListingFile;
+use App\ReviewModerationLog;
+use App\ListingReport;
+use App\ListingStatus;
+use App\UserReport;
+use App\Zone;
+use App\ZoneEntry;
+use App\FAQ;
+
+class AdminController extends Controller
+{
+    public function checkUserState(){
+        if (Auth::check() && Auth::user()->status == 'suspended') {
+            return false;
+        } else return true;
+    }
+
+    public function manageListings(){
+    	$user = Auth::user();
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+    	$userType = $user->user_type;
+
+    	$listings = Listing::where('status','pending')->orderBy('created_at','id')->get();
+    	if ($userType == 3 || $userType == 2 || $userType == 1) {
+    		return view('administrators.new_listing_applications',compact('listings'));
+    	} else {
+    		return redirect()->route('listings.list');
+    	}
+    }
+
+    public function manageAllListings(){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $userType = $user->user_type;
+
+        $listings = Listing::orderBy('created_at','id')->get();
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            return view('administrators.all_listings',compact('listings'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function manageListing($id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $API_KEY = config('constants.API_KEY.maps');
+        $user = Auth::user();
+        $utype = $user->user_type;
+
+        if ($utype==3 || $utype==2 || $utype==1) {
+            $listing = Listing::where('id',$id)->first();
+            $adminBookmark = AdminBookmark::where('admin_id',$user->id)->where('property_id',$id)->first();
+            $images = ListingFile::where('listing_id',$id)->where('category','regular')->get();
+            $mean = Review::where('property_id',$id)->avg('review_rating');
+            $rating = round($mean, 1)*(100/5);
+            $lister = User::where('id',$listing->user_id)->first();
+            return view('administrators.manage_listing')->with('listing',$listing)->with('adminBookmark',$adminBookmark)->with('images',$images)->with('mean',$mean)->with('rating',$rating)->with('API_KEY',$API_KEY)->with('lister',$lister);
+        }
+        else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
+        }
+    }
+
+    public function respondToApplication(Request $request,$id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $utype = $user->user_type;
+        $listing = Listing::where('id',$id)->first();
+
+        if ($utype==3 || $utype==2 || $utype==1) {
+            switch ($request->input('btn_submit')) {
+
+            case 'Approve Application':
+                if ($utype==3 || $utype==2 || $utype==1) {
+                    // $listing->update([
+                    //     'status'=>'approved'
+                    //     ]);
+                    $updateListing = $listing;
+                    $updateListing->status = "approved";
+                    $updateListing->save();
+
+                    $response = new ListingAdminLog;
+                    $response->lister_id = $listing->user_id;
+                    $response->lister_name = $listing->lister_name;
+                    $response->property_id = $id;
+                    $response->property_name = $listing->property_name;
+                    $response->status = $listing->status;
+                    $response->admin_id = Auth::user()->id;
+                    $response->save();
+
+                    return redirect()->back();
+                } else {
+                    return redirect()->route('listings.list');
+                }
+                break;
+
+            case 'Reject Application':
+                if ($utype==3 || $utype==2 || $utype==1) {
+                    // $listing->update([
+                    //     'status'=>'rejected'
+                    //     ]);
+                    $updateListing = $listing;
+                    $updateListing->status = "rejected";
+                    $updateListing->save();
+
+                    $response = new ListingAdminLog;
+                    $response->lister_id = $listing->user_id;
+                    $response->lister_name = $listing->lister_name;
+                    $response->property_id = $id;
+                    $response->property_name = $listing->property_name;
+                    $response->status = $listing->status;
+                    $response->admin_id = Auth::user()->id;
+                    $response->save();
+
+                    return redirect()->back();
+                } else {
+                    return redirect()->route('listings.list');
+                }
+                break;
+
+            case 'Bookmark':
+                if ($utype==3 || $utype==2 || $utype==1) {
+
+                    if (AdminBookmark::where('admin_id','=',$user->id)->where('property_id','=',$id)->exists()) {
+                        return 'This item is already in your bookmarks';
+                    } else {
+                        $bookmark = new AdminBookmark;
+                        $bookmark->admin_id = Auth::user()->id;
+                        $bookmark->lister_id = $listing->user_id;
+                        $bookmark->lister_name = $listing->lister_name;
+                        $bookmark->property_id = $listing->id;
+                        $bookmark->property_name = $listing->property_name;
+                        $bookmark->save();
+
+                        $adminBookmark = AdminBookmark::where('admin_id',$user->id)->where('property_id',$id)->first();
+
+                        return redirect()->back();
+                    }
+                    
+                } else {
+                    return redirect()->route('listings.list');
+                }
+                break;
+
+            case 'Remove Bookmark':
+                if ($utype==3 || $utype==2 || $utype==1) {
+
+                    $adminBookmark = AdminBookmark::where('admin_id',$user->id)->where('property_id',$id)->first();
+                    $adminBookmark->delete();
+
+                    return redirect()->back();
+                    
+                } else {
+                    return redirect()->route('listings.list');
+                }
+                break;
+
+            case 'Suspend':
+                if ($utype==3 || $utype==2 || $utype==1) {
+                    $updateListing = $listing;
+                    $updateListing->status = "suspended";
+                    $updateListing->save();
+
+                    $response = new ListingAdminLog;
+                    $response->lister_id = $listing->user_id;
+                    $response->lister_name = $listing->lister_name;
+                    $response->property_id = $id;
+                    $response->property_name = $listing->property_name;
+                    $response->status = $listing->status;
+                    $response->admin_id = Auth::user()->id;
+                    $response->save();
+
+                    return redirect()->back();
+                } else {
+                    return redirect()->route('listings.list');
+                }
+                break;
+
+            case 'Unsuspend':
+                if ($utype==3 || $utype==2 || $utype==1) {
+                    $updateListing = $listing;
+                    $updateListing->status = "pending";
+                    $updateListing->save();
+
+                    $response = new ListingAdminLog;
+                    $response->lister_id = $listing->user_id;
+                    $response->lister_name = $listing->lister_name;
+                    $response->property_id = $id;
+                    $response->property_name = $listing->property_name;
+                    $response->status = $listing->status;
+                    $response->admin_id = Auth::user()->id;
+                    $response->save();
+
+                    return redirect()->back();
+                } else {
+                    return redirect()->route('listings.list');
+                }
+                break;
+
+            case 'Delete':
+                if ($utype==3 || $utype==2 || $utype==1) {
+
+                    $response = new ListingAdminLog;
+                    $response->lister_id = $listing->user_id;
+                    $response->lister_name = $listing->lister_name;
+                    $response->property_id = $id;
+                    $response->property_name = $listing->property_name;
+                    $response->status = $listing->status.('deleted');
+                    $response->admin_id = Auth::user()->id;
+                    $response->save();
+
+                    $listing->delete();
+
+                    return redirect()->back();
+                } else {
+                    return redirect()->route('listings.list');
+                }
+                break;
+            }
+
+            // return redirect()->back()->with('message','Successful');
+        } else {
+            return redirect()->route('listings.list');
+        } 
+    }
+
+    public function bookmarks(){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $bookmarks = AdminBookmark::where('admin_id',$user->id)->orderBy('created_at','id')->get();
+
+        $utype = $user->user_type;
+        if ($utype==3 || $utype==2 || $utype==1) {
+            return view('administrators.bookmarks',compact('bookmarks'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function removeBookmark($id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $bookmark = AdminBookmark::where('admin_id',$user->id)->where('property_id',$id)->first();
+
+        if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
+            $bookmark->delete();
+            return redirect()->back();
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function listUsers(){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $customer = 5;
+        $lister = 4;
+        $representative = 3;
+        $superAdmin = 2;
+
+        if ($user->user_type==3) {
+            $users = User::whereIn('user_type',[$customer,$lister])->orderBy('created_at','id')->get();
+        } elseif ($user->user_type==2) {
+            $users = User::whereIn('user_type',[$customer,$lister,$representative])->orderBy('created_at','id')->get();
+        } else if ($user->user_type==1){
+            $users = User::whereIn('user_type',[$customer,$lister,$representative,$superAdmin])->orderBy('created_at','id')->get();
+        }
+
+        if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
+            return view('administrators.users_list',compact('users'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function suspendUser($id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+
+        $targetUser = User::where('id',$id)->first();
+        $targetUser->status = "suspended";
+
+        $activityLog = new UserManagementLog;
+        $activityLog->user_id = $targetUser->id;
+        $activityLog->name = $targetUser->name;
+        $activityLog->user_type = $targetUser->user_type;
+        $activityLog->status = $targetUser->status;
+        $activityLog->admin_id = $user->id;
+
+        if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
+            $targetUser->save();
+            $activityLog->save();
+            return redirect()->back();
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function activateUser($id){
+        $user = Auth::user();
+
+        $targetUser = User::where('id',$id)->first();
+        $targetUser->status = "active";
+
+        $activityLog = new UserManagementLog;
+        $activityLog->user_id = $targetUser->id;
+        $activityLog->name = $targetUser->name;
+        $activityLog->user_type = $targetUser->user_type;
+        $activityLog->status = $targetUser->status;
+        $activityLog->admin_id = $user->id;
+
+        if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
+            $targetUser->save();
+            $activityLog->save();
+            return redirect()->back();
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function viewUser($id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+
+        $targetUser = User::where('id',$id)->first();
+
+        $customerApplications = ListingApplication::where('customer_id',$id)->get();
+        $customerReviews = Review::where('customer_id',$id)->get();
+        $customerLastApplication = ListingApplication::where('customer_id',$id)->first();
+        $customerLastReview = Review::where('customer_id',$id)->first();
+        $customerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+
+        $listerListings = Listing::where('user_id',$id)->get();
+        $listerCustomers = ListingApplication::where('lister_id',$id)->get();
+        $listerPendingApplications = Listing::where('user_id',$id)->where('status','pending')->get();
+        $listerSuspendedListings = Listing::where('user_id',$id)->where('status','suspended')->get();
+        $listerRejectedApplications = Listing::where('user_id',$id)->where('status','rejected')->get();
+        $listerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+        // $listerLastApplication = Listing::where('user_id',$id)->where('status','pending')->first();
+        $listerLastApplication = ListingAdminLog::where('lister_id',$id)->where('status','approved')->latest()->first();
+
+
+        $repUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
+        $repListingsApproved = ListingAdminLog::where('admin_id',$id)->where('status','approved')->get();
+        $repListingsRejected = ListingAdminLog::where('admin_id',$id)->where('status','rejected')->get();
+        $repListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('status','suspended')->get();
+        $repListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('status','deleted')->get();
+        $repSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+
+        $adminUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
+        $adminListingsApproved = ListingAdminLog::where('admin_id',$id)->where('status','approved')->get();
+        $adminListingsRejected = ListingAdminLog::where('admin_id',$id)->where('status','rejected')->get();
+        $adminListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('status','suspended')->get();
+        $adminListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('status','deleted')->get();
+        $adminUsersCreated = UserManagementLog::where('admin_id',$id)->where('status','inactive')->get();
+        $adminSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+
+        if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
+            if (UserManagementLog::where('user_id',$id)->where('status','inactive')->exists()) {
+                $creatorId = UserManagementLog::where('user_id',$id)->where('status','inactive')->first();
+                $creator = User::where('id',$creatorId->admin_id)->first();
+
+                if ($targetUser->user_type==5) {
+                    return view('administrators.manage_user',compact('targetUser','creator','customerApplications','customerReviews','customerLastApplication',
+                        'customerLastReview','customerSuspendedCount'));
+                } else if ($targetUser->user_type==4) {
+                    return view('administrators.manage_user',compact('targetUser','creator','listerListings','listerCustomers','listerPendingApplications',
+                        'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastApplication'));
+                } else if ($targetUser->user_type==3) {
+                    return view('administrators.manage_user',compact('targetUser','creator','repUsersSuspended','repListingsApproved','repListingsRejected',
+                        'repListingsSuspended','repListingsDeleted','repSuspendedCount'));
+                } else if ($targetUser->user_type==2) {
+                    return view('administrators.manage_user',compact('targetUser','creator','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
+                        'adminListingsSuspended','adminListingsDeleted','adminUsersCreated','adminSuspendedCount'));
+                }
+
+            // return view('administrators.manage_user',compact('targetUser','creator'));
+            } else {
+                $creator = '';
+
+                if ($targetUser->user_type==5) {
+                    return view('administrators.manage_user',compact('targetUser','creator','customerApplications','customerReviews','customerLastApplication',
+                        'customerLastReview','customerSuspendedCount'));
+                } else if ($targetUser->user_type==4) {
+                    return view('administrators.manage_user',compact('targetUser','creator','listerListings','listerCustomers','listerPendingApplications',
+                        'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastApplication'));
+                } else if ($targetUser->user_type==3) {
+                    return view('administrators.manage_user',compact('targetUser','creator','repUsersSuspended','repListingsApproved','repListingsRejected',
+                        'repListingsSuspended','repListingsDeleted','repSuspendedCount'));
+                } else if ($targetUser->user_type==2) {
+                    return view('administrators.manage_user',compact('targetUser','creator','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
+                        'adminListingsSuspended','adminListingsDeleted','adminUsersCreated','adminSuspendedCount'));
+                }
+            }
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    // public function viewUser($id){
+    //     $customerApplications = ListingApplication::where('customer_id',$id)->get();
+    //     $user = Auth::user();
+
+    //     $targetUser = User::where('id',$id)->first();
+    //     $creator = '';
+
+    //     return view('administrators.manage_user',compact('customerApplications','creator','targetUser'));
+    // }
+
+    public function manageReviews($id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $propertyDetails = Listing::where('id',$id)->first();
+        $reviews = Review::where('property_id',$id)->orderBy('updated_at','id')->get();
+        $mean = Review::where('property_id',$id)->avg('review_rating');
+        $rating = round($mean, 1)*(100/5);
+        $lister = User::where('id',$propertyDetails->user_id)->first();
+        return view('administrators.manage_listing_reviews')->with(compact('reviews','propertyDetails','mean','rating','lister'));
+    }
+
+    public function deleteReview($listing,$review){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $utype = $user->user_type;
+        
+        if ($utype==3 || $utype==2 || $utype==1) {
+            $propertyDetails = Listing::where('id',$listing)->first();
+            $reviews = Review::where('property_id',$listing)->orderBy('updated_at','id')->get();
+
+            $reviewRow = Review::where('id',$review)->first();
+
+            $reviewLog = new ReviewModerationLog;
+            $reviewLog->customer_id = $reviewRow->customer_id;
+            $reviewLog->customer_name = $reviewRow->customer_name;
+            $reviewLog->lister_id = $reviewRow->lister_id;
+            $reviewLog->listing_id = $reviewRow->property_id;
+            $reviewLog->review = $reviewRow->review;
+            $reviewLog->review_rating = $reviewRow->review_rating;
+            // $reviewLog->reason = "";
+            $reviewLog->admin_id = $user->id;
+            $reviewLog->save();
+
+            $reviewRow->delete();
+            
+            return redirect()->back();
+        } else {
+            return "Not allowed!";
+        } 
+    }
+
+    public function preformTicketAction(Request $request,$id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $user = Auth::user();
+        $ticket = HelpTicket::where('id',$id)->first();
+        $updateTicket = HelpTicket::find($id);
+        switch ($request->input('review_rating')) {
+            case 'pick_ticket':
+                $updateTicket->status = "pending";
+                $updateTicket->assigned_to = $user->id;
+                $updateTicket->save();
+                return $this->preformTicketActionLog('assign',$id,$ticket->email,$ticket->status,'pending');
+                break;
+            
+            case 'close_ticket':
+                $updateTicket->status = "closed";
+                // $updateTicket->assigned_to = $user->id;
+                $updateTicket->save();
+                return $this->preformTicketActionLog('close',$id,$ticket->email,$ticket->status,'closed');
+                break;
+
+            case 'leave_ticket':
+                $updateTicket->status = "open";
+                $updateTicket->assigned_to = null;
+                $updateTicket->save();
+                return $this->preformTicketActionLog('unassign',$id,$ticket->email,$ticket->status,'open');
+                break;
+
+            case 'close_resolved_ticket':
+                $updateTicket->status = "resolved";
+                $updateTicket->assigned_to = $user->id;
+                $updateTicket->save();
+                return $this->preformTicketActionLog('resolved',$id,$ticket->email,$ticket->status,'resolved');
+                break;
+
+            default:
+                return redirect()->back();
+                break;
+        }
+    }
+
+    public function preformTicketActionLog($action,$ticket_id,$issuer,$status_old,$status_new){
+        $user = Auth::user();
+        $targetUser = $user;
+
+        $actionLog = new HelpTicketLog;
+        switch ($action) {
+            case 'assign':
+                $actionLog->ticket_id = $ticket_id;
+                $actionLog->user_email = $issuer;
+                $actionLog->old_status = $status_old;
+                $actionLog->action = $action;
+                $actionLog->action_by = $user->id;
+                $actionLog->action_to = $targetUser->id;
+                $actionLog->new_status = $status_new;
+                $actionLog->save();
+                break;
+
+            case 'unassign':
+                $actionLog->ticket_id = $ticket_id;
+                $actionLog->user_email = $issuer;
+                $actionLog->old_status = $status_old;
+                $actionLog->action = $action;
+                $actionLog->action_by = $user->id;
+                $actionLog->action_to = $targetUser->id;
+                $actionLog->new_status = $status_new;
+                $actionLog->save();
+                break;
+
+            case 'close':
+                $actionLog->ticket_id = $ticket_id;
+                $actionLog->user_email = $issuer;
+                $actionLog->old_status = $status_old;
+                $actionLog->action = $action;
+                $actionLog->action_by = $user->id;
+                $actionLog->action_to = $targetUser->id;
+                $actionLog->new_status = $status_new;
+                $actionLog->save();
+                break;
+
+            case 'resolved':
+                $actionLog->ticket_id = $ticket_id;
+                $actionLog->user_email = $issuer;
+                $actionLog->old_status = $status_old;
+                $actionLog->action = 'close';
+                $actionLog->action_by = $user->id;
+                $actionLog->action_to = $targetUser->id;
+                $actionLog->new_status = $status_new;
+                $actionLog->save();
+                break;
+        }
+        return redirect()->back();
+        // return redirect()->back()->with('message','Your ticket has been issued. A representative will get in touch with you shortly. Please be patient.');
+    }
+
+    public function viewTicket($id,Request $request){
+        $userType = Auth::user()->user_type;
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $ticket = HelpTicket::where('id',$id)->first();
+            $user = User::where('email',$ticket->email)->first();
+            $admin = User::where('id',$ticket->assigned_to)->first();
+            $reps = User::where('user_type',3)->get();
+            return view('administrators.manage_ticket',compact('ticket','user','admin','reps'));
+        } else {
+
+        }
+    }
+
+    public function myTickets(){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $user = Auth::user();
+        $userType = $user->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $tickets = HelpTicket::where('assigned_to',$user->id)->orderBy('updated_at')->get();
+            $users = User::all();
+            return view('administrators.assigned_tickets',compact('tickets','users'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function listZones(){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $user = Auth::user();
+        $API_KEY = config('constants.API_KEY.maps');
+        $userType = $user->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $zones = Zone::orderBy('created_at','id')->get();
+            $p_zones = Zone::withCount('zoneEntry')->orderBy('zone_entry_count', 'updated_at')->paginate(10);
+            return view('administrators.all_zones',compact('p_zones','zones','API_KEY'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function createZone(){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $API_KEY = config('constants.API_KEY.maps');
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $zone = "";
+            return view('administrators.create_zone',compact('zone','API_KEY'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function saveZone(Request $request){
+        $this->validate($request,[
+    		'name'=>'required|max:50',
+            'country'=>'required',
+            'county'=>'required|max:50',
+    		]);
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            Zone::create($request->all());
+            $zones = Zone::orderBy('created_at','id')->get();
+            $p_zones = Zone::withCount('zoneEntry')->orderBy('zone_entry_count', 'updated_at')->paginate(2);
+            
+            return redirect()->route('admin.zones')->with('zones',$zones)->with('p_zones',$p_zones)->with('message','Zone added');
+            
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function viewZone($id,Request $request){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $API_KEY = config('constants.API_KEY.maps');
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $zone = Zone::where('id',$id)->first();
+            $entries = ZoneEntry::where('parent_id',$id)->orderBy('created_at','id')->get();
+            return view('administrators.view_zone',compact('zone','entries','API_KEY'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function editZone($id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $zone = Zone::where('id',$id)->first();
+            return view('administrators.create_zone',compact('zone'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function updateZone(Request $request,$id){
+        $this->validate($request,[
+    		'name'=>'required|max:50',
+            'country'=>'required',
+            'county'=>'required|max:50',
+            ]);
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $input = Zone::find($id);
+            $input->update($request->all());
+            $zone = Zone::where('id',$id)->first();
+            $entries = ZoneEntry::where('parent_id',$id)->get();
+            return redirect()->route('admin.viewZone',[$zone])->with('zone',$zone)->with('entries',$entries)->with('message','Zone updated');
+            // return redirect()->route('admin.viewZone',[$zone,$entries])->with('zone',$zone)->with('entries',$entries)->with('message','Zone updated');
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function addZoneEntry($id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $zone = Zone::where('id',$id)->first();
+            $zone_entry = "";
+            $zone_entry_count = ZoneEntry::where('parent_id',$id)->count();
+            return view('administrators.create_zone_entry',compact('zone','zone_entry','zone_entry_count'));
+            // return view('administrators.create_zone_entry');
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function saveZoneEntry(Request $request,$id){
+        $this->validate($request,[
+    		'name'=>'required|max:50',
+            'role'=>'required',
+            'timezone'=>'required',
+            'radius'=>'numeric',
+            ]);
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $request->request->add(['parent_id' => $id]);
+            $data = $request->all();
+            ZoneEntry::create($data);
+            $zone = Zone::where('id',$id)->first();
+            $entries = ZoneEntry::where('parent_id',$id)->get();
+            return redirect()->route('admin.viewZone',[$zone])->with('zone',$zone)->with('entries',$entries)->with('message','Sub-Zone created');
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function editZoneEntry($zoneId,$entryId){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $zone = Zone::where('id',$zoneId)->first();
+            $zone_entry = ZoneEntry::where('id',$entryId)->first();
+            $zone_entry_count = ZoneEntry::where('parent_id',$zoneId)->count();
+            // return view('administrators.create_zone_entry',compact('zone','zone_entry','zone_entry_count'));
+            return view('administrators.edit_zone_entry');
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function updateZoneEntry(Request $request,$zoneId,$entryId){
+        $this->validate($request,[
+    		'name'=>'required|max:50',
+            'role'=>'required',
+            'timezone'=>'required|timezone',
+            'radius'=>'numeric',
+            ]);
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $request->request->add(['parent_id' => $zoneId]);
+            $data = $request->all();
+            $input = ZoneEntry::find($entryId);
+            $input->update($data);
+            $zone = Zone::where('id',$zoneId)->first();
+            $entries = ZoneEntry::where('parent_id',$zoneId)->get();
+            return redirect()->route('admin.viewZone',[$zone])->with('zone',$zone)->with('entries',$entries)->with('message','Sub-Zone updated');
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function deleteZoneEntry($zoneId,$entryId){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $input = ZoneEntry::find($entryId);
+            $input->delete();
+            $zone = Zone::where('id',$zoneId)->first();
+            $entries = ZoneEntry::where('parent_id',$zoneId)->get();
+            return redirect()->route('admin.viewZone',[$zone])->with('zone',$zone)->with('entries',$entries)->with('message','Sub-Zone deleted');
+            return $input;
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+}

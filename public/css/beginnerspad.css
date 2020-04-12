@@ -1,0 +1,112 @@
+.welcome-extension {
+    background-color:#b68fbf;
+    background-image: url("//grapesjs.com/img/bg-gr-v.png"), url("city_clipart.png");
+    height: 100vh
+}
+
+/*https://medium.com/@zerox/keep-that-damn-footer-at-the-bottom-c7a921cb9551*/
+.footer-minor {
+	background-color: #170b1a;
+	background: #170b1a;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	min-height: 5px;
+	max-height: 20px;
+	color: #170b1a;
+	position: relative;
+	font-weight: 100;
+	font-family: Helvetica, serif;
+}
+
+.copyright-minor {
+	background-color: rgba(0, 0, 0, 0.15);
+	background: #170b1a;
+	color: rgba(238, 238, 238, 0.5);
+	bottom: 0;
+	padding: 1em 0;
+	position: absolute;
+	width: 100%;
+	font-size: 0.75em;
+}
+
+.bp-navbar-text-colour {
+	color: #703680
+}
+
+/*
+    ADDITIONAL DEMO STYLE, NOT IMPORTANT TO MAKE THINGS WORK BUT TO MAKE IT A BIT NICER :)
+*/
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em    color: #999;;
+
+}
+
+a, a:hover, a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+/*https://bootstrapious.com/p/bootstrap-sidebar*/
+#sidebar {
+    width: 220px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    background: #703680;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #6d7fcc;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #593063;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+#sidebar ul li a:hover {
+    color: #9250a3;
+    background: #fff;
+}
+
+#sidebar ul li.active > a, a[aria-expanded="true"] {
+    color: #fff;
+    background: #593063;
+}
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #66446e;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+}
