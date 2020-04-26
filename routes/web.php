@@ -48,10 +48,10 @@ Route::group(['middleware'=>'auth'],function(){
 	//Lister Routes
 	Route::get('/manage-listings','ListerController@manageListings')->name('lister.manageListings');
 	Route::get('/manage-listings/new','ListerController@createListing')->name('listings.new');
+	Route::post('/manage-listings/new','ListerController@storeListing')->name('listing.store');
 	Route::get('/manage-listings/{listings}/manage','ListerController@manageListing')->name('listing.manage');
 	Route::put('/manage-listings/{listings}/manage','ListerController@updateListing')->name('listing.update');
 	Route::delete('/manage-listings/{listings}/manage','ListerController@removeListing')->name('listing.remove');
-	Route::post('/manage-listings/new','ListerController@storeListing')->name('listing.store');
 	Route::get('/manage-listings/{listings}/reviews','ListerController@listingReviews')->name('listing.listingReviews');
 	Route::get('/manage-listings/my-applications','ListerController@myApplications')->name('lister.myApplications');
 	// Route::get('/manage-listings/{listings}/manage/{image}/remove','ListerController@deleteImage')->name('lister.removeImage');
@@ -82,7 +82,7 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::get('/manage-users/all','AdminController@listUsers')->name('admin.listUsers');
 	Route::get('/manage-users/all/{user}/suspend','AdminController@suspendUser')->name('admin.suspendUser');
 	Route::get('/manage-users/all/{user}/activate','AdminController@activateUser')->name('admin.activateUser');
-	Route::get('/manage-user/{user}/view','AdminController@viewUser')->name('admin.viewUser');
+	Route::get('/manage-users/all/{user}','AdminController@viewUser')->name('admin.viewUser');
 	Route::get('/manage-listings/{listing}/manage-reviews','AdminController@manageReviews')->name('admin.manageReviews');
 	// Route::delete('/manage-listings/{listings}/manage-reviews/{review}/remove','AdminController@deleteReview')->name('admin.deleteReview');
 	Route::delete('/manage-listings/{listing}/manage-reviews/{review}/remove', [

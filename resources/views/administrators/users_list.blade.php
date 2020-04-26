@@ -8,7 +8,7 @@
     <div class="container">
         @if (Auth::user()->user_type === 2 || Auth::user()->user_type === 1)
             <div class="pull-xs-right">
-                <a class="btn btn-mid btn-info" href="/manage_users/create" role="button">
+                <a class="btn btn-mid btn-info" href="/manage-users/create" role="button">
                     Add User
                 </a>
             </div>
@@ -31,7 +31,7 @@
                                 <th>Account</th>
                             </tr>
                             @foreach($users as $user)
-                            <tr role="button" onclick="location.href='/manage_user/{{$user->id}}/view';">
+                            <tr role="button" onclick="location.href='/manage-users/all/{{$user->id}}';">
                                 <td>{{$user->id}}</td>
                                 <td>{{$user->name}}</td>
                                 @if ($user->user_type == 5)
@@ -48,9 +48,9 @@
                                 @if ($user->status != "suspended")
                                     @if ($user->status == "inactive")
                                         <td align="center">
-                                            <a class="btn btn-small btn-success" href="/manage_users/all/{{$user->id}}/activate">Activate</a>
+                                            <a class="btn btn-small btn-success" href="/manage-users/all/{{$user->id}}/activate">Activate</a>
                                             @if(Auth::user()->user_type == 1)
-                                                <form action="/manage_users/all/{{$user->id}}/kick" method="post" enctype="multipart/form-data">
+                                                <form action="/manage-users/all/{{$user->id}}/kick" method="post" enctype="multipart/form-data">
                                                     {{csrf_field()}}
                                                     {{method_field('DELETE')}}
                                                     <br><input class="btn btn-small btn-danger" type="submit" value="Delete" name="btn_delete"></input>
@@ -59,14 +59,14 @@
                                         </td>
                                     @else
                                         <td align="center">
-                                            <a class="btn btn-small btn-primary" href="/manage_users/all/{{$user->id}}/suspend">Suspend</a>
+                                            <a class="btn btn-small btn-primary" href="/manage-users/all/{{$user->id}}/suspend">Suspend</a>
                                         </td>
                                     @endif
                                 @elseif ($user->status == "suspended")
                                     <td align="center">
-                                        <a class="btn btn-small btn-info" href="/manage_users/all/{{$user->id}}/activate">Restore</a>
+                                        <a class="btn btn-small btn-info" href="/manage-users/all/{{$user->id}}/activate">Restore</a>
                                         @if(Auth::user()->user_type == 1)
-                                            <form action="/manage_users/all/{{$user->id}}/kick" method="post" enctype="multipart/form-data">
+                                            <form action="/manage-users/all/{{$user->id}}/kick" method="post" enctype="multipart/form-data">
                                                 {{csrf_field()}}
                                                 {{method_field('DELETE')}}
                                                 <br><input class="btn btn-small btn-danger" type="submit" value="Delete" name="btn_delete"></input>

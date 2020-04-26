@@ -24,7 +24,7 @@ class CreateListingsTable extends Migration
             $table->string('listing_type'); //single,multi
             $table->string('thumbnail');
             $table->string('stories'); //number of stories
-            $table->string('status'); // pending,approved,rejected,suspended
+            $table->string('status'); // unpublished,pending,approved,rejected,suspended
             $table->float('price',10,2)->nullable();
             $table->timestamps();
         });

@@ -25,7 +25,7 @@
                     <a href="#" class="list-group-item">New Listing</a>
                 </div>
             </div>
-            <div class="col-md-5 col-md-offset-0">
+            <div class="col-md-6 col-md-offset-0">
                 @yield('lister_col_centre')
             </div>
             <div class="col-md-3 col-md-offset-0 pull-xs-right" style="border-left: 1px lightgrey">

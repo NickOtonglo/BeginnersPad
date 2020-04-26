@@ -1,7 +1,7 @@
 @extends('layouts.base_no_panel')
 
 @section('title')
-    <title>Manage Zone | Beginners Pad</title>
+    <title>Manage Zone - {{$zone->name}} | Beginners Pad</title>
 @endsection
 
 @section ('content')

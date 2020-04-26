@@ -377,10 +377,10 @@ class AdminController extends Controller
 
         $targetUser = User::where('id',$id)->first();
 
-        $customerApplications = ListingApplication::where('customer_id',$id)->get();
-        $customerReviews = Review::where('customer_id',$id)->get();
-        $customerLastApplication = ListingApplication::where('customer_id',$id)->first();
-        $customerLastReview = Review::where('customer_id',$id)->first();
+        $customerApplications = ListingApplication::where('action_by_user',$id)->get();
+        $customerReviews = Review::where('user_id',$id)->get();
+        $customerLastApplication = ListingApplication::where('action_by_user',$id)->first();
+        $customerLastReview = Review::where('user_id',$id)->first();
         $customerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
 
         $listerListings = Listing::where('user_id',$id)->get();

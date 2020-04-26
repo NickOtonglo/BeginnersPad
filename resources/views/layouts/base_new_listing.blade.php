@@ -28,8 +28,3 @@
   @yield('listing-form')
   
 @endsection
-
-@section('bottom_scripts')
-  <script src="https://maps.googleapis.com/maps/api/js?key={{$API_KEY}}&callback=initMap"async defer></script>
-  <script src="{{asset('js/map-script.js')}}"></script>
-@endsection

@@ -20,4 +20,8 @@ class Listing extends Model
         return $this->hasMany('App\ListingManagement','property_id');
     }
 
+    public function zoneEntry(){
+        return $this->belongsTo('App\ZoneEntry','zone_entry_id');
+    }
+
 }

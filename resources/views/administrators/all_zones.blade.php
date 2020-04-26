@@ -49,12 +49,12 @@
                             <div class="form-group">
                                 <label for="lat">Latitude</label>
                                 <div class="alert alert-danger" id="alert_lat_zone_create" hidden></div>
-                                <input class="form-control" name="lat" type="text" id="lat">
+                                <input class="form-control" name="lat" type="number" step="any" id="lat">
                             </div>
                             <div class="form-group">
                                 <label for="lng">Longitude</label>
                                 <div class="alert alert-danger" id="alert_lng_zone_create" hidden></div>
-                                <input class="form-control" name="lng" type="text" id="lng">
+                                <input class="form-control" name="lng" type="number" step="any" id="lng">
                             </div>
                             <div class="form-group" style="height:100%; width:100%;">
                                 <div id="map" style="clear:both; height:300px;"></div>
