@@ -6,7 +6,7 @@
 
 @section('listing-form')
 <div class="container">
-  <div class="flex-title">Create new listing</div>
+  <div class="flex-title">Create new listing property</div>
   <div class="flex-desc">Fill in the required details in the fields below:</div>
   <form method="post" action="/manage-listings/new" enctype="multipart/form-data" onsubmit="return validateListingCreateForm();">
     {{csrf_field() }}

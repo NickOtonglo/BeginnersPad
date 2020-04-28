@@ -84,6 +84,9 @@ function validateListingCreateForm() {
             $('#description').addClass('alert alert-danger');
             return false;
         } else {
+            if(!document.getElementById("checkbox").checked){
+                document.getElementById("price").value = null;
+            }
             return true;
         }
     }
@@ -91,7 +94,7 @@ function validateListingCreateForm() {
 
 function hideListingCreateAlert() {
     $('#property_name').on('input', function () {
-        $('#alert_property_name_listing_create').hide();
+        $('#alert_name_listing_create').hide();
         $('#property_name').removeClass('alert alert-danger');
     });
     $('#description').on('input', function () {

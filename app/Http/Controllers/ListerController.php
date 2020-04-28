@@ -62,10 +62,11 @@ class ListerController extends Controller
         $API_KEY = config('constants.API_KEY.maps');
         $subZonesList = ZoneEntry::orderBy('name')->get();
         if ($utype==4){
-            return view('listings.new_listing',compact('subZonesList','API_KEY'));
+            return view('listers.new_listing',compact('subZonesList','API_KEY'));
         }
         else {
-            return redirect('/');
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
         }
     }
 
@@ -95,8 +96,6 @@ class ListerController extends Controller
             $postId = ($postId->id)+1;
         }
 
-        $listings = Listing::where('lister_id',$user->id)->orderBy('created_at','id')->get();
-
         if ($request->hasFile('thumbnail')) {
             $image = $request->file('thumbnail');
             $propertyName = str_replace(' ', '_', $request->property_name);
@@ -110,20 +109,31 @@ class ListerController extends Controller
             Image::make($image)->resize(640,480, function($constraint){
                 $constraint->aspectRatio();
             })->save($thumbLocation);
-            // $lastPost = Listing::where('id',$postId)->first();
-            // $lastPost->update(['thumbnail'=>$fileName]);
             $postData = array_merge($request->all(),['lister_id'=>Auth::user()->id],['thumbnail'=>$fileName],['status'=>'unpublished']);
             Listing::create($postData);
         }
-
-        // return redirect()->route('lister.manageListings')->with('listings',$listings);
-        // return redirect()->route('admin.zones')->with('zones',$zones)->with('p_zones',$p_zones)->with('message','Zone added');
         return redirect()->back()->with('message','Listing property added');
+    }
 
+    public function addListingEntry(){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $utype = Auth::user()->user_type;
+        $API_KEY = config('constants.API_KEY.maps');
+        $subZonesList = ZoneEntry::orderBy('name')->get();
+        if ($utype==4){
+            return view('listers.new_listing_entry',compact('subZonesList','API_KEY'));
+        }
+        else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
+        }
     }
 
     public function storeListingEntry(Request $request){
-
     	$this->validate($request,[
     		'name'=>'required|max:50',
     		'description'=>'required|max:5000',
@@ -219,7 +229,7 @@ class ListerController extends Controller
             $listingDetails = Listing::where('id',$id)->first();
             if ($listingDetails->lister_id == $user->id) {
                 $listing = Listing::where('id',$id)->first();
-                return view('listings.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)->with('entries',$entries);
+                return view('listers.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)->with('entries',$entries);
             } else {
                 $listings = Listing::where('lister_id',$user->id)->orderBy('created_at','id')->get();
                 return redirect()->route('lister.manageListings')->with('listings',$listings);
@@ -232,87 +242,49 @@ class ListerController extends Controller
     }
 
     public function updateListing(Request $request,$id){
-        // $API_KEY = config('constants.API_KEY.maps');
-    	// $this->validate($request,[
-    	// 	'property_name'=>'required|max:50',
-        //     'description'=>'required|max:10000',
-        //     'location'=>'required|max:50',
-        //     'lat'=>'required',
-        //     'lng'=>'required',
-        //     'available_units'=>'required', 
-        //     'units_sum'=>'required',
-        //     'unit_area'=>'required',
-        //     'cost'=>'required',
-        //     'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
-    	// 	]);
+        $this->validate($request,[
+    		'property_name'=>'required|max:50',
+    		'description'=>'required|max:5000',
+    		'zone_entry_id'=>'required',
+    		'lat'=>'required',
+    		'lng'=>'required',
+    		'listing_type'=>'required', 
+    		'stories'=>'required',
+            'thumbnail.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+    		]);
 
-        // if (!$this->checkUserState()) {
-        //     return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-        //     Auth::logout();
-        // }
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
 
-        // $formData = $request->all();
-        // $user = Auth::user();
-        
-        // $listings = Listing::where('user_id',$user->id)->orderBy('created_at','id')->get();
-    	
-        // $utype = Auth::user()->user_type;
-        // if ($utype==4) {
-        //     $user = Auth::user();
-        //     $listing = $user->listings()->find($id);
-        //     $listing->update($request->all());
+        $user = Auth::user();
+        $post = Listing::where('id',$id)->first();
+        $postId = $post->id;
 
-        //     if ($request->hasFile('post_images')) {
-        //         $images = $request->file('post_images');
+        if($user->user_type==4 && Listing::where('id',$id)->first()->lister_id==$user->id){
+            $postData = array_merge($request->all(),['lister_id'=>Auth::user()->id],['status'=>'unpublished']);
 
-        //         if (!File::exists('images/listings/'.$user->id.'/')) {
-        //             File::makeDirectory('images/listings/'.$user->id.'/',0777,true);
-        //         }
-        //         if (!File::exists('images/listings/'.$user->id.'/thumbnails/')) {
-        //             File::makeDirectory('images/listings/'.$user->id.'/thumbnails/',0777,true);
-        //         }
-        //         foreach ($images as $image) {
-        //             $fileName = $user->id.'_'.time().'_'.rand(1111,9999).'.'.$image->getClientOriginalExtension();
-        //             $location = public_path('images/listings/'.$user->id.'/'.$fileName);
-        //             $img = new ListingFile;
-        //             $img->listing_id = Listing::where('user_id',$user->id)->orderBy('created_at','id')->first()->id;
-        //             $img->file_name = $fileName;
-        //             $img->file_type = 'image';
-        //             $img->category = 'regular';
-        //             if (!$img->save()) {
-        //                 return false;
-        //             }
-        //             Image::make($image)->resize(640,480, function($constraint){
-        //                 $constraint->aspectRatio();
-        //             })->save($location); 
-        //             $img->save();
-        //         }
-        //         $fileName = $user->id.'_'.time().'_'.$request->property_name.'_thumb.'.$image->getClientOriginalExtension();
-        //         $thumbLocation = public_path('images/listings/'.$user->id.'/thumbnails/'.$fileName);
-        //         $thumb = new ListingFile;
-        //         $thumb->listing_id = $img->listing_id;
-        //         $thumb->file_name = $fileName.'_thumb';
-        //         $thumb->file_type = 'image';
-        //         $thumb->category = 'thumbnail';
-        //         if (!$thumb->save()) {
-        //             return false;
-        //         }
-        //         Image::make($images[0])->resize(350,250, function($constraint){
-        //             $constraint->aspectRatio();
-        //         })->save($thumbLocation); 
-        //         $thumb->save();
-        //         $lastPost = Listing::where('id',$id)->first();
-        //         $lastPost->update(['images'=>$fileName]);
-        //     }
+            if ($request->hasFile('thumbnail')) {
+                $image = $request->file('thumbnail');
+                $propertyName = str_replace(' ', '_', $request->property_name);
 
-        //     // $listing = Listing::where('id',$id)->first();
-        //     $images = ListingFile::where('listing_id',$id)->where('category','regular')->get();
-            
+                if (!File::exists('images/listings/'.$postId.'/thumbnails/')) {
+                    File::makeDirectory('images/listings/'.$postId.'/thumbnails/',0777,true);
+                }
 
-        //     return view('listings.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('images',$images);
-        // } else {
-        //     return redirect()->route('listings.list');
-        // }
+                $fileName = $postId.'_'.time().'_'.$propertyName.'_thumb.'.$image->getClientOriginalExtension();
+                $thumbLocation = public_path('images/listings/'.$postId.'/thumbnails/'.$fileName);
+                Image::make($image)->resize(640,480, function($constraint){
+                    $constraint->aspectRatio();
+                })->save($thumbLocation);
+                $postData = array_merge($postData,['thumbnail'=>$fileName]);
+            }
+            $post->update($postData);
+            return redirect()->back()->with('message','Listing property updated');
+        } else {
+            return redirect()->route('listings.list');
+        }
     }
 
     public function removeListing($id){

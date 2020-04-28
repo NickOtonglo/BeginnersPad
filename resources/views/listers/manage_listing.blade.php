@@ -24,7 +24,7 @@
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 							<h4 class="modal-title" id="modalLabel">Edit Listing Property</h4>
 						</div>
-						<form method="post" action="" enctype="multipart/form-data" onsubmit="return validateListingEditForm();">
+						<form method="post" action="/manage-listings/{{$listing->id}}/manage" enctype="multipart/form-data" onsubmit="return validateListingCreateForm();">
 							<div class="modal-body">
 								{{csrf_field() }}
 								{{method_field('PUT')}}
@@ -87,7 +87,7 @@
 								</div>
 								<div class="form-group">
 									<label for="thumbnail">Change thumbnail</label>
-									<input class="file-path-wrapper" accept="image/*" name="thumbnail" id="thumbnail" type="file" onchange="loadFile(event)" required>
+									<input class="file-path-wrapper" accept="image/*" name="thumbnail" id="thumbnail" type="file" onchange="loadFile(event)">
 									<img id="output" width="250px" style="margin: 15px" />
 								</div>
 							</div>
@@ -106,6 +106,7 @@
 			<small>Property Details</small>
 			<div style="border:1px solid lightgrey; padding:16px">
 				<h3>{{$listing->property_name}}</h3>
+				<hr>
 				<img class="img-rounded" style="width:375px;height:300px;display:block;margin-left:auto;margin-right:auto;"
 				 src="/images/listings/{{$listing->id}}/thumbnails/{{$listing->thumbnail}}" alt="unable to display image">
 				<hr>
