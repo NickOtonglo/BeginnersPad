@@ -62,8 +62,8 @@
     <div class="form-group">
       <input type="checkbox" value="checkbox" id="checkbox"> <strong id="checkbox-tag" data-toggle="tooltip" title="Loading...">Price all listings under this property equally (what's this?)</strong>
     </div>
-    <div class="form-group" id="form-price" hidden>
-      <label for="price">Price of rent/month for all listings under this property *</label>
+    <div class="form-group" id="form_price" hidden>
+      <label for="price">Price of rent/month for all listings under this property KES) *</label>
       <div class="alert alert-danger" id="alert_price_listing_create" hidden></div>
       <input class="form-control" name="price" type="number" step=".01" id="price">
     </div>

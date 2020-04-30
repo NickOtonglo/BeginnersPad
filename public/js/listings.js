@@ -2,10 +2,10 @@ $(document).ready(function () {
     tooltip = 'If this option is checked, you will be required to set the rent price only once for all the listings that will fall under this property.';
     $('#checkbox').change(function () {
         if (this.checked) {
-            $('#form-price').show();
+            $('#form_price').show();
             tooltip = 'If this option is unchecked, you will be required to set the rent price for each individual listing that will fall under this property seperately.';
         } else {
-            $('#form-price').hide();
+            $('#form_price').hide();
             tooltip = 'If this option is checked, you will be required to set the rent price only once for all the listings that will fall under this property.';
         }
     });
@@ -159,7 +159,7 @@ function populateListingUpdateForm(lst){
         if(listing.price != null){
             document.getElementById("checkbox").checked = true;
             document.getElementById("price").value = listing.price;
-            $('#form-price').show();
+            $('#form_price').show();
         }
         document.getElementById('output').src = '/images/listings/'+listing.id+'/thumbnails/'+listing.thumbnail;
         

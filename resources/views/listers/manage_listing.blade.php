@@ -14,7 +14,8 @@
 		</div>
 		@endif
 		<div class="pull-right">
-			<a class="btn btn-sm btn-info" role="button" data-toggle="modal" data-target="#modalCreateEntry" onclick="">+ Add Listing Entry</a>
+			<!-- <a class="btn btn-sm btn-info" role="button" data-toggle="modal" data-target="#modalCreateEntry" href="{{route('lister.addListingEntry',$listing)}}">+ Add Listing Entry</a> -->
+			<a class="btn btn-sm btn-info" role="button" href="{{route('lister.addListingEntry',$listing)}}">+ Add Listing Entry</a>
 		</div>
 		<div class="row">
 			<div class="modal fade" id="modalUpdateListing" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
@@ -80,7 +81,7 @@
 								<div class="form-group">
 									<input type="checkbox" value="checkbox" id="checkbox"> <strong id="checkbox-tag" data-toggle="tooltip" title="Loading...">Price all listings under this property equally (what's this?)</strong>
 								</div>
-								<div class="form-group" id="form-price" hidden>
+								<div class="form-group" id="form_price" hidden>
 									<label for="price">Price of rent/month for all listings under this property *</label>
 									<div class="alert alert-danger" id="alert_price_listing_create" hidden></div>
 									<input class="form-control" name="price" type="number" step=".01" id="price">

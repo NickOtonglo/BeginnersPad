@@ -115,7 +115,7 @@ class ListerController extends Controller
         return redirect()->back()->with('message','Listing property added');
     }
 
-    public function addListingEntry(){
+    public function addListingEntry($id){
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();
@@ -123,14 +123,31 @@ class ListerController extends Controller
 
         $utype = Auth::user()->user_type;
         $API_KEY = config('constants.API_KEY.maps');
-        $subZonesList = ZoneEntry::orderBy('name')->get();
+        $listing = Listing::where('id',$id)->first();
         if ($utype==4){
-            return view('listers.new_listing_entry',compact('subZonesList','API_KEY'));
+            return view('listers.new_listing_entry',compact('listing','API_KEY'));
         }
         else {
             $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
             return redirect()->route('listings.list')->with('listings',$listings);
         }
+    }
+
+    public function createListingEntry(Request $request,$id){
+        $this->validate($request,[
+    		'listing_name'=>'required|max:50',
+    		'description'=>'max:5000',
+    		'floor_area'=>'required',
+    		'price'=>'required'
+    		]);
+
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        return $request->all();
+
     }
 
     public function storeListingEntry(Request $request){

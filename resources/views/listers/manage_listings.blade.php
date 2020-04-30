@@ -14,7 +14,7 @@
         </div>
         @endif
         <div class="pull-right">
-            <a class="btn btn-mid btn-info" data-toggle="modal" data-target="#modalCreateListing" role="button">Add New Property</a>
+            <a class="btn btn-mid btn-info" data-toggle="modal" data-target="#modalCreateListing" role="button">+ Add New Property</a>
         </div>
     </div>
     <div class="row">
