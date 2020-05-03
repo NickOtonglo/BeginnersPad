@@ -96,23 +96,28 @@ class ListerController extends Controller
             $postId = ($postId->id)+1;
         }
 
-        if ($request->hasFile('thumbnail')) {
-            $image = $request->file('thumbnail');
-            $propertyName = str_replace(' ', '_', $request->property_name);
+        if ($user->user_type == 4){
+            if ($request->hasFile('thumbnail')) {
+                $image = $request->file('thumbnail');
+                $propertyName = str_replace(' ', '_', $request->property_name);
 
-            if (!File::exists('images/listings/'.$postId.'/thumbnails/')) {
-                File::makeDirectory('images/listings/'.$postId.'/thumbnails/',0777,true);
+                if (!File::exists('images/listings/' . $postId . '/thumbnails/')) {
+                    File::makeDirectory('images/listings/' . $postId . '/thumbnails/', 0777, true);
+                }
+
+                $fileName = $postId . '_' . time() . '_' . $propertyName . '_thumb.' . $image->getClientOriginalExtension();
+                $thumbLocation = public_path('images/listings/' . $postId . '/thumbnails/' . $fileName);
+                Image::make($image)->resize(640, 480, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($thumbLocation);
+                $postData = array_merge($request->all(), ['lister_id' => Auth::user()->id], ['thumbnail' => $fileName], ['status' => 'unpublished']);
+                Listing::create($postData);
             }
-
-            $fileName = $postId.'_'.time().'_'.$propertyName.'_thumb.'.$image->getClientOriginalExtension();
-            $thumbLocation = public_path('images/listings/'.$postId.'/thumbnails/'.$fileName);
-            Image::make($image)->resize(640,480, function($constraint){
-                $constraint->aspectRatio();
-            })->save($thumbLocation);
-            $postData = array_merge($request->all(),['lister_id'=>Auth::user()->id],['thumbnail'=>$fileName],['status'=>'unpublished']);
-            Listing::create($postData);
+            return redirect()->back()->with('message', 'Listing property added');
+        } else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
         }
-        return redirect()->back()->with('message','Listing property added');
     }
 
     public function addListingEntry($id){
@@ -133,33 +138,31 @@ class ListerController extends Controller
         }
     }
 
+    // public function createListingEntry(Request $request,$id){
+    //     $this->validate($request,[
+    // 		'listing_name'=>'required|max:50',
+    // 		'description'=>'max:5000',
+    // 		'floor_area'=>'required',
+    //         'price'=>'required',
+    //         'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+    // 		]);
+
+    //     if (!$this->checkUserState()) {
+    //         return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+    //         Auth::logout();
+    //     }
+
+    //     return $request->all();
+
+    // }
+
     public function createListingEntry(Request $request,$id){
-        $this->validate($request,[
+    	$this->validate($request,[
     		'listing_name'=>'required|max:50',
     		'description'=>'max:5000',
     		'floor_area'=>'required',
-    		'price'=>'required'
-    		]);
-
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
-        return $request->all();
-
-    }
-
-    public function storeListingEntry(Request $request){
-    	$this->validate($request,[
-    		'name'=>'required|max:50',
-    		'description'=>'required|max:5000',
-    		'subzone'=>'required',
-    		'lat'=>'required',
-    		'lng'=>'required',
-    		'type'=>'required', 
-    		'stories'=>'required',
-            'thumbnail.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'price'=>'required',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
     		]);
 
         if (!$this->checkUserState()) {
@@ -168,65 +171,76 @@ class ListerController extends Controller
         }
 
         $user = Auth::user();
-        $postId = Listing::orderBy('id','desc')->first();
+        $parent = Listing::where('id',$id)->first();
+        $parentId = $parent->id;
+
+        $postId = ListingEntry::orderBy('id','desc')->first();
         if($postId==null){
             $postId = 1;
         } else {
-            $postId = $postId->id;
+            $postId = ($postId->id)+1;
         }
-        
-        $listings = Listing::where('lister_id',$user->id)->orderBy('created_at','id')->get();
 
-        $postData = array_merge($request->all(),['lister_id'=>Auth::user()->id]);
-        Listing::create($postData);
+        $postData = array_merge($request->all(),['parent_id'=>$parentId],['description'=>$request->description_entry],['status'=>'active']);
+        if($request->initial_deposit == null){
+            $postData = array_merge($postData,['initial_deposit'=>0]);
+        }
+        if($request->initial_deposit_period == null){
+            $postData = array_merge($postData,['initial_deposit_period'=>0]);
+        }
 
-        if ($request->hasFile('thumbnail')) {
-            $images = $request->file('thumbnail');
-            $propertyName = str_replace(' ', '_', $request->property_name);
+        if($user->user_type==4 && $parent->lister_id==$user->id){
+            if ($request->hasFile('images')) {
+                $images = $request->file('images');
+                $entryName = str_replace(' ', '_', $request->listing_name);
 
-            // if (!File::exists('images/listings/'.$postId.'/')) {
-            //     File::makeDirectory('images/listings/'.$postId.'/',0777,true);
-            // }
-            if (!File::exists('images/listings/'.$postId.'/thumbnails/')) {
-                File::makeDirectory('images/listings/'.$postId.'/thumbnails/',0777,true);
-            }
-
-            foreach ($images as $image) {
-                $fileName = $postId.'_'.time().'_'.rand(1111,9999).'.'.$image->getClientOriginalExtension();
-                //images/listings/$listing_id
-                $location = public_path('images/listings/'.$postId.'/'.$fileName);
-                $img = new ListingFile;
-                $img->listing_entry_id = $postId;
-                $img->file_name = $fileName;
-                $img->file_type = 'image';
-                $img->category = 'regular';
-                if (!$img->save()) {
-                    return false;
+                if (!File::exists('images/listings/'.$parentId.'/')) {
+                    File::makeDirectory('images/listings/'.$parentId.'/',0777,true);
                 }
-                Image::make($image)->resize(640,480, function($constraint){
-                    $constraint->aspectRatio();
-                })->save($location); 
-                $img->save();
-            }
-            $fileName = $postId.'_'.time().'_'.$propertyName.'_thumb.'.$image->getClientOriginalExtension();
-            $thumbLocation = public_path('images/listings/'.$postId.'/thumbnails/'.$fileName);
-            $thumb = new ListingFile;
-            $thumb->listing_entry_id = $img->listing_id;
-            $thumb->file_name = $fileName.'_thumb';
-            $thumb->file_type = 'image';
-            $thumb->category = 'thumbnail';
-            if (!$thumb->save()) {
-                return false;
-            }
-            Image::make($images[0])->resize(350,250, function($constraint){
-                $constraint->aspectRatio();
-            })->save($thumbLocation); 
-            $thumb->save();
-            $lastPost = Listing::where('lister_id',$user->id)->orderBy('created_at','id')->first();
-            $lastPost->update(['images'=>$fileName]);
-        }
 
-        return redirect()->route('lister.manageListings')->with('listings',$listings);
+                foreach ($images as $image) {
+                    $fileName = $parentId.'_'.time().'_'.rand(1111,9999).'.'.$image->getClientOriginalExtension();
+                    //images/listings/$parent_id
+                    $location = public_path('images/listings/'.$parentId.'/'.$fileName);
+                    $img = new ListingFile;
+                    $img->listing_entry_id = $postId;
+                    $img->file_name = $fileName;
+                    $img->file_type = 'image';
+                    $img->category = 'regular';
+                    if (!$img->save()) {
+                        return "unable to save images";
+                        // return false;
+                    }
+                    Image::make($image)->resize(640,480, function($constraint){
+                        $constraint->aspectRatio();
+                    })->save($location); 
+                    $img->save();
+                }
+                $fileName = $parentId.'_'.time().'_'.$entryName.'_thumb.'.$images[0]->getClientOriginalExtension();
+                $thumbLocation = public_path('images/listings/'.$parentId.'/thumbnails/'.$fileName);
+                $thumb = new ListingFile;
+                $thumb->listing_entry_id = $postId;
+                $thumb->file_name = $fileName.'_thumb';
+                $thumb->file_type = 'image';
+                $thumb->category = 'thumbnail';
+                if (!$thumb->save()) {
+                    return "unable to save thumbnail";
+                    // return false;
+                }
+                Image::make($images[0])->resize(350,250, function($constraint){
+                    $constraint->aspectRatio();
+                })->save($thumbLocation); 
+                $thumb->save();
+                ListingEntry::create($postData);
+            } else {
+                return "no images";
+            }
+
+            return redirect()->back()->with('message', 'Listing added to '.$parent->property_name);
+        } else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
+        }
 
     }
 

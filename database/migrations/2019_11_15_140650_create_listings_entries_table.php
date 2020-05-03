@@ -22,7 +22,7 @@ class CreateListingsEntriesTable extends Migration
             $table->float('floor_area',10,2);
             $table->text('disclaimer')->nullable();
             $table->text('features')->nullable();
-            $table->string('status'); //active,inactive
+            $table->string('status'); //active,inactive,occupied
             $table->float('initial_deposit',10,2)->default('0'); //value of initial deposit
             $table->integer('initial_deposit_period')->default('0'); //period (months) in which the initial deposit remains valid
             $table->float('price',10,2);

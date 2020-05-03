@@ -61,6 +61,10 @@
             @endif
         </div>
         <div class="form-group">
+            <label for="images">Upload image(s)</label>
+            <input class="file-path-wrapper" accept="image/*" name="images[]" id="images" type="file" required multiple/>
+        </div>
+        <div class="form-group">
             <input class="btn btn-primary" id="btnSubmit" type="submit" value="Add Listing">
         </div>
     </form>
@@ -69,7 +73,7 @@
 
 @section('bottom_scripts')
 <script>
-    let listingObj = {!! json_encode($listing)!!};
+    let listingObj = {!!json_encode($listing)!!};
 </script>
 <script src="{{asset('js/listing-entries.js')}}"></script>
 @endsection

@@ -48,7 +48,7 @@ class Controller extends BaseController
         // return view('listings.index');
         $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
 
-        return view('listings.index',compact('listings'));
+        return view('layouts.index',compact('listings'));
     }
 
     public function main(){
