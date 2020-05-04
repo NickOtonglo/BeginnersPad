@@ -161,7 +161,6 @@ class ListerController extends Controller
     		'listing_name'=>'required|max:50',
     		'description'=>'max:5000',
     		'floor_area'=>'required',
-            'price'=>'required',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
     		]);
 
@@ -181,12 +180,18 @@ class ListerController extends Controller
             $postId = ($postId->id)+1;
         }
 
-        $postData = array_merge($request->all(),['parent_id'=>$parentId],['description'=>$request->description_entry],['status'=>'active']);
+        $postData = array_merge($request->all(),['parent_id'=>$parentId],['description'=>$request->entry_description],['status'=>'active']);
         if($request->initial_deposit == null){
             $postData = array_merge($postData,['initial_deposit'=>0]);
         }
         if($request->initial_deposit_period == null){
             $postData = array_merge($postData,['initial_deposit_period'=>0]);
+        }
+
+        if($request->entry_price == null){
+            $postData = array_merge($postData,['price'=>$parent->price]);
+        } else {
+            $postData = array_merge($postData,['price'=>$request->entry_price]);
         }
 
         if($user->user_type==4 && $parent->lister_id==$user->id){
@@ -220,7 +225,7 @@ class ListerController extends Controller
                 $thumbLocation = public_path('images/listings/'.$parentId.'/thumbnails/'.$fileName);
                 $thumb = new ListingFile;
                 $thumb->listing_entry_id = $postId;
-                $thumb->file_name = $fileName.'_thumb';
+                $thumb->file_name = $fileName;
                 $thumb->file_type = 'image';
                 $thumb->category = 'thumbnail';
                 if (!$thumb->save()) {
@@ -242,6 +247,8 @@ class ListerController extends Controller
             return redirect()->route('listings.list')->with('listings',$listings);
         }
 
+        return $postId;
+
     }
 
     public function manageListing($id){
@@ -257,9 +264,8 @@ class ListerController extends Controller
         $entries = ListingEntry::where('parent_id',$id)->get();
 
         if ($utype==4) {
-            $listingDetails = Listing::where('id',$id)->first();
-            if ($listingDetails->lister_id == $user->id) {
-                $listing = Listing::where('id',$id)->first();
+            $listing = Listing::where('id',$id)->first();
+            if ($listing->lister_id == $user->id) {
                 return view('listers.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)->with('entries',$entries);
             } else {
                 $listings = Listing::where('lister_id',$user->id)->orderBy('created_at','id')->get();
@@ -314,7 +320,36 @@ class ListerController extends Controller
             $post->update($postData);
             return redirect()->back()->with('message','Listing property updated');
         } else {
-            return redirect()->route('listings.list');
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
+        }
+    }
+
+    public function manageListingEntry($listingId,$entryId){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $utype = $user->user_type;
+        $API_KEY = config('constants.API_KEY.maps');
+        $subZonesList = ZoneEntry::orderBy('name')->get();
+        $entry = ListingEntry::where('id',$entryId)->get();
+
+        if ($utype==4) {
+            $listing = Listing::where('id',$listingId)->first();
+            if ($listing->lister_id == $user->id) {
+                // return view('listers.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)->with('entries',$entry);
+                return $entry;
+            } else {
+                $listings = Listing::where('lister_id',$user->id)->orderBy('created_at','id')->get();
+                return redirect()->route('lister.manageListings')->with('listings',$listings);
+            }
+        }
+        else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
         }
     }
 

@@ -16,10 +16,10 @@
             <input class="form-control" name="listing_name" type="text" id="listing_name">
         </div>
         <div class="form-group">
-            <label for="description">Description</label>
+            <label for="entry_description">Description</label>
             <div class="alert alert-danger" id="alert_desc_entry_create" hidden></div>
-            <br><input type="checkbox" value="checkbox_description" id="checkbox_description"> <strong data-toggle="tooltip" title="Loading...">Copy from property description</strong>
-            <textarea class="form-control" name="description" type="text" id="description"></textarea>
+            <br><input type="checkbox" value="checkbox_description" id="checkbox_description"> <strong>Copy from property description</strong>
+            <textarea class="form-control" name="entry_description" type="text" id="entry_description"></textarea>
         </div>
         <div class="form-group">
             <label for="floor_area">Floor area of listing in square-metres *</label>
@@ -37,7 +37,7 @@
             <textarea class="form-control" name="features" type="text" id="features" placeholder="e.g. feature 1,feature 2,feature 3...etc"></textarea>
         </div>
         <div class="form-group">
-            <input type="checkbox" value="checkbox" id="checkbox"> <strong id="checkbox-tag" data-toggle="tooltip" title="Loading...">Set initial deposit</strong>
+            <input type="checkbox" value="checkbox_deposit" id="checkbox_deposit"> <strong>Set initial deposit</strong>
         </div>
         <div id="form_deposit" hidden>
             <div class="form-group">
@@ -52,12 +52,12 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="price">Price of rent/month for this listing (KES) *</label>
+            <label for="entry_price">Price of rent/month for this listing (KES) *</label>
             <div class="alert alert-danger" id="alert_price_entry_create" hidden></div>
             @if($listing->price == null)
-            <input class="form-control" name="price" type="number" step=".01" min="0.1" id="price">
+            <input class="form-control" name="entry_price" type="number" step=".01" min="0.1" id="entry_price">
             @else
-            <input class="form-control" name="price" type="number" step=".01" min="0.1" id="price" value="{{$listing->price}} (set at property level)" disabled>
+            <input class="form-control" name="entry_price" type="number" step=".01" min="0.1" id="entry_price" value="{{$listing->price}} (set at property level)" disabled>
             @endif
         </div>
         <div class="form-group">

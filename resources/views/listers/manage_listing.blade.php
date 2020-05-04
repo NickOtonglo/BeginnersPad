@@ -6,18 +6,23 @@
 
 @section ('content')
 <div class="container">
-	<div class="row">
 		@if(session()->has('message'))
-		<div class="alert alert-success alert-dismissible">
-			<a class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<strong>Success!</strong> {{ session()->get('message') }}
+		<div class="row">
+			<div class="alert alert-success alert-dismissible">
+				<a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Success!</strong> {{ session()->get('message') }}
+			</div>
 		</div>
 		@endif
+	<div class="row">
 		<div class="pull-right">
 			<!-- <a class="btn btn-sm btn-info" role="button" data-toggle="modal" data-target="#modalCreateEntry" href="{{route('lister.addListingEntry',$listing)}}">+ Add Listing Entry</a> -->
 			<!-- <a class="btn btn-sm btn-info" role="button" href="{{route('lister.addListingEntry',$listing)}}">+ Add Listing Entry</a> -->
 			<a class="btn btn-sm btn-info" role="button" data-toggle="modal" data-target="#modalCreateEntry">+ Add Listing Entry</a>
 		</div>
+	</div>
+	<br>
+	<div class="row">
 		<div class="row">
 			<div class="modal fade" id="modalUpdateListing" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
 				<div class="modal-dialog" role="document">
@@ -117,10 +122,10 @@
 									<input class="form-control" name="listing_name" type="text" id="listing_name">
 								</div>
 								<div class="form-group">
-									<label for="description">Description</label>
+									<label for="entry_description">Description</label>
 									<div class="alert alert-danger" id="alert_desc_entry_create" hidden></div>
-									<br><input type="checkbox" value="checkbox_description" id="checkbox_description"> <strong data-toggle="tooltip" title="Loading...">Copy from property description</strong>
-									<textarea class="form-control" name="description" type="text" id="description"></textarea>
+									<br><input type="checkbox" value="checkbox_description" id="checkbox_description"> <strong>Copy from property description</strong>
+									<textarea class="form-control" name="entry_description" type="text" id="entry_description"></textarea>
 								</div>
 								<div class="form-group">
 									<label for="floor_area">Floor area of listing in square-metres *</label>
@@ -138,7 +143,7 @@
 									<textarea class="form-control" name="features" type="text" id="features" placeholder="e.g. feature 1,feature 2,feature 3...etc"></textarea>
 								</div>
 								<div class="form-group">
-									<input type="checkbox" value="checkbox" id="checkbox"> <strong id="checkbox-tag" data-toggle="tooltip" title="Loading...">Set initial deposit</strong>
+									<input type="checkbox" value="checkbox_deposit" id="checkbox_deposit"> <strong>Set initial deposit</strong>
 								</div>
 								<div id="form_deposit" hidden>
 									<div class="form-group">
@@ -153,12 +158,12 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="price">Price of rent/month for this listing (KES) *</label>
+									<label for="entry_price">Price of rent/month for this listing (KES) *</label>
 									<div class="alert alert-danger" id="alert_price_entry_create" hidden></div>
 									@if($listing->price == null)
-									<input class="form-control" name="price" type="number" step=".01" min="0.1" id="price">
+									<input class="form-control" name="entry_price" type="number" step=".01" min="0.1" id="entry_price">
 									@else
-									<input class="form-control" name="price" type="number" step=".01" min="0.1" id="price" value="{{$listing->price}} (set at property level)" disabled>
+									<input class="form-control" name="entry_price" type="number" step=".01" min="0.1" id="entry_price" placeholder="{{$listing->price}} (set at property level)" disabled>
 									@endif
 								</div>
 								<div class="form-group">
@@ -226,13 +231,44 @@
 			<input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Delete Property" name="btn_delete" disabled>
 		</div>
 		<div class="col-md-5 col-md-offset-1">
-			<div class="row">
-				<div class="flex-title" style="text-align:left;"><small>Listings in {{$listing->property_name}}</small></div>
-				@forelse($entries as $entry)
-
-				@empty
-				<h4 style="text-align:center;">No listings available</h4>
-				@endforelse
+			<div class="panel panel-default">
+				<div class="panel-heading">Listings in {{$listing->property_name}}</div>
+				<div class="panel-body">
+					<div class="post">
+						<div class="row">
+							@forelse($entries as $entry)
+							<a class="card-big-clickable card-block" style="margin:9px; " role="button" href="{{route('lister.manageListingEntry',['listingId'=>$listing->id,'entryId'=>$entry->id])}}">
+								<div class="col-md-8 col-md-offset-0">
+									<span style="display: inline-block;width: 210px;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;">
+										<h4>{{$entry->listing_name}}</h4>
+									</span><br>
+									@if($entry->status=='active')
+									<span><small><strong class="text-success">active</strong></small></span><br>
+									@elseif($entry->status=='inactive')
+									<span><small><strong class="text-danger">inactive</strong></small></span><br>
+									@elseif($entry->status=='occupied')
+									<span><small><strong class="text-primary">occupied</strong></small></span><br>
+									@endif
+									@if($entry->initial_deposit<=0)
+									<span><small>Initial deposit: <strong>Not required</strong></small></span>
+									@elseif($entry->initial_deposit>0)
+									<span><small>Initial deposit: <strong>Required</strong></small></span>
+									@endif
+								</div>
+								<div class="col-md-4">
+									@if($entry->listingFile()->where('category','thumbnail')->first() != null)
+									<img class="img-rounded" style="width:125px;height:100px;float:right;" src="/images/listings/{{$listing->id}}/thumbnails/{{$entry->listingFile()->where('category','thumbnail')->first()->file_name}}" alt="unable to display image">
+									@else
+									<img class="img-rounded" style="width:125px;height:100px;float:right;" src="/images/listings/vector-house-icon.jpg" alt="unable to display image">
+									@endif
+								</div>
+							</a>
+							@empty
+							<h4 style="text-align:center;">You have no active listings</h4>
+							@endforelse
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
