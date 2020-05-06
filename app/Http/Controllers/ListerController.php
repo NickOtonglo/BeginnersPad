@@ -333,15 +333,12 @@ class ListerController extends Controller
 
         $user = Auth::user();
         $utype = $user->user_type;
-        $API_KEY = config('constants.API_KEY.maps');
-        $subZonesList = ZoneEntry::orderBy('name')->get();
-        $entry = ListingEntry::where('id',$entryId)->get();
+        $entry = ListingEntry::where('id',$entryId)->first();
 
         if ($utype==4) {
             $listing = Listing::where('id',$listingId)->first();
             if ($listing->lister_id == $user->id) {
-                // return view('listers.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)->with('entries',$entry);
-                return $entry;
+                return view('listers.manage_listing_entry')->with('entry',$entry);
             } else {
                 $listings = Listing::where('lister_id',$user->id)->orderBy('created_at','id')->get();
                 return redirect()->route('lister.manageListings')->with('listings',$listings);

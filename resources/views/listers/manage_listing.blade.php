@@ -1,7 +1,7 @@
 @extends('layouts.base_no_panel')
 
 @section('title')
-<title>Manage Listing - {{$listing->property_name}} | Beginners Pad</title>
+<title>Manage Property - {{$listing->property_name}} | Beginners Pad</title>
 @endsection
 
 @section ('content')
@@ -16,8 +16,6 @@
 		@endif
 	<div class="row">
 		<div class="pull-right">
-			<!-- <a class="btn btn-sm btn-info" role="button" data-toggle="modal" data-target="#modalCreateEntry" href="{{route('lister.addListingEntry',$listing)}}">+ Add Listing Entry</a> -->
-			<!-- <a class="btn btn-sm btn-info" role="button" href="{{route('lister.addListingEntry',$listing)}}">+ Add Listing Entry</a> -->
 			<a class="btn btn-sm btn-info" role="button" data-toggle="modal" data-target="#modalCreateEntry">+ Add Listing Entry</a>
 		</div>
 	</div>
@@ -279,6 +277,7 @@
 @section('bottom_scripts')
 <script>
 	let listingObj = {!!json_encode($listing) !!};
+	let entryObj = '';
 </script>
 <script src="{{asset('js/listings.js')}}"></script>
 <script src="{{asset('js/listing-entries.js')}}"></script>
