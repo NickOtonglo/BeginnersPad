@@ -16,18 +16,18 @@
     @endif
     <div class="row">
         <div class="pull-right">
-            <a class="btn btn-sm btn-info" role="button" data-toggle="modal" data-target="#modalCreateEntry">+ Edit Listing Entry</a>
+            <a class="btn btn-sm btn-info" role="button" data-toggle="modal" data-target="#modalUpdateEntry" onclick="populateEntryUpdateForm('{{$entry}}',this);">Edit Listing Entry</a>
         </div>
     </div>
     <br>
     <div class="row">
         <div class="row">
-            <div class="modal fade" id="modalCreateEntry" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+            <div class="modal fade" id="modalUpdateEntry" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="modalLabel">New Listing</h4>
+                            <h4 class="modal-title" id="modalLabel">Edit Listing</h4>
                         </div>
                         <form method="post" action="" enctype="multipart/form-data" onsubmit="return validateEntryCreateForm();">
                             <div class="modal-body">
@@ -120,11 +120,10 @@
                     </p>
                     <p>
                         Initial deposit:
-                        @if($entry->initial_deposit <= 0)
-                        <strong>not set</strong>
-                        @else
-                        <strong>KES {{$entry->initial_deposit}} valid for {{$entry->initial_deposit_period}} months</strong>
-                        @endif
+                        @if($entry->initial_deposit <= 0) <strong>not set</strong>
+                            @else
+                            <strong>KES {{$entry->initial_deposit}} valid for {{$entry->initial_deposit_period}} months</strong>
+                            @endif
                     </p>
                     <p>
                         Rent price:
@@ -137,15 +136,24 @@
                 </div>
             </div>
             <br>
-            <input class="btn btn-lg btn-primary btn-block" style="margin-top:5px" type="submit" value="Edit" name="btn_edit" data-toggle="modal" data-target="#modalUpdateListing" onclick="populateEntryUpdateForm('{{$entry}}',this);">
-            <input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Delete Property" name="btn_delete" disabled>
+            <!-- <input class="btn btn-lg btn-primary btn-block" style="margin-top:5px" type="submit" value="Edit" name="btn_edit" data-toggle="modal" data-target="#modalUpdateEntry" onclick="populateEntryUpdateForm('{{$entry}}',this);"> -->
+            @if($entry->status == 'active')
+            <input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Make Inactive (hide)" name="btn_inactivate">
+            @elseif($entry->status == 'inactive')
+            <input class="btn btn-lg btn-success btn-block" style="margin-top:5px" type="submit" value="Activate" name="btn_activate">
+            @elseif($entry->status == 'occupied')
+            <input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Declare Vacant" name="btn_vacate">
+            @endif
+            <input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Delete Listing" name="btn_delete" disabled>
         </div>
+        <br>
         <div class="col-md-5 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">More Information</div>
                 <div class="panel-body">
                     @if($entry->description != null)
                     <div class="row" style="padding:8px">
+
                         <body>{{$entry->description}}</body>
                     </div>
                     <br>
@@ -154,7 +162,7 @@
                     <div class="row" style="padding:8px">
                         <strong><u>Disclaimer (important)</u></strong>
                         <ul id="disclaimer_list">
-                            
+
                         </ul>
                     </div>
                     @endif
@@ -162,14 +170,36 @@
                     <div class="row" style="padding:8px">
                         <strong>Features</strong>
                         <ul id="features_list">
-                            
+
                         </ul>
                     </div>
                     @endif
                 </div>
             </div>
         </div>
-
+    </div>
+    <hr>
+    <div class="row">
+        <strong>Images</strong>
+        <br>
+        @forelse($entry->ListingFile->where('category','regular') as $image)
+        <div class="cards">
+            <div class="card" style="width:150px;height:178px;">
+                {{csrf_field()}}
+                <img style="width:150px;height:150px;" src="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" alt="unable to display image">
+                <input class="card-body btn btn-sm btn-danger" style="width:150px;border-radius:0px" onclick="" type="submit" value="Remove">
+            </div>
+        </div>
+        @empty
+        <h2 style="text-align:center;">No images to display</h2>
+        @endforelse
+        <div class="cards">
+            <div class="card" style="width:150px;height:178px;">
+                {{csrf_field()}}
+                <img style="width:150px;height:150px;" src="/images/btn-add.png" alt="unable to display image">
+                <div class="" style="width:150px;text-align:center">New image</div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

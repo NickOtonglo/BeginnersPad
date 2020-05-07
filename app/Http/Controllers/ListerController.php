@@ -216,7 +216,7 @@ class ListerController extends Controller
                         return "unable to save images";
                         // return false;
                     }
-                    Image::make($image)->resize(640,480, function($constraint){
+                    Image::make($image)->resize(1280,720, function($constraint){
                         $constraint->aspectRatio();
                     })->save($location); 
                     $img->save();
@@ -232,7 +232,7 @@ class ListerController extends Controller
                     return "unable to save thumbnail";
                     // return false;
                 }
-                Image::make($images[0])->resize(350,250, function($constraint){
+                Image::make($images[0])->resize(640,480, function($constraint){
                     $constraint->aspectRatio();
                 })->save($thumbLocation); 
                 $thumb->save();
@@ -312,7 +312,7 @@ class ListerController extends Controller
 
                 $fileName = $postId.'_'.time().'_'.$propertyName.'_thumb.'.$image->getClientOriginalExtension();
                 $thumbLocation = public_path('images/listings/'.$postId.'/thumbnails/'.$fileName);
-                Image::make($image)->resize(640,480, function($constraint){
+                Image::make($image)->resize(1280,720, function($constraint){
                     $constraint->aspectRatio();
                 })->save($thumbLocation);
                 $postData = array_merge($postData,['thumbnail'=>$fileName]);

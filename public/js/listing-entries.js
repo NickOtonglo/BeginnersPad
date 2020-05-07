@@ -144,7 +144,7 @@ function populateEntryUpdateForm(lst){
         document.getElementById("disclaimer").value = listing.disclaimer;
         document.getElementById("features").value = listing.features;
         document.getElementById("entry_price").value = listing.price;
-        if(listing.initial_deposit != null || listing.initial_deposit_period != null){
+        if((listing.initial_deposit != null || listing.initial_deposit_period != null) && (listing.initial_deposit != 0 || listing.initial_deposit_period != 0)){
             document.getElementById("checkbox_deposit").checked = true;
             document.getElementById("initial_deposit").value = listing.initial_deposit;
             document.getElementById("initial_deposit_period").value = listing.initial_deposit_period;
