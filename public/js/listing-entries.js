@@ -9,7 +9,6 @@ $(document).ready(function () {
 
     $('#checkbox_description').change(function () {
         if (this.checked) {
-            console.log('listingObj.description: '+listingObj.description);
             $('#entry_description').val(listingObj.description);
             $('#entry_description').prop("readonly", true);
         } else {
@@ -19,6 +18,26 @@ $(document).ready(function () {
 
     $('.modal').on('hide.bs.modal', function (e) {
         clearAlerts();
+    });
+
+    $('.btn-entry-edit').click(function (e) {
+        if (confirm("Are you sure you want to perform this action?")) {
+            e.stopPropagation();
+            return true;
+        } else {
+            e.stopPropagation();
+            return false;
+        }
+    });
+
+    $('.btn-entry-delete').click(function (e) {
+        if (confirm("Are you sure you want to perform this action?")) {
+            e.stopPropagation();
+            return true;
+        } else {
+            e.stopPropagation();
+            return false;
+        }
     });
 });
 

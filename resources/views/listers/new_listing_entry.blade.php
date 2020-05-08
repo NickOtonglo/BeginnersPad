@@ -29,12 +29,12 @@
         <div class="form-group">
             <label for="disclaimer">Disclaimer(s) (separate with semicolon ';')</label>
             <div class="alert alert-danger" id="alert_disclaimer_entry_create" hidden></div>
-            <textarea class="form-control" name="disclaimer" type="text" id="disclaimer" placeholder="e.g. disclaimer 1,disclaimer 2,disclaimer 3...etc"></textarea>
+            <textarea class="form-control" name="disclaimer" type="text" id="disclaimer" placeholder="e.g. disclaimer 1;disclaimer 2;disclaimer 3...etc"></textarea>
         </div>
         <div class="form-group">
             <label for="features">Feature(s) (separate with semicolon ';')</label>
             <div class="alert alert-danger" id="alert_features_entry_create" hidden></div>
-            <textarea class="form-control" name="features" type="text" id="features" placeholder="e.g. feature 1,feature 2,feature 3...etc"></textarea>
+            <textarea class="form-control" name="features" type="text" id="features" placeholder="e.g. feature 1;feature 2;feature 3...etc"></textarea>
         </div>
         <div class="form-group">
             <input type="checkbox" value="checkbox_deposit" id="checkbox_deposit"> <strong>Set initial deposit</strong>

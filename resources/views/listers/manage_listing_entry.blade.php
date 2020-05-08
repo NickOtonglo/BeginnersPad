@@ -29,9 +29,10 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="modalLabel">Edit Listing</h4>
                         </div>
-                        <form method="post" action="" enctype="multipart/form-data" onsubmit="return validateEntryCreateForm();">
+                        <form method="post" action="{{route('lister.updateListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data" onsubmit="return validateEntryCreateForm();">
                             <div class="modal-body">
                                 {{csrf_field() }}
+                                {{method_field('PUT')}}
                                 <div class="form-group">
                                     <label for="listing_name">Name of listing *</label>
                                     <div class="alert alert-danger" id="alert_name_entry_create" hidden></div>
@@ -51,12 +52,12 @@
                                 <div class="form-group">
                                     <label for="disclaimer">Disclaimer(s) (separate with semicolon ';')</label>
                                     <div class="alert alert-danger" id="alert_disclaimer_entry_create" hidden></div>
-                                    <textarea class="form-control" name="disclaimer" type="text" id="disclaimer" placeholder="e.g. disclaimer 1,disclaimer 2,disclaimer 3...etc"></textarea>
+                                    <textarea class="form-control" name="disclaimer" type="text" id="disclaimer" placeholder="e.g. disclaimer 1;disclaimer 2;disclaimer 3...etc"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="features">Feature(s) (separate with semicolon ';')</label>
                                     <div class="alert alert-danger" id="alert_features_entry_create" hidden></div>
-                                    <textarea class="form-control" name="features" type="text" id="features" placeholder="e.g. feature 1,feature 2,feature 3...etc"></textarea>
+                                    <textarea class="form-control" name="features" type="text" id="features" placeholder="e.g. feature 1;feature 2;feature 3...etc"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <input type="checkbox" value="checkbox_deposit" id="checkbox_deposit"> <strong>Set initial deposit</strong>
@@ -82,14 +83,14 @@
                                     <input class="form-control" name="entry_price" type="number" step=".01" min="0.1" id="entry_price" placeholder="{{$entry->listing->price}} (set at property level)" disabled>
                                     @endif
                                 </div>
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="images">Upload image(s)</label>
                                     <input class="file-path-wrapper" accept="image/*" name="images[]" id="images" type="file" required multiple />
-                                </div>
+                                </div> -->
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <input class="btn btn-primary" id="btnSubmit" type="submit" value="Add Listing">
+                                <input class="btn btn-primary" id="btnSubmit" name="btn_submit" type="submit" value="Update Listing">
                             </div>
                         </form>
                     </div>
@@ -137,14 +138,18 @@
             </div>
             <br>
             <!-- <input class="btn btn-lg btn-primary btn-block" style="margin-top:5px" type="submit" value="Edit" name="btn_edit" data-toggle="modal" data-target="#modalUpdateEntry" onclick="populateEntryUpdateForm('{{$entry}}',this);"> -->
-            @if($entry->status == 'active')
-            <input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Make Inactive (hide)" name="btn_inactivate">
-            @elseif($entry->status == 'inactive')
-            <input class="btn btn-lg btn-success btn-block" style="margin-top:5px" type="submit" value="Activate" name="btn_activate">
-            @elseif($entry->status == 'occupied')
-            <input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Declare Vacant" name="btn_vacate">
-            @endif
-            <input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Delete Listing" name="btn_delete" disabled>
+            <form method="post" action="{{route('lister.updateListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
+                {{csrf_field() }}
+                {{method_field('PUT')}}
+                @if($entry->status == 'active')
+                <input class="btn btn-lg btn-danger btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Make Inactive (hide)" name="btn_submit">
+                @elseif($entry->status == 'inactive')
+                <input class="btn btn-lg btn-success btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Activate" name="btn_submit">
+                @elseif($entry->status == 'occupied')
+                <input class="btn btn-lg btn-danger btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Declare Vacant" name="btn_submit">
+                @endif
+            </form>
+            <input class="btn btn-lg btn-danger btn-block btn-entry-delete" style="margin-top:5px" type="submit" value="Delete Listing" name="btn_submit" disabled>
         </div>
         <br>
         <div class="col-md-5 col-md-offset-1">
@@ -185,9 +190,14 @@
         @forelse($entry->ListingFile->where('category','regular') as $image)
         <div class="cards">
             <div class="card" style="width:150px;height:178px;">
+            <form method="post" action="{{route('lister.deleteListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id,'imageId'=>$image->id])}}" enctype="multipart/form-data">
                 {{csrf_field()}}
-                <img style="width:150px;height:150px;" src="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" alt="unable to display image">
-                <input class="card-body btn btn-sm btn-danger" style="width:150px;border-radius:0px" onclick="" type="submit" value="Remove">
+                {{method_field('DELETE')}}
+                <a href="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" target="_blank">
+                    <img style="width:150px;height:150px;" src="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" alt="unable to display image">
+                </a>
+                <input class="card-body btn btn-sm btn-danger btn-entry-delete" style="width:150px;border-radius:0px" type="submit" name="btn_submit" value="Remove">
+            </form>
             </div>
         </div>
         @empty

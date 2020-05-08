@@ -350,6 +350,96 @@ class ListerController extends Controller
         }
     }
 
+    public function updateListingEntry(Request $request,$listingId,$entryId){
+        // $this->validate($request,[
+    	// 	'listing_name'=>'required|max:50',
+    	// 	'description'=>'max:5000',
+    	// 	'floor_area'=>'required'
+        //     ]);
+            
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $utype = $user->user_type;
+        $parent = Listing::where('id',$listingId)->first();
+        $post = ListingEntry::where('id',$entryId)->first();
+
+        if($utype == 4 && $parent->lister_id == $user->id){
+            switch($request->input('btn_submit')){
+                case 'Make Inactive (hide)':
+                    $postData = array_merge($request->all(),['status'=>'inactive']);
+                    $post->update($postData);
+                    return redirect()->back()->with('message','Listing hidden from public view');
+                    break;
+
+                case 'Activate':
+                    $postData = array_merge($request->all(),['status'=>'active']);
+                    $post->update($postData);
+                    return redirect()->back()->with('message','Listing made publicly accessible');
+                    break;
+
+                case 'Declare Vacant':
+                    $postData = array_merge($request->all(),['status'=>'active']);
+                    $post->update($postData);
+                    return redirect()->back()->with('message','Listing declared vacant and made publicly accessible');
+                    break;
+
+                case 'Update Listing':
+                    $postData = array_merge($request->all(),['description'=>$request->entry_description]);
+                    if($request->initial_deposit == null){
+                        $postData = array_merge($postData,['initial_deposit'=>0]);
+                    }
+                    if($request->initial_deposit_period == null){
+                        $postData = array_merge($postData,['initial_deposit_period'=>0]);
+                    }
+
+                    if($request->entry_price == null){
+                        $postData = array_merge($postData,['price'=>$parent->price]);
+                    } else {
+                        $postData = array_merge($postData,['price'=>$request->entry_price]);
+                    }
+                    $post->update($postData);
+                    return redirect()->back()->with('message','Listing updated');
+                    break;
+            }
+        } else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
+        }
+    }
+
+    public function deleteListingEntry(Request $request,$listingId,$entryId,$imageId){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $utype = $user->user_type;
+        $parent = Listing::where('id',$listingId)->first();
+        $post = ListingEntry::where('id',$entryId)->first();
+
+        if($utype == 4 && $parent->lister_id == $user->id){
+            switch($request->input('btn_submit')){
+                case 'Delete Listing':
+                    
+                    break;
+
+                case 'Remove':
+                    $image = ListingFile::where('id',$imageId)->first();
+                    $image->delete();
+                    return redirect()->back()->with('message','Image removed from listing');
+                    break;
+            }
+        } else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
+        }
+    }
+
     public function removeListing($id){
         // if (!$this->checkUserState()) {
         //     return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
