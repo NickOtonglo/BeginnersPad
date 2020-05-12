@@ -83,10 +83,6 @@
                                     <input class="form-control" name="entry_price" type="number" step=".01" min="0.1" id="entry_price" placeholder="{{$entry->listing->price}} (set at property level)" disabled>
                                     @endif
                                 </div>
-                                <!-- <div class="form-group">
-                                    <label for="images">Upload image(s)</label>
-                                    <input class="file-path-wrapper" accept="image/*" name="images[]" id="images" type="file" required multiple />
-                                </div> -->
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -203,11 +199,16 @@
         @empty
         <h2 style="text-align:center;">No images to display</h2>
         @endforelse
-        <div class="cards">
+        <div class="cards" id="images_upload">
             <div class="card" style="width:150px;height:178px;">
                 {{csrf_field()}}
-                <img style="width:150px;height:150px;" src="/images/btn-add.png" alt="unable to display image">
-                <div class="" style="width:150px;text-align:center">New image</div>
+                <div hidden>
+                    <input class="file-path-wrapper" accept="image/*" name="images[]" id="images_solo" type="file" multiple onchange="loadFileCustom(event)"/>
+                </div>
+                <img style="width:150px;height:150px;" id="images_virtual" src="/images/btn-add.png" alt="unable to display image">
+                <div style="width:150px;text-align:center">
+                    <small id="images_text">New image</small>
+                </div>
             </div>
         </div>
     </div>

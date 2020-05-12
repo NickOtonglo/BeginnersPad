@@ -1,3 +1,7 @@
+const realBtn = document.getElementById('images_solo');
+const newBtn = document.getElementById('images_virtual');
+const newText = document.getElementById('images_text');
+
 $(document).ready(function () {
     $('#checkbox_deposit').change(function () {
         if (this.checked) {
@@ -39,6 +43,23 @@ $(document).ready(function () {
             return false;
         }
     });
+
+    $('#images_virtual').click(function (e){
+        customImageUploadButton();
+    });
+
+    $('#images_solo').change(function (){
+        if(realBtn.value){
+            newText.innerHTML = 'Upload '+realBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
+            var numFiles = $("input:file")[0].files.length;
+            if(numFiles>1){
+                newText.innerHTML = 'Upload '+numFiles+' images';
+            }
+        } else {
+            newText.innerHTML = 'No image selected';
+        }
+    });
+    
 });
 
 hideEntryCreateAlert();
@@ -48,6 +69,15 @@ var loadFile = function (event) {
     var reader = new FileReader();
     reader.onload = function () {
         var output = document.getElementById('output');
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+};
+
+var loadFileCustom = function (event) {
+    var reader = new FileReader();
+    reader.onload = function () {
+        var output = document.getElementById('images_virtual');
         output.src = reader.result;
     };
     reader.readAsDataURL(event.target.files[0]);
@@ -200,4 +230,8 @@ function populateLists(){
             ul.appendChild(li);
         }
     }
+}
+
+function customImageUploadButton(){
+    realBtn.click();
 }

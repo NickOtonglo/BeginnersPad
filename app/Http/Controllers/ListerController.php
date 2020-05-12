@@ -309,7 +309,7 @@ class ListerController extends Controller
                 if (!File::exists('images/listings/'.$postId.'/thumbnails/')) {
                     File::makeDirectory('images/listings/'.$postId.'/thumbnails/',0777,true);
                 }
-
+                //Thumbnail updating doesn't work
                 $fileName = $postId.'_'.time().'_'.$propertyName.'_thumb.'.$image->getClientOriginalExtension();
                 $thumbLocation = public_path('images/listings/'.$postId.'/thumbnails/'.$fileName);
                 Image::make($image)->resize(1280,720, function($constraint){
