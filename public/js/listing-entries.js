@@ -1,6 +1,7 @@
 const realBtn = document.getElementById('images_solo');
 const newBtn = document.getElementById('images_virtual');
-const newText = document.getElementById('images_text');
+// const newText = document.getElementById('images_text');
+const newText = document.getElementById('btn_add_img');
 
 $(document).ready(function () {
     $('#checkbox_deposit').change(function () {
@@ -48,15 +49,62 @@ $(document).ready(function () {
         customImageUploadButton();
     });
 
+    $('#btn_add_img').click(function (){
+        // if($("input:file")[0].files.length === 0)
+        if(!realBtn.value){
+            customImageUploadButton();
+        } else {
+            $('#image_form').trigger('submit');
+        }
+    });
+
+    $('#image_form').on('submit', function(e) {
+        if (confirm("Are you sure you want to proceed with the upload?")) {
+            e.stopPropagation();
+            return true;
+        } else {
+            e.stopPropagation();
+            return false;
+        }
+    });
+
     $('#images_solo').change(function (){
         if(realBtn.value){
-            newText.innerHTML = 'Upload '+realBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
+            // newText.innerHTML = 'Upload '+realBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
+            $("#btn_add_img").prop('value', 'Upload');
             var numFiles = $("input:file")[0].files.length;
             if(numFiles>1){
-                newText.innerHTML = 'Upload '+numFiles+' images';
+                // newText.innerHTML = 'Upload '+numFiles+' images';
+                $("#btn_add_img").prop('value', 'Upload');
             }
         } else {
             newText.innerHTML = 'No image selected';
+        }
+    });
+
+    $('#btn_thumb_faux').click(function (){
+        if($('#btn_thumb_real').val()){
+            $('#thumb_form').trigger('submit');
+        } else {
+            $('#btn_thumb_real').click();
+        }
+    });
+
+    $('#btn_thumb_real').change(function (){
+        if($('#btn_thumb_real').val()){
+            // newText.innerHTML = 'Upload '+realBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
+            $("#btn_thumb_faux").prop('value', 'Save');
+            var numFiles = $("input:file")[0].files.length;
+        }
+    });
+
+    $('#thumb_form').on('submit', function(e) {
+        if (confirm("Are you sure you want to change the thumbnail?")) {
+            e.stopPropagation();
+            return true;
+        } else {
+            e.stopPropagation();
+            return false;
         }
     });
     
@@ -78,6 +126,15 @@ var loadFileCustom = function (event) {
     var reader = new FileReader();
     reader.onload = function () {
         var output = document.getElementById('images_virtual');
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+};
+
+var loadFileThumb = function (event) {
+    var reader = new FileReader();
+    reader.onload = function () {
+        var output = document.getElementById('img_thumb');
         output.src = reader.result;
     };
     reader.readAsDataURL(event.target.files[0]);

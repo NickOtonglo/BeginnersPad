@@ -56,7 +56,10 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::post('/manage-listings/{listings}/manage/add','ListerController@createListingEntry')->name('lister.createListingEntry');
 	Route::get('/manage-listings/{listings}/manage/{entry}','ListerController@manageListingEntry')->name('lister.manageListingEntry');
 	Route::put('/manage-listings/{listings}/manage/{entry}','ListerController@updateListingEntry')->name('lister.updateListingEntry');
-	Route::delete('/manage-listings/{listings}/manage/{entry}/{image}','ListerController@deleteListingEntry')->name('lister.deleteListingEntry');
+	Route::post('/manage-listings/{listings}/manage/{entry}','ListerController@storeListingEntryImage')->name('lister.storeListingEntryImage');
+	Route::post('/manage-listings/{listings}/manage/{entry}/thumb','ListerController@storeListingEntryThumb')->name('lister.storeListingEntryThumb');
+	Route::delete('/manage-listings/{listings}/manage/{entry}/thumb','ListerController@removeListingEntryThumb')->name('lister.removeListingEntryThumb');
+	Route::delete('/manage-listings/{listings}/manage/{entry}/{image}','ListerController@deleteListingEntryImage')->name('lister.deleteListingEntryImage');
 	Route::get('/manage-listings/{listings}/reviews','ListerController@listingReviews')->name('listing.listingReviews');
 	Route::get('/manage-listings/my-applications','ListerController@myApplications')->name('lister.myApplications');
 	// Route::get('/manage-listings/{listings}/manage/{image}/remove','ListerController@deleteImage')->name('lister.removeImage');

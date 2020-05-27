@@ -161,7 +161,7 @@ class ListerController extends Controller
     		'listing_name'=>'required|max:50',
     		'description'=>'max:5000',
     		'floor_area'=>'required',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:20480'
     		]);
 
         if (!$this->checkUserState()) {
@@ -411,7 +411,113 @@ class ListerController extends Controller
         }
     }
 
-    public function deleteListingEntry(Request $request,$listingId,$entryId,$imageId){
+    public function storeListingEntryImage(Request $request,$listingId,$entryId){
+        $this->validate($request,[
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:20480'
+    		]);
+
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $utype = $user->user_type;
+        $parent = Listing::where('id',$listingId)->first();
+        $post = ListingEntry::where('id',$entryId)->first();
+        $parentId = $parent->id;
+
+        $postId = $post->id;
+
+        if($utype == 4 && $parent->lister_id == $user->id){
+            if ($request->hasFile('images')) {
+                $images = $request->file('images');
+                $entryName = str_replace(' ', '_', $request->listing_name);
+
+                if (!File::exists('images/listings/'.$parentId.'/')) {
+                    File::makeDirectory('images/listings/'.$parentId.'/',0777,true);
+                }
+
+                foreach ($images as $image) {
+                    $fileName = $parentId.'_'.time().'_'.rand(1111,9999).'.'.$image->getClientOriginalExtension();
+                    //images/listings/$parent_id
+                    $location = public_path('images/listings/'.$parentId.'/'.$fileName);
+                    $img = new ListingFile;
+                    $img->listing_entry_id = $postId;
+                    $img->file_name = $fileName;
+                    $img->file_type = 'image';
+                    $img->category = 'regular';
+                    if (!$img->save()) {
+                        return "unable to save images";
+                        // return false;
+                    }
+                    Image::make($image)->resize(1280,720, function($constraint){
+                        $constraint->aspectRatio();
+                    })->save($location); 
+                    $img->save();
+                }
+            } else {
+                return "no images";
+            }
+            return redirect()->back()->with('message','Image(s) added to listing');
+        } else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
+        }
+    }
+
+    public function storeListingEntryThumb(Request $request,$listingId,$entryId){
+        $this->validate($request,[
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:20480'
+    		]);
+
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $utype = $user->user_type;
+        $parent = Listing::where('id',$listingId)->first();
+        $post = ListingEntry::where('id',$entryId)->first();
+        $parentId = $parent->id;
+
+        $postId = $post->id;
+
+        if($utype == 4 && $parent->lister_id == $user->id){
+            if ($request->hasFile('thumb')) {
+                $images = $request->file('thumb');
+                $entryName = str_replace(' ', '_', $request->listing_name);
+
+                if (!File::exists('images/listings/'.$parentId.'/')) {
+                    File::makeDirectory('images/listings/'.$parentId.'/',0777,true);
+                }
+
+                $fileName = $parentId.'_'.time().'_'.$entryName.'_thumb.'.$images->getClientOriginalExtension();
+                $thumbLocation = public_path('images/listings/'.$parentId.'/thumbnails/'.$fileName);
+                $thumb = new ListingFile;
+                $thumb->listing_entry_id = $postId;
+                $thumb->file_name = $fileName;
+                $thumb->file_type = 'image';
+                $thumb->category = 'thumbnail';
+                if (!$thumb->save()) {
+                    return "unable to save thumbnail";
+                }
+                Image::make($images)->resize(640,480, function($constraint){
+                    $constraint->aspectRatio();
+                })->save($thumbLocation); 
+                $thumb->save();
+            } else {
+                return "no images";
+            }
+            return redirect()->back()->with('message','Thumbnail set');
+        } else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
+        }
+    }
+
+    public function deleteListingEntryImage(Request $request,$listingId,$entryId,$imageId){
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();

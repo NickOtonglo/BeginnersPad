@@ -21,75 +21,73 @@
     </div>
     <br>
     <div class="row">
-        <div class="row">
-            <div class="modal fade" id="modalUpdateEntry" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="modalLabel">Edit Listing</h4>
-                        </div>
-                        <form method="post" action="{{route('lister.updateListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data" onsubmit="return validateEntryCreateForm();">
-                            <div class="modal-body">
-                                {{csrf_field() }}
-                                {{method_field('PUT')}}
-                                <div class="form-group">
-                                    <label for="listing_name">Name of listing *</label>
-                                    <div class="alert alert-danger" id="alert_name_entry_create" hidden></div>
-                                    <input class="form-control" name="listing_name" type="text" id="listing_name">
-                                </div>
-                                <div class="form-group">
-                                    <label for="entry_description">Description</label>
-                                    <div class="alert alert-danger" id="alert_desc_entry_create" hidden></div>
-                                    <br><input type="checkbox" value="checkbox_description" id="checkbox_description"> <strong>Copy from property description</strong>
-                                    <textarea class="form-control" name="entry_description" type="text" id="entry_description"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="floor_area">Floor area of listing in square-metres *</label>
-                                    <div class="alert alert-danger" id="alert_floor_area_entry_create" hidden></div>
-                                    <input class="form-control" name="floor_area" type="number" id="floor_area" min="1">
-                                </div>
-                                <div class="form-group">
-                                    <label for="disclaimer">Disclaimer(s) (separate with semicolon ';')</label>
-                                    <div class="alert alert-danger" id="alert_disclaimer_entry_create" hidden></div>
-                                    <textarea class="form-control" name="disclaimer" type="text" id="disclaimer" placeholder="e.g. disclaimer 1;disclaimer 2;disclaimer 3...etc"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="features">Feature(s) (separate with semicolon ';')</label>
-                                    <div class="alert alert-danger" id="alert_features_entry_create" hidden></div>
-                                    <textarea class="form-control" name="features" type="text" id="features" placeholder="e.g. feature 1;feature 2;feature 3...etc"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <input type="checkbox" value="checkbox_deposit" id="checkbox_deposit"> <strong>Set initial deposit</strong>
-                                </div>
-                                <div id="form_deposit" hidden>
-                                    <div class="form-group">
-                                        <label for="initial_deposit">Initial deposit amount</label>
-                                        <div class="alert alert-danger" id="alert_initial_deposit_entry_create" hidden></div>
-                                        <input class="form-control" name="initial_deposit" type="number" step=".01" min="0.1" id="initial_deposit">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="initial_deposit_period">Initial deposit period in months</label>
-                                        <div class="alert alert-danger" id="alert_deposit_period_entry_create" hidden></div>
-                                        <input class="form-control" name="initial_deposit_period" type="number" min="1" id="initial_deposit_period" placeholder="at least 1 month">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="entry_price">Price of rent/month for this listing (KES) *</label>
-                                    <div class="alert alert-danger" id="alert_price_entry_create" hidden></div>
-                                    @if($entry->listing->price == null)
-                                    <input class="form-control" name="entry_price" type="number" step=".01" min="0.1" id="entry_price">
-                                    @else
-                                    <input class="form-control" name="entry_price" type="number" step=".01" min="0.1" id="entry_price" placeholder="{{$entry->listing->price}} (set at property level)" disabled>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <input class="btn btn-primary" id="btnSubmit" name="btn_submit" type="submit" value="Update Listing">
-                            </div>
-                        </form>
+        <div class="modal fade" id="modalUpdateEntry" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabel">Edit Listing</h4>
                     </div>
+                    <form method="post" action="{{route('lister.updateListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data" onsubmit="return validateEntryCreateForm();">
+                        <div class="modal-body">
+                            {{csrf_field() }}
+                            {{method_field('PUT')}}
+                            <div class="form-group">
+                                <label for="listing_name">Name of listing *</label>
+                                <div class="alert alert-danger" id="alert_name_entry_create" hidden></div>
+                                <input class="form-control" name="listing_name" type="text" id="listing_name">
+                            </div>
+                            <div class="form-group">
+                                <label for="entry_description">Description</label>
+                                <div class="alert alert-danger" id="alert_desc_entry_create" hidden></div>
+                                <br><input type="checkbox" value="checkbox_description" id="checkbox_description"> <strong>Copy from property description</strong>
+                                <textarea class="form-control" name="entry_description" type="text" id="entry_description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="floor_area">Floor area of listing in square-metres *</label>
+                                <div class="alert alert-danger" id="alert_floor_area_entry_create" hidden></div>
+                                <input class="form-control" name="floor_area" type="number" id="floor_area" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="disclaimer">Disclaimer(s) (separate with semicolon ';')</label>
+                                <div class="alert alert-danger" id="alert_disclaimer_entry_create" hidden></div>
+                                <textarea class="form-control" name="disclaimer" type="text" id="disclaimer" placeholder="e.g. disclaimer 1;disclaimer 2;disclaimer 3...etc"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="features">Feature(s) (separate with semicolon ';')</label>
+                                <div class="alert alert-danger" id="alert_features_entry_create" hidden></div>
+                                <textarea class="form-control" name="features" type="text" id="features" placeholder="e.g. feature 1;feature 2;feature 3...etc"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <input type="checkbox" value="checkbox_deposit" id="checkbox_deposit"> <strong>Set initial deposit</strong>
+                            </div>
+                            <div id="form_deposit" hidden>
+                                <div class="form-group">
+                                    <label for="initial_deposit">Initial deposit amount</label>
+                                    <div class="alert alert-danger" id="alert_initial_deposit_entry_create" hidden></div>
+                                    <input class="form-control" name="initial_deposit" type="number" step=".01" min="0.1" id="initial_deposit">
+                                </div>
+                                <div class="form-group">
+                                    <label for="initial_deposit_period">Initial deposit period in months</label>
+                                    <div class="alert alert-danger" id="alert_deposit_period_entry_create" hidden></div>
+                                    <input class="form-control" name="initial_deposit_period" type="number" min="1" id="initial_deposit_period" placeholder="at least 1 month">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="entry_price">Price of rent/month for this listing (KES) *</label>
+                                <div class="alert alert-danger" id="alert_price_entry_create" hidden></div>
+                                @if($entry->listing->price == null)
+                                <input class="form-control" name="entry_price" type="number" step=".01" min="0.1" id="entry_price">
+                                @else
+                                <input class="form-control" name="entry_price" type="number" step=".01" min="0.1" id="entry_price" placeholder="{{$entry->listing->price}} (set at property level)" disabled>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <input class="btn btn-primary" id="btnSubmit" name="btn_submit" type="submit" value="Update Listing">
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -100,7 +98,17 @@
             <div style="border:1px solid lightgrey; padding:16px">
                 <h3>{{$entry->listing_name}}</h3>
                 <hr>
-                <img class="img-rounded" style="width:255px;height:200px;display:block;margin-left:auto;margin-right:auto;" src="/images/listings/{{$entry->listing->id}}/thumbnails/{{$entry->listingFile()->where('category','thumbnail')->first()->file_name}}" alt="unable to display image">
+                <div class="row">
+                    <img class="img-rounded" id="img_thumb" style="width:255px;height:200px;display:block;margin-left:auto;margin-right:auto;" src="/images/listings/{{$entry->listing->id}}/thumbnails/{{$entry->listingFile()->where('category','thumbnail')->first()->file_name}}" alt="unable to display image">
+                </div>
+                <br>
+                <form id="thumb_form" method="post" action="{{route('lister.storeListingEntryThumb',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
+                    {{csrf_field()}}
+                    <div hidden>
+                        <input class="file-path-wrapper" accept="image/*" name="thumb" id="btn_thumb_real" type="file" onchange="loadFileThumb(event)" />
+                    </div>
+                </form>
+                <input class="btn btn-sm btn-primary btn-block" style="border-radius:0px;" type="submit" name="btn_submit" id="btn_thumb_faux" value="Change Thumbnail">
                 <hr>
                 <div class="card-text">
                     <p>Status:
@@ -135,7 +143,7 @@
             <br>
             <!-- <input class="btn btn-lg btn-primary btn-block" style="margin-top:5px" type="submit" value="Edit" name="btn_edit" data-toggle="modal" data-target="#modalUpdateEntry" onclick="populateEntryUpdateForm('{{$entry}}',this);"> -->
             <form method="post" action="{{route('lister.updateListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
-                {{csrf_field() }}
+                {{csrf_field()}}
                 {{method_field('PUT')}}
                 @if($entry->status == 'active')
                 <input class="btn btn-lg btn-danger btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Make Inactive (hide)" name="btn_submit">
@@ -175,6 +183,9 @@
                         </ul>
                     </div>
                     @endif
+                    @if($entry->description == null && $entry->disclaimer == null && $entry->features == null)
+                    <strong>Not available</strong>
+                    @endif
                 </div>
             </div>
         </div>
@@ -186,14 +197,14 @@
         @forelse($entry->ListingFile->where('category','regular') as $image)
         <div class="cards">
             <div class="card" style="width:150px;height:178px;">
-            <form method="post" action="{{route('lister.deleteListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id,'imageId'=>$image->id])}}" enctype="multipart/form-data">
-                {{csrf_field()}}
-                {{method_field('DELETE')}}
-                <a href="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" target="_blank">
-                    <img style="width:150px;height:150px;" src="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" alt="unable to display image">
-                </a>
-                <input class="card-body btn btn-sm btn-danger btn-entry-delete" style="width:150px;border-radius:0px" type="submit" name="btn_submit" value="Remove">
-            </form>
+                <form method="post" action="{{route('lister.deleteListingEntryImage',['listingId'=>$entry->listing->id,'entryId'=>$entry->id,'imageId'=>$image->id])}}" enctype="multipart/form-data">
+                    {{csrf_field()}}
+                    {{method_field('DELETE')}}
+                    <a href="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" target="_blank">
+                        <img style="width:150px;height:150px;" src="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" alt="unable to display image">
+                    </a>
+                    <input class="card-body btn btn-sm btn-danger btn-entry-delete" style="width:150px;border-radius:0px" type="submit" name="btn_submit" value="Remove">
+                </form>
             </div>
         </div>
         @empty
@@ -201,14 +212,17 @@
         @endforelse
         <div class="cards" id="images_upload">
             <div class="card" style="width:150px;height:178px;">
-                {{csrf_field()}}
-                <div hidden>
-                    <input class="file-path-wrapper" accept="image/*" name="images[]" id="images_solo" type="file" multiple onchange="loadFileCustom(event)"/>
-                </div>
-                <img style="width:150px;height:150px;" id="images_virtual" src="/images/btn-add.png" alt="unable to display image">
-                <div style="width:150px;text-align:center">
-                    <small id="images_text">New image</small>
-                </div>
+                <form id="image_form" method="post" action="{{route('lister.storeListingEntryImage',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
+                    {{csrf_field()}}
+                    <div hidden>
+                        <input class="file-path-wrapper" accept="image/*" name="images[]" id="images_solo" type="file" multiple onchange="loadFileCustom(event)" />
+                    </div>
+                    <img style="width:150px;height:150px;" id="images_virtual" src="/images/btn-add.png" alt="unable to display image">
+                    <!-- <div style="width:150px;text-align:center">
+                        <small id="images_text">New image</small>
+                    </div> -->
+                </form>
+                <input class="card-body btn btn-sm btn-primary" style="width:150px;border-radius:0px" type="submit" name="btn_submit" id="btn_add_img" value="Add Image">
             </div>
         </div>
     </div>
