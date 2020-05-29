@@ -225,7 +225,7 @@
 				<div id="map-static" style="clear:both; height:200px;"></div>
 			</div>
 			<br>
-			<input class="btn btn-lg btn-primary btn-block" style="margin-top:5px" type="submit" value="Edit" name="btn_edit" data-toggle="modal" data-target="#modalUpdateListing" onclick="populateListingUpdateForm('{{$listing}}',this);initMapListingUpdate();">
+			<input class="btn btn-lg btn-primary btn-block" style="margin-top:5px" type="submit" value="Edit" name="btn_edit" data-toggle="modal" data-target="#modalUpdateListing" onclick="populateListingUpdateForm('{{$listing}}',this);">
 			<input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Delete Property" name="btn_delete" disabled>
 		</div>
 		<div class="col-md-5 col-md-offset-1">

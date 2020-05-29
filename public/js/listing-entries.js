@@ -241,22 +241,22 @@ function clearAlerts() {
     $('#entry_price').removeClass('alert alert-danger');
 }
 
-function populateEntryUpdateForm(lst){
+function populateEntryUpdateForm(ent){
     try {
-        let listing = JSON.parse(lst);
-        document.getElementById("listing_name").value = listing.listing_name;
-        document.getElementById("entry_description").value = listing.description;
-        document.getElementById("floor_area").value = listing.floor_area;
-        document.getElementById("disclaimer").value = listing.disclaimer;
-        document.getElementById("features").value = listing.features;
-        document.getElementById("entry_price").value = listing.price;
-        if((listing.initial_deposit != null || listing.initial_deposit_period != null) && (listing.initial_deposit != 0 || listing.initial_deposit_period != 0)){
+        let entry = JSON.parse(ent);
+        document.getElementById("listing_name").value = entry.listing_name;
+        document.getElementById("entry_description").value = entry.description;
+        document.getElementById("floor_area").value = entry.floor_area;
+        document.getElementById("disclaimer").value = entry.disclaimer;
+        document.getElementById("features").value = entry.features;
+        document.getElementById("entry_price").value = entry.price;
+        if((entry.initial_deposit != null || entry.initial_deposit_period != null) && (entry.initial_deposit != 0 || entry.initial_deposit_period != 0)){
             document.getElementById("checkbox_deposit").checked = true;
-            document.getElementById("initial_deposit").value = listing.initial_deposit;
-            document.getElementById("initial_deposit_period").value = listing.initial_deposit_period;
+            document.getElementById("initial_deposit").value = entry.initial_deposit;
+            document.getElementById("initial_deposit_period").value = entry.initial_deposit_period;
             $('#form_deposit').show();
         }
-        // document.getElementById('output').src = '/images/listings/'+listing.id+'/thumbnails/'+listing.thumbnail;
+        // document.getElementById('output').src = '/images/listings/'+listing.id+'/thumbnails/'+entry.thumbnail;
     } catch (error) {
 
     }

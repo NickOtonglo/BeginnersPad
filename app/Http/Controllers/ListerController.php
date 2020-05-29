@@ -89,11 +89,11 @@ class ListerController extends Controller
         }
 
         $user = Auth::user();
-        $postId = Listing::orderBy('id','desc')->first();
+        $postId = Listing::orderBy('id','desc')->first()->id;
         if($postId==null){
             $postId = 1;
         } else {
-            $postId = ($postId->id)+1;
+            $postId = ($postId)+1;
         }
 
         if ($user->user_type == 4){
@@ -194,6 +194,12 @@ class ListerController extends Controller
             $postData = array_merge($postData,['price'=>$request->entry_price]);
         }
 
+        $listingType = 'single';
+        $entryCount = ListingEntry::where('parent_id',$parentId)->count();
+        if($entryCount>0){
+            $listingType = 'multi';
+        }
+
         if($user->user_type==4 && $parent->lister_id==$user->id){
             if ($request->hasFile('images')) {
                 $images = $request->file('images');
@@ -237,6 +243,7 @@ class ListerController extends Controller
                 })->save($thumbLocation); 
                 $thumb->save();
                 ListingEntry::create($postData);
+                $parent->update(['listing_type'=>$listingType]);
             } else {
                 return "no images";
             }
@@ -303,19 +310,31 @@ class ListerController extends Controller
             $postData = array_merge($request->all(),['lister_id'=>Auth::user()->id],['status'=>'unpublished']);
 
             if ($request->hasFile('thumbnail')) {
-                $image = $request->file('thumbnail');
-                $propertyName = str_replace(' ', '_', $request->property_name);
+                $images = $request->file('thumbnail');
+                $entryName = str_replace(' ', '_', $request->listing_name);
 
-                if (!File::exists('images/listings/'.$postId.'/thumbnails/')) {
-                    File::makeDirectory('images/listings/'.$postId.'/thumbnails/',0777,true);
+                if (!File::exists('images/listings/'.$postId.'/')) {
+                    File::makeDirectory('images/listings/'.$postId.'/',0777,true);
                 }
-                //Thumbnail updating doesn't work
-                $fileName = $postId.'_'.time().'_'.$propertyName.'_thumb.'.$image->getClientOriginalExtension();
+
+                $fileName = $postId.'_'.time().'_'.$entryName.'_thumb.'.$images->getClientOriginalExtension();
                 $thumbLocation = public_path('images/listings/'.$postId.'/thumbnails/'.$fileName);
-                Image::make($image)->resize(1280,720, function($constraint){
+                $thumb = new ListingFile;
+                $thumb->listing_entry_id = $postId;
+                $thumb->file_name = $fileName;
+                $thumb->file_type = 'image';
+                $thumb->category = 'thumbnail';
+                if (!$thumb->save()) {
+                    return "unable to save thumbnail";
+                }
+                Image::make($images)->resize(1280,720, function($constraint){
                     $constraint->aspectRatio();
-                })->save($thumbLocation);
+                })->save($thumbLocation); 
+                $thumb->save();
                 $postData = array_merge($postData,['thumbnail'=>$fileName]);
+            } else {
+                return 'no thumbnail';
+                // dd($request->all());
             }
             $post->update($postData);
             return redirect()->back()->with('message','Listing property updated');
@@ -508,7 +527,7 @@ class ListerController extends Controller
                 })->save($thumbLocation); 
                 $thumb->save();
             } else {
-                return "no images";
+                return "no image";
             }
             return redirect()->back()->with('message','Thumbnail set');
         } else {

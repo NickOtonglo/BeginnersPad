@@ -20,6 +20,9 @@ $(document).ready(function () {
     $('.modal').on('hide.bs.modal', function (e) {
         clearAlerts();
     });
+    // $('.modal').on('shown.bs.modal', function (e){
+    //     populateListingUpdateForm();
+    // });
 });
 
 hideListingCreateAlert();
@@ -148,7 +151,7 @@ function clearAlerts() {
 
 function populateListingUpdateForm(lst){
     try {
-        let listing = JSON.parse(lst);
+        let listing = JSON.parse(removeInvalidChars(lst));
         document.getElementById("property_name").value = listing.property_name;
         document.getElementById("description").value = listing.description;
         document.getElementById("zone_entry_id").value = listing.zone_entry_id;
@@ -165,7 +168,24 @@ function populateListingUpdateForm(lst){
         
         initLatListingUpdate = listing.lat;
         initLngListingUpdate = listing.lng;
+        initMapListingUpdate();
     } catch (error) {
-
+        // console.log(error+'\n'+lst);
     }
+}
+
+function removeInvalidChars(collection){
+    // preserve newlines, etc - use valid JSON
+    collection = collection.replace(/\\n/g, "\\n")  
+                            .replace(/\\'/g, "\\'")
+                            .replace(/\\"/g, '\\"')
+                            .replace(/\\&/g, "\\&")
+                            .replace(/\\r/g, "\\r")
+                            .replace(/\\t/g, "\\t")
+                            .replace(/\\b/g, "\\b")
+                            .replace(/\\f/g, "\\f");
+    // remove non-printable and other non-valid JSON chars
+    collection = collection.replace(/[\u0000-\u0019]+/g,"");
+    // console.log(collection);
+    return collection;
 }
