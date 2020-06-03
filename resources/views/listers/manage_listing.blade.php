@@ -98,7 +98,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<input class="btn btn-primary" id="btnSubmit" type="submit" value="Update Property">
+								<input class="btn btn-primary" id="btnSubmit" type="submit" name="btn_submit" value="Update Property">
 							</div>
 						</form>
 					</div>
@@ -185,7 +185,15 @@
 			<div style="border:1px solid lightgrey; padding:16px">
 				<h3>{{$listing->property_name}}</h3>
 				<hr>
-				<img class="img-rounded" style="width:375px;height:300px;display:block;margin-left:auto;margin-right:auto;" src="/images/listings/{{$listing->id}}/thumbnails/{{$listing->thumbnail}}" alt="unable to display image">
+				<img class="img-rounded" id="listing_img_thumb" style="width:375px;height:300px;display:block;margin-left:auto;margin-right:auto;" src="/images/listings/{{$listing->id}}/thumbnails/{{$listing->thumbnail}}" alt="unable to display image">
+				<br>
+				<form id="listing_thumb_form" method="post" action="{{route('lister.storeListingThumb',['id'=>$listing->id])}}" enctype="multipart/form-data">
+                    {{csrf_field()}}
+                    <div hidden>
+                        <input class="file-path-wrapper" accept="image/*" name="btn_thumb_listing_real" id="btn_thumb_listing_real" type="file" onchange="loadListingThumb(event)" />
+                    </div>
+                </form>
+                <input class="btn btn-sm btn-primary btn-block" style="border-radius:25px;" type="submit" name="btn_submit" id="btn_thumb_listing_faux" value="Change Thumbnail">
 				<hr>
 				<div class="card-text">
 					<p>Status:
@@ -226,6 +234,17 @@
 			</div>
 			<br>
 			<input class="btn btn-lg btn-primary btn-block" style="margin-top:5px" type="submit" value="Edit" name="btn_edit" data-toggle="modal" data-target="#modalUpdateListing" onclick="populateListingUpdateForm('{{$listing}}',this);">
+			<form method="post" action="{{route('lister.manageListing',['$id'=>$listing->id])}}" enctype="multipart/form-data">
+                {{csrf_field()}}
+				{{method_field('PUT')}}
+				@if(count($entries)>=1)
+					@if($listing->status=='unpublished')
+					<input class="btn btn-lg btn-info btn-block" style="margin-top:5px" type="submit" value="Submit for Approval" name="btn_submit" id="btn_submit">
+					@elseif($listing->status=='pending')
+					<input class="btn btn-lg btn-warning btn-block" style="margin-top:5px" type="submit" value="Withdraw Submission for Approval" name="btn_submit" id="btn_revoke">
+					@endif
+				@endif
+			</form>
 			<input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Delete Property" name="btn_delete" disabled>
 		</div>
 		<div class="col-md-5 col-md-offset-1">
@@ -262,7 +281,7 @@
 								</div>
 							</a>
 							@empty
-							<h4 style="text-align:center;">You have no active listings</h4>
+							<h4 style="text-align:center;">You have no listings in this property</h4>
 							@endforelse
 						</div>
 					</div>

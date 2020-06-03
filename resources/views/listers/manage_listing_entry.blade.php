@@ -108,7 +108,7 @@
                         <input class="file-path-wrapper" accept="image/*" name="thumb" id="btn_thumb_real" type="file" onchange="loadFileThumb(event)" />
                     </div>
                 </form>
-                <input class="btn btn-sm btn-primary btn-block" style="border-radius:0px;" type="submit" name="btn_submit" id="btn_thumb_faux" value="Change Thumbnail">
+                <input class="btn btn-sm btn-primary btn-block" style="border-radius:25px;" type="submit" name="btn_submit" id="btn_thumb_faux" value="Change Thumbnail">
                 <hr>
                 <div class="card-text">
                     <p>Status:

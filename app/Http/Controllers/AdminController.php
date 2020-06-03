@@ -40,9 +40,9 @@ class AdminController extends Controller
 
     	$userType = $user->user_type;
 
-    	$listings = Listing::where('status','pending')->orderBy('created_at','id')->get();
+    	$listings = Listing::where('status','!=','unpublished')->orderBy('created_at','id')->get();
     	if ($userType == 3 || $userType == 2 || $userType == 1) {
-    		return view('administrators.new_listing_applications',compact('listings'));
+    		return view('administrators.manage_listings',compact('listings'));
     	} else {
     		return redirect()->route('listings.list');
     	}

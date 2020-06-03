@@ -51,6 +51,7 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::post('/manage-listings/new','ListerController@storeListing')->name('lister.storeListing');
 	Route::get('/manage-listings/{listings}/manage','ListerController@manageListing')->name('lister.manageListing');
 	Route::put('/manage-listings/{listings}/manage','ListerController@updateListing')->name('lister.updateListing');
+	Route::post('/manage-listings/{listings}/manage/','ListerController@storeListingThumb')->name('lister.storeListingThumb');
 	Route::delete('/manage-listings/{listings}/manage','ListerController@removeListing')->name('lister.removeListing');
 	Route::get('/manage-listings/{listings}/manage/add','ListerController@addListingEntry')->name('lister.addListingEntry');
 	Route::post('/manage-listings/{listings}/manage/add','ListerController@createListingEntry')->name('lister.createListingEntry');
@@ -81,7 +82,7 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::get('/waiting-list/','CustomerController@loadWaitingList')->name('customer.waitingList');
 
 	//Administrator Routes
-	Route::get('/manage-listings/list','AdminController@manageListings')->name('admin.manageListings');
+	Route::get('/manage-listings/pending','AdminController@manageListings')->name('admin.manageListings');
 	Route::get('/manage-listings/all','AdminController@manageAllListings')->name('admin.allListings');
 	Route::get('/manage-listings/all/{listing}','AdminController@manageListing')->name('admin.manageListing');
 	Route::post('/manage-listings/all/{listing}','AdminController@respondToApplication')->name('admin.respondToApplication');
