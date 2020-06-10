@@ -14,12 +14,15 @@
         </div>
     </div>
     @endif
+    @if(Auth::user()->user_type === 4)
     <div class="row">
         <div class="pull-right">
             <a class="btn btn-sm btn-info" role="button" data-toggle="modal" data-target="#modalUpdateEntry" onclick="populateEntryUpdateForm('{{$entry}}',this);">Edit Listing Entry</a>
         </div>
     </div>
     <br>
+    @endif
+    @if(Auth::user()->user_type === 4)
     <div class="row">
         <div class="modal fade" id="modalUpdateEntry" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
             <div class="modal-dialog" role="document">
@@ -92,6 +95,7 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="row">
         <div class="col-md-6">
             <small>Listing Details</small>
@@ -102,6 +106,7 @@
                     <img class="img-rounded" id="img_thumb" style="width:255px;height:200px;display:block;margin-left:auto;margin-right:auto;" src="/images/listings/{{$entry->listing->id}}/thumbnails/{{$entry->listingFile()->where('category','thumbnail')->first()->file_name}}" alt="unable to display image">
                 </div>
                 <br>
+                @if(Auth::user()->user_type === 4)
                 <form id="thumb_form" method="post" action="{{route('lister.storeListingEntryThumb',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
                     {{csrf_field()}}
                     <div hidden>
@@ -110,6 +115,7 @@
                 </form>
                 <input class="btn btn-sm btn-primary btn-block" style="border-radius:25px;" type="submit" name="btn_submit" id="btn_thumb_faux" value="Change Thumbnail">
                 <hr>
+                @endif
                 <div class="card-text">
                     <p>Status:
                         @if($entry->status=='active')
@@ -140,8 +146,8 @@
                     </p>
                 </div>
             </div>
+            @if(Auth::user()->user_type === 4)
             <br>
-            <!-- <input class="btn btn-lg btn-primary btn-block" style="margin-top:5px" type="submit" value="Edit" name="btn_edit" data-toggle="modal" data-target="#modalUpdateEntry" onclick="populateEntryUpdateForm('{{$entry}}',this);"> -->
             <form method="post" action="{{route('lister.updateListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
                 {{csrf_field()}}
                 {{method_field('PUT')}}
@@ -154,6 +160,7 @@
                 @endif
             </form>
             <input class="btn btn-lg btn-danger btn-block btn-entry-delete" style="margin-top:5px" type="submit" value="Delete Listing" name="btn_submit" disabled>
+            @endif
         </div>
         <br>
         <div class="col-md-5 col-md-offset-1">
@@ -196,20 +203,27 @@
         <br>
         @forelse($entry->ListingFile->where('category','regular') as $image)
         <div class="cards">
+            @if(Auth::user()->user_type === 4)
             <div class="card" style="width:150px;height:178px;">
+            @else
+            <div class="card" style="width:150px;height:150px;">
+            @endif
+                <a href="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" target="_blank">
+                    <img style="width:150px;height:150px;" src="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" alt="unable to display image">
+                </a>
+                @if(Auth::user()->user_type === 4)
                 <form method="post" action="{{route('lister.deleteListingEntryImage',['listingId'=>$entry->listing->id,'entryId'=>$entry->id,'imageId'=>$image->id])}}" enctype="multipart/form-data">
                     {{csrf_field()}}
                     {{method_field('DELETE')}}
-                    <a href="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" target="_blank">
-                        <img style="width:150px;height:150px;" src="/images/listings/{{$entry->listing->id}}/{{$image->file_name}}" alt="unable to display image">
-                    </a>
                     <input class="card-body btn btn-sm btn-danger btn-entry-delete" style="width:150px;border-radius:0px" type="submit" name="btn_submit" value="Remove">
                 </form>
+                @endif
             </div>
         </div>
         @empty
         <h2 style="text-align:center;">No images to display</h2>
         @endforelse
+        @if(Auth::user()->user_type === 4)
         <div class="cards" id="images_upload">
             <div class="card" style="width:150px;height:178px;">
                 <form id="image_form" method="post" action="{{route('lister.storeListingEntryImage',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
@@ -225,6 +239,7 @@
                 <input class="card-body btn btn-sm btn-primary" style="width:150px;border-radius:0px" type="submit" name="btn_submit" id="btn_add_img" value="Add Image">
             </div>
         </div>
+        @endif
     </div>
 </div>
 @endsection

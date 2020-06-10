@@ -22,6 +22,7 @@ use App\UserReport;
 use App\Zone;
 use App\ZoneEntry;
 use App\FAQ;
+use App\AdminAction;
 
 class AdminController extends Controller
 {
@@ -71,26 +72,44 @@ class AdminController extends Controller
             Auth::logout();
         }
 
-        $API_KEY = config('constants.API_KEY.maps');
         $user = Auth::user();
         $utype = $user->user_type;
+        $API_KEY = config('constants.API_KEY.maps');
+        $subZonesList = ZoneEntry::orderBy('name')->get();
+        $entries = ListingEntry::where('parent_id',$id)->get();
+        $actions = AdminAction::where('category','listing')->where('admin_level','>=',$utype)->get();
+        $bookmark = AdminBookmark::where('listing_id',$id)->where('listing_entry_id',null)->first();
 
         if ($utype==3 || $utype==2 || $utype==1) {
             $listing = Listing::where('id',$id)->first();
-            $adminBookmark = AdminBookmark::where('admin_id',$user->id)->where('property_id',$id)->first();
-            $images = ListingFile::where('listing_id',$id)->where('category','regular')->get();
-            $mean = Review::where('property_id',$id)->avg('review_rating');
-            $rating = round($mean, 1)*(100/5);
-            $lister = User::where('id',$listing->user_id)->first();
-            return view('administrators.manage_listing')->with('listing',$listing)->with('adminBookmark',$adminBookmark)->with('images',$images)->with('mean',$mean)->with('rating',$rating)->with('API_KEY',$API_KEY)->with('lister',$lister);
-        }
-        else {
+            return view('administrators.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)
+            ->with('entries',$entries)->with('actions',$actions)->with('bookmark',$bookmark);
+        } else {
             $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
             return redirect()->route('listings.list')->with('listings',$listings);
         }
     }
 
-    public function respondToApplication(Request $request,$id){
+    public function manageListingEntry($listingId,$entryId){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $utype = $user->user_type;
+        $entry = ListingEntry::where('id',$entryId)->first();
+
+        if ($utype==3 || $utype==2 || $utype==1) {
+            $listing = Listing::where('id',$listingId)->first();
+            return view('listers.manage_listing_entry')->with('entry',$entry);
+        } else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
+        }
+    }
+
+    public function performListingAction(Request $request,$id){
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();
@@ -99,156 +118,32 @@ class AdminController extends Controller
         $user = Auth::user();
         $utype = $user->user_type;
         $listing = Listing::where('id',$id)->first();
+        $action = AdminAction::where('action',$request->listing_action)->first();
+
+        $actionLog = new ListingAdminLog();
+        $actionLog->parent_id = $id;
+        $actionLog->listing_entry_id = null;
+        $actionLog->action = $request->listing_action;
+        $actionLog->reason = $request->action_reason;
+        $actionLog->admin_id = $user->id;
 
         if ($utype==3 || $utype==2 || $utype==1) {
-            switch ($request->input('btn_submit')) {
-
-            case 'Approve Application':
-                if ($utype==3 || $utype==2 || $utype==1) {
-                    // $listing->update([
-                    //     'status'=>'approved'
-                    //     ]);
-                    $updateListing = $listing;
-                    $updateListing->status = "approved";
-                    $updateListing->save();
-
-                    $response = new ListingAdminLog;
-                    $response->lister_id = $listing->user_id;
-                    $response->lister_name = $listing->lister_name;
-                    $response->property_id = $id;
-                    $response->property_name = $listing->property_name;
-                    $response->status = $listing->status;
-                    $response->admin_id = Auth::user()->id;
-                    $response->save();
-
-                    return redirect()->back();
-                } else {
-                    return redirect()->route('listings.list');
-                }
-                break;
-
-            case 'Reject Application':
-                if ($utype==3 || $utype==2 || $utype==1) {
-                    // $listing->update([
-                    //     'status'=>'rejected'
-                    //     ]);
-                    $updateListing = $listing;
-                    $updateListing->status = "rejected";
-                    $updateListing->save();
-
-                    $response = new ListingAdminLog;
-                    $response->lister_id = $listing->user_id;
-                    $response->lister_name = $listing->lister_name;
-                    $response->property_id = $id;
-                    $response->property_name = $listing->property_name;
-                    $response->status = $listing->status;
-                    $response->admin_id = Auth::user()->id;
-                    $response->save();
-
-                    return redirect()->back();
-                } else {
-                    return redirect()->route('listings.list');
-                }
-                break;
-
-            case 'Bookmark':
-                if ($utype==3 || $utype==2 || $utype==1) {
-
-                    if (AdminBookmark::where('admin_id','=',$user->id)->where('property_id','=',$id)->exists()) {
-                        return 'This item is already in your bookmarks';
+            if($action->admin_level >= $utype){
+                if($request->listing_action == 'suspend' || $request->listing_action == 'reject'){
+                    if($request->action_reason == ''){
+                        return "a reason is required for this action";
                     } else {
-                        $bookmark = new AdminBookmark;
-                        $bookmark->admin_id = Auth::user()->id;
-                        $bookmark->lister_id = $listing->user_id;
-                        $bookmark->lister_name = $listing->lister_name;
-                        $bookmark->property_id = $listing->id;
-                        $bookmark->property_name = $listing->property_name;
-                        $bookmark->save();
-
-                        $adminBookmark = AdminBookmark::where('admin_id',$user->id)->where('property_id',$id)->first();
-
-                        return redirect()->back();
+                        $listing->update(['status'=>$request->listing_action.'ed']);
+                        $actionLog->save();
+                        return redirect()->back()->with('message', 'Listing '.$request->listing_action.'ed');
                     }
-                    
-                } else {
-                    return redirect()->route('listings.list');
+                } else if ($request->listing_action == 'approve' || $request->listing_action == 'delete') {
+                    $listing->update(['status'=>$request->listing_action.'d']);
+                    $actionLog->save();
+                    return redirect()->back()->with('message', 'Listing '.$request->listing_action.'d');
                 }
-                break;
-
-            case 'Remove Bookmark':
-                if ($utype==3 || $utype==2 || $utype==1) {
-
-                    $adminBookmark = AdminBookmark::where('admin_id',$user->id)->where('property_id',$id)->first();
-                    $adminBookmark->delete();
-
-                    return redirect()->back();
-                    
-                } else {
-                    return redirect()->route('listings.list');
-                }
-                break;
-
-            case 'Suspend':
-                if ($utype==3 || $utype==2 || $utype==1) {
-                    $updateListing = $listing;
-                    $updateListing->status = "suspended";
-                    $updateListing->save();
-
-                    $response = new ListingAdminLog;
-                    $response->lister_id = $listing->user_id;
-                    $response->lister_name = $listing->lister_name;
-                    $response->property_id = $id;
-                    $response->property_name = $listing->property_name;
-                    $response->status = $listing->status;
-                    $response->admin_id = Auth::user()->id;
-                    $response->save();
-
-                    return redirect()->back();
-                } else {
-                    return redirect()->route('listings.list');
-                }
-                break;
-
-            case 'Unsuspend':
-                if ($utype==3 || $utype==2 || $utype==1) {
-                    $updateListing = $listing;
-                    $updateListing->status = "pending";
-                    $updateListing->save();
-
-                    $response = new ListingAdminLog;
-                    $response->lister_id = $listing->user_id;
-                    $response->lister_name = $listing->lister_name;
-                    $response->property_id = $id;
-                    $response->property_name = $listing->property_name;
-                    $response->status = $listing->status;
-                    $response->admin_id = Auth::user()->id;
-                    $response->save();
-
-                    return redirect()->back();
-                } else {
-                    return redirect()->route('listings.list');
-                }
-                break;
-
-            case 'Delete':
-                if ($utype==3 || $utype==2 || $utype==1) {
-
-                    $response = new ListingAdminLog;
-                    $response->lister_id = $listing->user_id;
-                    $response->lister_name = $listing->lister_name;
-                    $response->property_id = $id;
-                    $response->property_name = $listing->property_name;
-                    $response->status = $listing->status.('deleted');
-                    $response->admin_id = Auth::user()->id;
-                    $response->save();
-
-                    $listing->delete();
-
-                    return redirect()->back();
-                } else {
-                    return redirect()->route('listings.list');
-                }
-                break;
+            } else {
+                return "you're not authorised to perform this action";
             }
 
             // return redirect()->back()->with('message','Successful');
@@ -271,6 +166,42 @@ class AdminController extends Controller
             return view('administrators.bookmarks',compact('bookmarks'));
         } else {
             return redirect()->route('listings.list');
+        }
+    }
+
+    public function addListingBookmark(Request $request,$id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $utype = $user->user_type;
+
+        if ($utype==3 || $utype==2 || $utype==1) {
+            switch ($request->input('btn_bookmark')) {
+                case '- Remove Bookmark':
+                    $bookmark = AdminBookmark::where('listing_id',$id)->where('listing_entry_id',null)->first();
+                    $bookmark->delete();
+                    return redirect()->back()->with('message', 'Bookmark removed');
+                    break;
+                
+                case '+ Add Bookmark':
+                    $bookmark = new AdminBookmark();
+                    $bookmark->admin_id = $user->id;
+                    $bookmark->listing_id = $id;
+                    $bookmark->listing_entry_id = null;
+                    $bookmark->save();
+                    return redirect()->back()->with('message', 'Bookmark added');
+                    break;
+    
+                default:
+                    return redirect()->back();
+                    break;
+            }
+        } else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
         }
     }
 

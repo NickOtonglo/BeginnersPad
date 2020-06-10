@@ -124,6 +124,8 @@
                             <span><small><strong class="text-danger">rejected (open for details)</strong></small></span><br>
                             @elseif($listing->status=='suspended')
                             <span><small><strong class="text-danger">suspended (open for details)</strong></small></span><br>
+                            @else
+                            <span><small><strong>invalid status</strong></small></span><br>
                             @endif
                             <span><small>Location: <i>{{$listing->zoneEntry->name}} ({{$listing->zoneEntry->zone->county}})</i></small></span><br>
                             @if($listing->listing_type=='single')

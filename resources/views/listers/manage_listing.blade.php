@@ -205,8 +205,12 @@
 						<strong class="text-success">approved</strong><br>
 						@elseif($listing->status=='rejected')
 						<strong class="text-danger">rejected</strong><br>
+						<strong>Reason for rejection: </strong>{reason}<hr>
 						@elseif($listing->status=='suspended')
 						<strong class="text-danger">suspended</strong><br>
+						<strong>Reason for suspension: </strong>{reason}<br>
+						@else
+                        <strong>invalid</strong><br>
 						@endif
 					</p>
 					<p>Location: <i>{{$listing->zoneEntry->name}}, {{$listing->zoneEntry->zone->name}}, {{$listing->zoneEntry->zone->county}}
