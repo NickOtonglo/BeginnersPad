@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{asset('css/beginnerspad.css')}}">
   <link rel="stylesheet" href="{{asset('css/card.css')}}">
+  <link rel="stylesheet" href="{{asset('css/custom.css')}}">
   @yield('stylesheets')
   @yield('top_scripts')
   @yield('title')
@@ -56,10 +57,10 @@
                 <a href="{{route('admin.listUsers')}}">Manage Users</a>
               </li>
               <li class="{{ Route::currentRouteNamed('admin.manageListings') ? 'active' : '' }}">
-                <a href="{{route('admin.manageListings')}}">Applications</a>
+                <a href="{{route('admin.manageListings',['status'=>'pending'])}}">Applications</a>
               </li>
-              <li class="{{ Route::currentRouteNamed('admin.bookmarks') ? 'active' : '' }}">
-                <a href="{{route('admin.bookmarks')}}">Bookmarks</a>
+              <li class="{{ Route::currentRouteNamed('admin.manageBookmarks') ? 'active' : '' }}">
+                <a href="{{route('admin.manageBookmarks')}}">Bookmarks</a>
               </li>
               <li class="{{ Route::currentRouteNamed('admin.zones') ? 'active' : '' }}">
                 <a href="{{route('admin.zones')}}">Zones</a>

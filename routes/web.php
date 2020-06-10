@@ -82,15 +82,15 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::get('/waiting-list/','CustomerController@loadWaitingList')->name('customer.waitingList');
 
 	//Administrator Routes
-	Route::get('/manage-listings/pending','AdminController@manageListings')->name('admin.manageListings');
 	Route::get('/manage-listings/all','AdminController@manageAllListings')->name('admin.allListings');
+	Route::get('/manage-listings/all/{status}','AdminController@manageListings')->name('admin.manageListings');
 	Route::get('/manage-listings/{listing}','AdminController@manageListing')->name('admin.manageListing');
 	Route::get('/manage-listings/{listings}/{entry}','AdminController@manageListingEntry')->name('admin.manageListingEntry');
 	Route::put('/manage-listings/{listing}','AdminController@performListingAction')->name('admin.performListingAction');
 	Route::post('/manage-listings/{listing}/bookmark','AdminController@addListingBookmark')->name('admin.addListingBookmark');
 	Route::post('/manage-listings/{listing}/{entry}','AdminController@addListingEntryBookmark')->name('admin.addListingEntryBookmark');
-	Route::get('/manage-listings/bookmarks','AdminController@bookmarks')->name('admin.bookmarks');
-	Route::delete('/manage-listings/bookmarks/{bookmark}/remove','AdminController@removeBookmark')->name('admin.removeBookmark');
+	Route::get('/listing-bookmarks/','AdminController@manageBookmarks')->name('admin.manageBookmarks');
+	Route::delete('/listing-bookmarks/{bookmark}','AdminController@removeBookmark')->name('admin.removeBookmark');
 	Route::get('/manage-users/all','AdminController@listUsers')->name('admin.listUsers');
 	Route::get('/manage-users/all/{user}/suspend','AdminController@suspendUser')->name('admin.suspendUser');
 	Route::get('/manage-users/all/{user}/activate','AdminController@activateUser')->name('admin.activateUser');

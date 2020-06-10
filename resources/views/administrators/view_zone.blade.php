@@ -260,15 +260,13 @@
                 <div class="flex-title" style="text-align:left;">Sub-Zones in {{$zone->name}}</div>
                 @forelse($entries as $entry)
                 <a class="card-big-clickable card-block" style="margin:9px;" role="button" onclick="populateEntryUpdateForm('{{$entry}}',this);initMapEntryUpdate();">
+                    <form action="/manage-zone/{{$zone->id}}/{{$entry->id}}/edit" method="post" enctype="multipart/form-data" >
+                        {{csrf_field()}}
+                        {{method_field('DELETE')}}
+                        <input class="btn btn-sm btn-danger btn-top-delete btn-delete" type="submit" value="x" name="btn_delete" data-toggle="tooltip" title="Delete" id="btnDelete">
+                    </form>
                     <div class="row">
-                        <div class="col-md-11"><h4 class="text-capitalize">{{$entry->name}}</h4></div>
-                        <div class="col-md-1">
-                            <form action="/manage-zone/{{$zone->id}}/{{$entry->id}}/edit" method="post" enctype="multipart/form-data" >
-                                {{csrf_field()}}
-                                {{method_field('DELETE')}}
-                                <input class="btn btn-sm btn-danger pull-xs-right btn-delete" type="submit" value="x" name="btn_delete" data-toggle="tooltip" title="Delete" id="btnDelete">
-                            </form>
-                        </div>
+                        <div class="col-md-12"><h4 class="text-capitalize">{{$entry->name}}</h4></div>
                     </div>
                     <hr>
                     <div class="row">

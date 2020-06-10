@@ -32,7 +32,7 @@ class AdminController extends Controller
         } else return true;
     }
 
-    public function manageListings(){
+    public function manageListings($status){
     	$user = Auth::user();
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
@@ -41,29 +41,34 @@ class AdminController extends Controller
 
     	$userType = $user->user_type;
 
-    	$listings = Listing::where('status','!=','unpublished')->orderBy('created_at','id')->get();
+        $allListings = Listing::where('status','!=','deleted')->where('status','!=','unpublished')->orderBy('created_at','id');
+        $listings = $allListings->where('status',$status)->get();
+        $statusItem = $status;
+        
     	if ($userType == 3 || $userType == 2 || $userType == 1) {
-    		return view('administrators.manage_listings',compact('listings'));
+    		return view('administrators.manage_listings',compact('listings','statusItem','allListings'));
     	} else {
     		return redirect()->route('listings.list');
     	}
     }
 
     public function manageAllListings(){
+        $user = Auth::user();
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();
         }
 
-        $user = Auth::user();
-        $userType = $user->user_type;
-
-        $listings = Listing::orderBy('created_at','id')->get();
-        if ($userType == 3 || $userType == 2 || $userType == 1) {
-            return view('administrators.all_listings',compact('listings'));
-        } else {
-            return redirect()->route('listings.list');
-        }
+    	$userType = $user->user_type;
+        $statusItem = 'all';
+        $allListings = Listing::where('status','!=','deleted')->where('status','!=','unpublished')->orderBy('created_at','id');
+        $listings = $allListings->get();
+        
+    	if ($userType == 3 || $userType == 2 || $userType == 1) {
+    		return view('administrators.manage_listings',compact('listings','statusItem','allListings'));
+    	} else {
+    		return redirect()->route('listings.list');
+    	}
     }
 
     public function manageListing($id){
@@ -152,17 +157,17 @@ class AdminController extends Controller
         } 
     }
 
-    public function bookmarks(){
+    public function manageBookmarks(){
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();
         }
 
         $user = Auth::user();
-        $bookmarks = AdminBookmark::where('admin_id',$user->id)->orderBy('created_at','id')->get();
 
         $utype = $user->user_type;
         if ($utype==3 || $utype==2 || $utype==1) {
+            $bookmarks = AdminBookmark::where('admin_id',$user->id)->orderBy('created_at','id')->get();
             return view('administrators.bookmarks',compact('bookmarks'));
         } else {
             return redirect()->route('listings.list');
@@ -205,20 +210,25 @@ class AdminController extends Controller
         }
     }
 
-    public function removeBookmark($id){
+    public function removeBookmark(Request $request,$id){
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();
         }
 
         $user = Auth::user();
-        $bookmark = AdminBookmark::where('admin_id',$user->id)->where('property_id',$id)->first();
+        $bookmark = AdminBookmark::where('admin_id',$user->id)->where('id',$id)->first();
 
         if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
-            $bookmark->delete();
-            return redirect()->back();
+            if ($bookmark->admin_id == $user->id){
+                $bookmark->delete();
+                return redirect()->back()->with('message', 'Bookmark removed');
+            } else {
+                return "you're not authorised to perform this action";
+            }   
         } else {
-            return redirect()->route('listings.list');
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
         }
     }
 

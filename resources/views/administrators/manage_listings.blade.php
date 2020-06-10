@@ -5,9 +5,8 @@
 @endsection
 
 @section ('lister_col_centre')
-@section('lister_col_centre')
 <div class="panel panel-default">
-    <div class="panel-heading">**********</div>
+    <div class="panel-heading text-capitalize">{{$statusItem}} Listing Properties</div>
     <div class="panel-body">
         <div class="post">
             <div class="row">
