@@ -104,10 +104,11 @@ class AdminController extends Controller
         $user = Auth::user();
         $utype = $user->user_type;
         $entry = ListingEntry::where('id',$entryId)->first();
+        $bookmark = AdminBookmark::where('listing_id',$listingId)->where('listing_entry_id',$entryId)->first();
 
         if ($utype==3 || $utype==2 || $utype==1) {
             $listing = Listing::where('id',$listingId)->first();
-            return view('listers.manage_listing_entry')->with('entry',$entry);
+            return view('administrators.manage_listing_entry')->with('listing',$listing)->with('entry',$entry)->with('bookmark',$bookmark);
         } else {
             $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
             return redirect()->route('listings.list')->with('listings',$listings);
@@ -174,7 +175,7 @@ class AdminController extends Controller
         }
     }
 
-    public function addListingBookmark(Request $request,$id){
+    public function addListingBookmark(Request $request,$listingId){
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();
@@ -186,7 +187,7 @@ class AdminController extends Controller
         if ($utype==3 || $utype==2 || $utype==1) {
             switch ($request->input('btn_bookmark')) {
                 case '- Remove Bookmark':
-                    $bookmark = AdminBookmark::where('listing_id',$id)->where('listing_entry_id',null)->first();
+                    $bookmark = AdminBookmark::where('listing_id',$listingId)->where('listing_entry_id',null)->first();
                     $bookmark->delete();
                     return redirect()->back()->with('message', 'Bookmark removed');
                     break;
@@ -194,8 +195,44 @@ class AdminController extends Controller
                 case '+ Add Bookmark':
                     $bookmark = new AdminBookmark();
                     $bookmark->admin_id = $user->id;
-                    $bookmark->listing_id = $id;
+                    $bookmark->listing_id = $listingId;
                     $bookmark->listing_entry_id = null;
+                    $bookmark->save();
+                    return redirect()->back()->with('message', 'Bookmark added');
+                    break;
+    
+                default:
+                    return redirect()->back();
+                    break;
+            }
+        } else {
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return redirect()->route('listings.list')->with('listings',$listings);
+        }
+    }
+
+    public function addListingEntryBookmark(Request $request,$listingId,$entryId){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+        $user = Auth::user();
+        $utype = $user->user_type;
+
+        if ($utype==3 || $utype==2 || $utype==1) {
+            switch ($request->input('btn_bookmark')) {
+                case '- Remove Bookmark':
+                    $bookmark = AdminBookmark::where('listing_id',$listingId)->where('listing_entry_id',$entryId)->first();
+                    $bookmark->delete();
+                    return redirect()->back()->with('message', 'Bookmark removed');
+                    break;
+                
+                case '+ Add Bookmark':
+                    $bookmark = new AdminBookmark();
+                    $bookmark->admin_id = $user->id;
+                    $bookmark->listing_id = $listingId;
+                    $bookmark->listing_entry_id = $entryId;
                     $bookmark->save();
                     return redirect()->back()->with('message', 'Bookmark added');
                     break;
