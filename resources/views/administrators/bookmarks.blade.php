@@ -90,7 +90,7 @@
 </div>
 @endsection
 
-@section('lister_col_right')
+@section('lister_col_left')
     <small>Bookmark Stats</small>
     <div style="border:1px solid lightgrey; padding:16px">
         Total bookmarks: <strong>{{$bookmarks->count()}}</strong>

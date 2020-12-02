@@ -6,7 +6,15 @@
 
 @section ('lister_col_centre')
 <div class="panel panel-default">
-    <div class="panel-heading text-capitalize">{{$statusItem}} Listing Properties</div>
+    @isset ($category)
+        @if ($category == 'zone' || $category == 'subzone')
+        <div class="panel-heading text-capitalize">Properties listed in {{$statusItem}} area</div>
+        @elseif ($category == 'lister')
+        <div class="panel-heading text-capitalize">Properties listed by {{$statusItem}}</div>
+        @endif
+    @else
+    <div class="panel-heading text-capitalize">{{$statusItem}} Properties Listed</div>
+    @endif
     <div class="panel-body">
         <div class="post">
             <div class="row">

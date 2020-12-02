@@ -84,6 +84,7 @@ Route::group(['middleware'=>'auth'],function(){
 	//Administrator Routes
 	Route::get('/manage-listings/all','AdminController@manageAllListings')->name('admin.allListings');
 	Route::get('/manage-listings/all/{status}','AdminController@manageListings')->name('admin.manageListings');
+	Route::get('/manage-listings/all/{category}/{value}','AdminController@filterListings')->name('admin.filterListings');
 	Route::get('/manage-listings/{listing}','AdminController@manageListing')->name('admin.manageListing');
 	Route::get('/manage-listings/{listings}/{entry}','AdminController@manageListingEntry')->name('admin.manageListingEntry');
 	Route::put('/manage-listings/{listing}','AdminController@performListingAction')->name('admin.performListingAction');

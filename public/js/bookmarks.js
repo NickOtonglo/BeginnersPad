@@ -1,4 +1,4 @@
-$('.btn-delete').click(function (e){
+$('.btn-delete').on("click",function (e){
     if (confirm("Remove bookmark?")) {
         e.stopPropagation();
         return true;

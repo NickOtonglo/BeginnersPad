@@ -41,12 +41,16 @@ class AdminController extends Controller
 
     	$userType = $user->user_type;
 
+        $listings_stats = Listing::where('status','!=','deleted')->where('status','!=','unpublished')->orderBy('created_at','id')->get();
         $allListings = Listing::where('status','!=','deleted')->where('status','!=','unpublished')->orderBy('created_at','id');
         $listings = $allListings->where('status',$status)->get();
         $statusItem = $status;
+        $zones = Zone::orderBy('county','ASC','name','ASC')->get();
+        $subZones = ZoneEntry::orderBy('parent_id','ASC')->get();
+        $listers_list = User::where('user_type','4')->orderBy('id','DESC')->get();
         
     	if ($userType == 3 || $userType == 2 || $userType == 1) {
-    		return view('administrators.manage_listings',compact('listings','statusItem','allListings'));
+    		return view('administrators.manage_listings',compact('listings','statusItem','allListings','zones','listings_stats','subZones','listers_list'));
     	} else {
     		return redirect()->route('listings.list');
     	}
@@ -61,11 +65,51 @@ class AdminController extends Controller
 
     	$userType = $user->user_type;
         $statusItem = 'all';
+        $listings_stats = Listing::where('status','!=','deleted')->where('status','!=','unpublished')->orderBy('created_at','id')->get();
         $allListings = Listing::where('status','!=','deleted')->where('status','!=','unpublished')->orderBy('created_at','id');
         $listings = $allListings->get();
+        $zones = Zone::orderBy('county','ASC','name','ASC')->get();
+        $subZones = ZoneEntry::orderBy('parent_id','ASC')->get();
+        $listers_list = User::where('user_type','4')->orderBy('id','DESC')->get();
         
     	if ($userType == 3 || $userType == 2 || $userType == 1) {
-    		return view('administrators.manage_listings',compact('listings','statusItem','allListings'));
+    		return view('administrators.manage_listings',compact('listings','statusItem','allListings','zones','listings_stats','subZones','listers_list'));
+    	} else {
+    		return redirect()->route('listings.list');
+    	}
+    }
+
+    public function filterListings($category,$value){
+    	$user = Auth::user();
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
+
+    	$userType = $user->user_type;
+
+        $listings_stats = Listing::where('status','!=','deleted')->where('status','!=','unpublished')->orderBy('created_at','id')->get();
+        $allListings = Listing::where('status','!=','deleted')->where('status','!=','unpublished')->orderBy('created_at','id');
+
+        if ($category=='zone'){
+            $zonesItem = Zone::where('id',$value)->first();
+            $subZonesList = ZoneEntry::where('parent_id',$value)->get();
+            $listings = $allListings->whereIn('zone_entry_id',$subZonesList->pluck('id'))->get();
+            $statusItem = $zonesItem->name;
+        } else if ($category=='subzone'){
+            $listings = $allListings->where('zone_entry_id',$value)->get();
+            $statusItem = ZoneEntry::where('id',$value)->first()->name;
+        } else if ($category=='lister'){
+            $listings = $allListings->where('lister_id',$value)->get();
+            $statusItem = User::where('id',$value)->first()->name;
+        }
+
+        $zones = Zone::orderBy('county','ASC','name','ASC')->get();
+        $subZones = ZoneEntry::orderBy('parent_id','ASC')->get();
+        $listers_list = User::where('user_type','4')->orderBy('id','DESC')->get();
+        
+    	if ($userType == 3 || $userType == 2 || $userType == 1) {
+    		return view('administrators.manage_listings',compact('listings','statusItem','allListings','zones','listings_stats','subZones','listers_list','category','value'));
     	} else {
     		return redirect()->route('listings.list');
     	}

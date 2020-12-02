@@ -15,6 +15,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-3 col-md-offset-0">
+                @yield('lister_col_left')
                 <!-- <h5>My Highest Rated Listings</h5>
                 <div class="list-group">
                     <a href="#" class="list-group-item">First item</a>
