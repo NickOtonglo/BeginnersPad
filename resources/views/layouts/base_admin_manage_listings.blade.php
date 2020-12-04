@@ -75,12 +75,12 @@
                         @forelse($listers_list as $lister)
                             @isset($value)
                                 @if($lister->id == $value && $category == 'lister')
-                                <option value="{{$lister->id}}" selected>{{$lister->name}} ({{$listings_stats->where('lister_id',$lister->id)->where('status','approved')->count()}} published listings)</option>
+                                <option value="{{$lister->id}}" selected>{{$lister->name}} ({{$listings_stats->where('lister_id',$lister->id)->where('status','approved')->count()}} approved listings)</option>
                                 @else
-                                <option value="{{$lister->id}}">{{$lister->name}} ({{$listings_stats->where('lister_id',$lister->id)->where('status','approved')->count()}} published listings)</option>
+                                <option value="{{$lister->id}}">{{$lister->name}} ({{$listings_stats->where('lister_id',$lister->id)->where('status','approved')->count()}} approved listings)</option>
                                 @endif
                             @else
-                            <option value="{{$lister->id}}">{{$lister->name}} ({{$listings_stats->where('lister_id',$lister->id)->where('status','approved')->count()}} published listings)</option>
+                            <option value="{{$lister->id}}">{{$lister->name}} ({{$listings_stats->where('lister_id',$lister->id)->where('status','approved')->count()}} approved listings)</option>
                             @endif
                         @empty
                         <option value="">-no listers available-</option>
@@ -89,7 +89,7 @@
                 </div>
                 <h5>Quick Links</h5>
                 <div class="list-group">
-                    <a href="#" class="list-group-item">My Management History</a>
+                    <a href="{{route('admin.viewListingManagementLogs',['target'=>''])}}" class="list-group-item">My Management History</a>
                 </div>
             </div>
             <div class="col-md-6 col-md-offset-0">

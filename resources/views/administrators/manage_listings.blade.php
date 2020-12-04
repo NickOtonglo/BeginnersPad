@@ -1,7 +1,7 @@
 @extends('layouts.base_admin_manage_listings')
 
 @section('title')
-    <title>Pending Property Applications | Beginners Pad</title>
+    <title>Property Management | Beginners Pad</title>
 @endsection
 
 @section ('lister_col_centre')

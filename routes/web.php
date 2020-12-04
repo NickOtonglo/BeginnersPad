@@ -90,6 +90,8 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::put('/manage-listings/{listing}','AdminController@performListingAction')->name('admin.performListingAction');
 	Route::post('/manage-listings/{listing}/bookmark','AdminController@addListingBookmark')->name('admin.addListingBookmark');
 	Route::post('/manage-listings/{listing}/{entry}/bookmark','AdminController@addListingEntryBookmark')->name('admin.addListingEntryBookmark');
+	Route::get('/manage-listings/logs/{target}','AdminController@viewListingManagementLogs')->name('admin.viewListingManagementLogs');
+	// Route::get('/manage-listings/logs/all','AdminController@viewListingManagementLogsAll')->name('admin.viewListingManagementLogsAll');
 	Route::get('/listing-bookmarks/','AdminController@manageBookmarks')->name('admin.manageBookmarks');
 	Route::delete('/listing-bookmarks/{bookmark}','AdminController@removeBookmark')->name('admin.removeBookmark');
 	Route::get('/manage-users/all','AdminController@listUsers')->name('admin.listUsers');

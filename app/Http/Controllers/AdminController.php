@@ -131,8 +131,12 @@ class AdminController extends Controller
 
         if ($utype==3 || $utype==2 || $utype==1) {
             $listing = Listing::where('id',$id)->first();
-            return view('administrators.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)
-            ->with('entries',$entries)->with('actions',$actions)->with('bookmark',$bookmark);
+            if($id != 'logs'){
+                return view('administrators.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)
+                ->with('entries',$entries)->with('actions',$actions)->with('bookmark',$bookmark);
+            } else {
+                return $this->viewListingManagementLogs('');
+            } 
         } else {
             $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
             return redirect()->route('listings.list')->with('listings',$listings);
@@ -152,7 +156,11 @@ class AdminController extends Controller
 
         if ($utype==3 || $utype==2 || $utype==1) {
             $listing = Listing::where('id',$listingId)->first();
-            return view('administrators.manage_listing_entry')->with('listing',$listing)->with('entry',$entry)->with('bookmark',$bookmark);
+            if($listingId != 'logs'){
+                return view('administrators.manage_listing_entry')->with('listing',$listing)->with('entry',$entry)->with('bookmark',$bookmark);
+            } else {
+                return $this->viewListingManagementLogs('all');
+            }
         } else {
             $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
             return redirect()->route('listings.list')->with('listings',$listings);
@@ -882,6 +890,67 @@ class AdminController extends Controller
         } else {
             return redirect()->route('listings.list');
         }
+    }
+
+    // public function viewListingManagementLogs(){
+    //     if (!$this->checkUserState()) {
+    //         return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+    //         Auth::logout();
+    //     } else
+
+    //     $logs = ListingAdminLog::where('admin_id',Auth::user()->id)->orderBy('created_at','DESC')->get();
+    //     $targetUsers = "me";
+        
+    //     $userType = Auth::user()->user_type;
+    //     if ($userType == 3 || $userType == 2 || $userType == 1) {
+    //         return view('administrators.logs_manage_listings',compact('logs','targetUsers'));
+    //     } else {
+    //         return redirect()->route('listings.list');
+    //     }
+
+
+    // }
+
+    // public function viewListingManagementLogsAll(){
+    //     if (!$this->checkUserState()) {
+    //         return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+    //         Auth::logout();
+    //     } else
+
+    //     $logs = ListingAdminLog::orderBy('created_at','DESC')->get();
+    //     $targetUsers = "all";
+        
+    //     $userType = Auth::user()->user_type;
+    //     if ($userType == 3 || $userType == 2 || $userType == 1) {
+    //         return view('administrators.logs_manage_listings',compact('logs','targetUsers'));
+    //     } else {
+    //         return redirect()->route('listings.list');
+    //     }
+
+
+    // }
+
+    public function viewListingManagementLogs($target){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        if($target == ''){
+            $logs = ListingAdminLog::where('admin_id',Auth::user()->id)->orderBy('created_at','DESC')->get();
+            $targetUsers = "me";
+        } else if($target == 'all'){
+            $logs = ListingAdminLog::orderBy('created_at','DESC')->get();
+            $targetUsers = "all";
+        }
+        
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            return view('administrators.logs_manage_listings',compact('logs','targetUsers'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+
     }
 
 }
