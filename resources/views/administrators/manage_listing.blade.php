@@ -17,7 +17,7 @@
 	<div class="row">
 		<div class="pull-right">
 			<form method="post" action="{{route('admin.addListingBookmark',['listingId'=>$listing->id])}}" enctype="multipart/form-data">
-			{{csrf_field()}}
+				{{csrf_field()}}
 				@if($bookmark != '')
 				<input class="btn btn-sm btn-primary" type="submit" name="btn_bookmark" value="- Remove Bookmark" id="btn_remove_bookmark">
 				@else

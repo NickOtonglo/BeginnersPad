@@ -42,7 +42,8 @@ class SuperAdminController extends Controller
     	$this->validate($request,[
     		'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'telephone' => 'required|string|size:12',
+            'password' => 'required|string|min:6',
+            'telephone' => 'required|string|min:10|max:13',
     		]);
 
         if (!$this->checkUserState()) {
@@ -55,13 +56,14 @@ class SuperAdminController extends Controller
         if ($utype==2 || $utype==1){
 
             if (User::where('email',$request->email)->exists()) {
-                return 'Account with the email '.$request->email.' already exists.';
+                return 'Account with the email \"'.$request->email.'\" already exists.';
             } else
 
             $newUser = new User;
             $newUser->name = $request->name;
             $newUser->email = $request->email;
-            $newUser->password = Hash::make('password');
+            $newUser->telephone = $request->telephone;
+            $newUser->password = Hash::make($request->password);
             $newUser->user_type = $request->user_type;
             $newUser->status = "inactive";
             $newUser->save();
@@ -89,7 +91,7 @@ class SuperAdminController extends Controller
                 $users = User::whereIn('user_type',[$customer,$lister,$representative,$superAdmin])->orderBy('created_at','id')->get();
             }
 
-            return redirect()->route('admin.listUsers')->with(compact('users'));
+            return redirect()->route('admin.listUsers')->with(compact('users'))->with('message','User \"'.$request->name.'\" created');;
         } else {
             return redirect()->route('listings.list');
         }

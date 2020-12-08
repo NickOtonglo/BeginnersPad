@@ -367,8 +367,10 @@ class AdminController extends Controller
         $activityLog->admin_id = $user->id;
 
         if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
-            $targetUser->save();
-            $activityLog->save();
+            if($id != $user->id){
+                $targetUser->save();
+                $activityLog->save();
+            }
             return redirect()->back();
         } else {
             return redirect()->route('listings.list');
@@ -389,8 +391,10 @@ class AdminController extends Controller
         $activityLog->admin_id = $user->id;
 
         if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
-            $targetUser->save();
-            $activityLog->save();
+            if($id != $user->id){
+                $targetUser->save();
+                $activityLog->save();
+            }
             return redirect()->back();
         } else {
             return redirect()->route('listings.list');

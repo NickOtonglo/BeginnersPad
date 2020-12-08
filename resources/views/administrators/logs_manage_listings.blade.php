@@ -1,4 +1,4 @@
-@extends('layouts.base_admin_logs_manage_listings')
+@extends('layouts.base_admin_tables')
 
 @section('title')
     <title>Logs - Listing Management | Beginners Pad</title>
@@ -24,7 +24,7 @@
 <br>
 @endsection
 
-@section ('lister_col_centre')
+@section ('col_centre')
 <div class="row">
     <div class="modal fade" id="modalViewLog" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
         <div class="modal-dialog" role="document">
