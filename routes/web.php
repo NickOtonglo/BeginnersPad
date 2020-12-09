@@ -95,8 +95,10 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::get('/listing-bookmarks/','AdminController@manageBookmarks')->name('admin.manageBookmarks');
 	Route::delete('/listing-bookmarks/{bookmark}','AdminController@removeBookmark')->name('admin.removeBookmark');
 	Route::get('/manage-users/all','AdminController@listUsers')->name('admin.listUsers');
-	Route::get('/manage-users/all/{user}/suspend','AdminController@suspendUser')->name('admin.suspendUser');
-	Route::get('/manage-users/all/{user}/activate','AdminController@activateUser')->name('admin.activateUser');
+	// Route::get('/manage-users/all/{user}/suspend','AdminController@suspendUser')->name('admin.suspendUser');
+	// Route::get('/manage-users/all/{user}/activate','AdminController@activateUser')->name('admin.activateUser');
+	Route::get('/manage-users/all/{user}/{action}','AdminController@performUserAction')->name('admin.performUserAction');
+	Route::get('/manage-users/all/logs/{target}','AdminController@viewUserManagementLogs')->name('admin.viewUserManagementLogs');
 	Route::get('/manage-users/all/{user}','AdminController@viewUser')->name('admin.viewUser');
 	Route::get('/manage-listings/{listing}/manage-reviews','AdminController@manageReviews')->name('admin.manageReviews');
 	// Route::delete('/manage-listings/{listings}/manage-reviews/{review}/remove','AdminController@deleteReview')->name('admin.deleteReview');

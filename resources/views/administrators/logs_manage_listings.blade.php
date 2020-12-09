@@ -14,7 +14,7 @@
         @endif
 		{{csrf_field()}}
 			@if($targetUsers == 'me')
-			<input class="btn btn-sm btn-primary btn-filter" type="submit" name="btn_sort" value="Show All Administrators" id="btn_fetch_all">
+			<input class="btn btn-sm btn-default btn-filter" type="submit" name="btn_sort" value="Show All Administrators" id="btn_fetch_all">
 			@else
 			<!-- <input class="btn btn-sm btn-primary btn-filter" type="submit" name="btn_sort" value="Show Me Only" hidden> -->
 			@endif

@@ -18,7 +18,8 @@
             {{ $errors->first() }}
         </div>
     @endforeach
-	<div class="pull-right">
+	<div class="pull-right btn-group" role="group">
+        <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">My Management History</a>
         @if (Auth::user()->user_type === 2 || Auth::user()->user_type === 1)
         <a class="btn btn-mid btn-info" role="button" id="btn_add_user">+ Add User</a>
         @endif

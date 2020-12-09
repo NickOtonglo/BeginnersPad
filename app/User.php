@@ -30,4 +30,8 @@ class User extends Authenticatable
     public function listings(){
         return $this->hasMany(Listing::class);
     }
+
+    public function userManagementLog(){
+        return $this->hasMany(UserManagementLog::class);
+    }
 }

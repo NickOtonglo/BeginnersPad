@@ -1,3 +1,5 @@
+let uid;
+
 $('#btn_add_user').on('click',function(){
     $('#modalNewUser').modal('show');
 });
@@ -30,6 +32,50 @@ $('.row-clickable').on('click',function(){
 
 $('#modalViewUser').on('hide.bs.modal', function (e) {
     hideActions();
+});
+
+$('#btn_activate').on('click',function(e){
+    if (confirm("Are you sure you want to activate this user?")) {
+        e.stopPropagation();
+        window.location.href = "/manage-users/all/"+uid+"/activate";
+        return true;
+    } else {
+        e.stopPropagation();
+        return false;
+    }
+});
+
+$('#btn_suspend').on('click',function(e){
+    if (confirm("Are you sure you want to suspend this user?")) {
+        e.stopPropagation();
+        window.location.href = "/manage-users/all/"+uid+"/suspend";
+        return true;
+    } else {
+        e.stopPropagation();
+        return false;
+    }
+});
+
+$('#btn_restore').on('click',function(e){
+    if (confirm("Are you sure you want to restore this user?")) {
+        e.stopPropagation();
+        window.location.href = "/manage-users/all/"+uid+"/activate";
+        return true;
+    } else {
+        e.stopPropagation();
+        return false;
+    }
+});
+
+$('#btn_delete').on('click',function(e){
+    if (confirm("Are you sure you want to delete this user?")) {
+        e.stopPropagation();
+        window.location.href = "/manage-users/all/"+uid+"/kick";
+        return true;
+    } else {
+        e.stopPropagation();
+        return false;
+    }
 });
 
 hideCreateUserAlerts();
@@ -166,6 +212,7 @@ function populateActionForm(arg){
         document.getElementById("act_status").value = user.status;
         
         setProfileUrl(user.id);
+        uid = user.id;
     } catch (error) {
 
     }

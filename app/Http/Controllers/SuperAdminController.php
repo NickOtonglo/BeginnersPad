@@ -91,7 +91,7 @@ class SuperAdminController extends Controller
                 $users = User::whereIn('user_type',[$customer,$lister,$representative,$superAdmin])->orderBy('created_at','id')->get();
             }
 
-            return redirect()->route('admin.listUsers')->with(compact('users'))->with('message','User \"'.$request->name.'\" created');;
+            return redirect()->route('admin.listUsers')->with(compact('users'))->with('message','"'.$request->name.'" created');
         } else {
             return redirect()->route('listings.list');
         }
