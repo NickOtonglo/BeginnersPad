@@ -452,6 +452,93 @@ class AdminController extends Controller
         }
     }
 
+    // public function viewUser($id){
+    //     if ($id != 'logs'){
+    //         if (!$this->checkUserState()) {
+    //             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+    //             Auth::logout();
+    //         }
+
+    //         $user = Auth::user();
+
+    //         $targetUser = User::where('id',$id)->first();
+
+    //         $customerApplications = ListingApplication::where('action_by_user',$id)->get();
+    //         $customerReviews = Review::where('user_id',$id)->get();
+    //         $customerLastApplication = ListingApplication::where('action_by_user',$id)->first();
+    //         $customerLastReview = Review::where('user_id',$id)->first();
+    //         $customerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+
+    //         $listerListings = Listing::where('lister_id',$id)->get();
+    //         $listerCustomers = ListingApplication::where('action_by_user',$id)->get();
+    //         $listerPendingApplications = Listing::where('lister_id',$id)->where('status','pending')->get();
+    //         $listerSuspendedListings = Listing::where('lister_id',$id)->where('status','suspended')->get();
+    //         $listerRejectedApplications = Listing::where('lister_id',$id)->where('status','rejected')->get();
+    //         $listerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+    //         // $listerLastApplication = Listing::where('user_id',$id)->where('status','pending')->first();
+    //         $listerLastApplication = ListingAdminLog::where('parent_id',)->where('action','approve')->latest()->first();
+
+
+    //         $repUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
+    //         $repListingsApproved = ListingAdminLog::where('admin_id',$id)->where('status','approved')->get();
+    //         $repListingsRejected = ListingAdminLog::where('admin_id',$id)->where('status','rejected')->get();
+    //         $repListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('status','suspended')->get();
+    //         $repListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('status','deleted')->get();
+    //         $repSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+
+    //         $adminUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
+    //         $adminListingsApproved = ListingAdminLog::where('admin_id',$id)->where('status','approved')->get();
+    //         $adminListingsRejected = ListingAdminLog::where('admin_id',$id)->where('status','rejected')->get();
+    //         $adminListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('status','suspended')->get();
+    //         $adminListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('status','deleted')->get();
+    //         $adminUsersCreated = UserManagementLog::where('admin_id',$id)->where('status','inactive')->get();
+    //         $adminSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+
+    //         if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
+    //             if (UserManagementLog::where('user_id',$id)->where('status','inactive')->exists()) {
+    //                 $creatorId = UserManagementLog::where('user_id',$id)->where('status','inactive')->first();
+    //                 $creator = User::where('id',$creatorId->admin_id)->first();
+
+    //                 if ($targetUser->user_type==5) {
+    //                     return view('administrators.manage_user',compact('targetUser','creator','customerApplications','customerReviews','customerLastApplication',
+    //                         'customerLastReview','customerSuspendedCount'));
+    //                 } else if ($targetUser->user_type==4) {
+    //                     return view('administrators.manage_user',compact('targetUser','creator','listerListings','listerCustomers','listerPendingApplications',
+    //                         'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastApplication'));
+    //                 } else if ($targetUser->user_type==3) {
+    //                     return view('administrators.manage_user',compact('targetUser','creator','repUsersSuspended','repListingsApproved','repListingsRejected',
+    //                         'repListingsSuspended','repListingsDeleted','repSuspendedCount'));
+    //                 } else if ($targetUser->user_type==2) {
+    //                     return view('administrators.manage_user',compact('targetUser','creator','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
+    //                         'adminListingsSuspended','adminListingsDeleted','adminUsersCreated','adminSuspendedCount'));
+    //                 }
+
+    //             // return view('administrators.manage_user',compact('targetUser','creator'));
+    //             } else {
+    //                 $creator = '';
+
+    //                 if ($targetUser->user_type==5) {
+    //                     return view('administrators.manage_user',compact('targetUser','creator','customerApplications','customerReviews','customerLastApplication',
+    //                         'customerLastReview','customerSuspendedCount'));
+    //                 } else if ($targetUser->user_type==4) {
+    //                     return view('administrators.manage_user',compact('targetUser','creator','listerListings','listerCustomers','listerPendingApplications',
+    //                         'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastApplication'));
+    //                 } else if ($targetUser->user_type==3) {
+    //                     return view('administrators.manage_user',compact('targetUser','creator','repUsersSuspended','repListingsApproved','repListingsRejected',
+    //                         'repListingsSuspended','repListingsDeleted','repSuspendedCount'));
+    //                 } else if ($targetUser->user_type==2) {
+    //                     return view('administrators.manage_user',compact('targetUser','creator','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
+    //                         'adminListingsSuspended','adminListingsDeleted','adminUsersCreated','adminSuspendedCount'));
+    //                 }
+    //             }
+    //         } else {
+    //             return redirect()->route('listings.list');
+    //         }
+    //     } else {
+    //         return $this->viewUserManagementLogs('');
+    //     }
+    // }
+
     public function viewUser($id){
         if ($id != 'logs'){
             if (!$this->checkUserState()) {
@@ -460,94 +547,84 @@ class AdminController extends Controller
             }
 
             $user = Auth::user();
-
             $targetUser = User::where('id',$id)->first();
 
-            $customerApplications = ListingApplication::where('action_by_user',$id)->get();
-            $customerReviews = Review::where('user_id',$id)->get();
-            $customerLastApplication = ListingApplication::where('action_by_user',$id)->first();
-            $customerLastReview = Review::where('user_id',$id)->first();
-            $customerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
-
-            $listerListings = Listing::where('user_id',$id)->get();
-            $listerCustomers = ListingApplication::where('lister_id',$id)->get();
-            $listerPendingApplications = Listing::where('user_id',$id)->where('status','pending')->get();
-            $listerSuspendedListings = Listing::where('user_id',$id)->where('status','suspended')->get();
-            $listerRejectedApplications = Listing::where('user_id',$id)->where('status','rejected')->get();
-            $listerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
-            // $listerLastApplication = Listing::where('user_id',$id)->where('status','pending')->first();
-            $listerLastApplication = ListingAdminLog::where('lister_id',$id)->where('status','approved')->latest()->first();
-
-
-            $repUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
-            $repListingsApproved = ListingAdminLog::where('admin_id',$id)->where('status','approved')->get();
-            $repListingsRejected = ListingAdminLog::where('admin_id',$id)->where('status','rejected')->get();
-            $repListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('status','suspended')->get();
-            $repListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('status','deleted')->get();
-            $repSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
-
-            $adminUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
-            $adminListingsApproved = ListingAdminLog::where('admin_id',$id)->where('status','approved')->get();
-            $adminListingsRejected = ListingAdminLog::where('admin_id',$id)->where('status','rejected')->get();
-            $adminListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('status','suspended')->get();
-            $adminListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('status','deleted')->get();
-            $adminUsersCreated = UserManagementLog::where('admin_id',$id)->where('status','inactive')->get();
-            $adminSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
-
             if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
-                if (UserManagementLog::where('user_id',$id)->where('status','inactive')->exists()) {
-                    $creatorId = UserManagementLog::where('user_id',$id)->where('status','inactive')->first();
-                    $creator = User::where('id',$creatorId->admin_id)->first();
-
-                    if ($targetUser->user_type==5) {
-                        return view('administrators.manage_user',compact('targetUser','creator','customerApplications','customerReviews','customerLastApplication',
-                            'customerLastReview','customerSuspendedCount'));
-                    } else if ($targetUser->user_type==4) {
-                        return view('administrators.manage_user',compact('targetUser','creator','listerListings','listerCustomers','listerPendingApplications',
-                            'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastApplication'));
-                    } else if ($targetUser->user_type==3) {
-                        return view('administrators.manage_user',compact('targetUser','creator','repUsersSuspended','repListingsApproved','repListingsRejected',
-                            'repListingsSuspended','repListingsDeleted','repSuspendedCount'));
-                    } else if ($targetUser->user_type==2) {
-                        return view('administrators.manage_user',compact('targetUser','creator','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
-                            'adminListingsSuspended','adminListingsDeleted','adminUsersCreated','adminSuspendedCount'));
-                    }
-
-                // return view('administrators.manage_user',compact('targetUser','creator'));
+                if ($targetUser == ''){
+                    return "This user doesn't exist";
                 } else {
-                    $creator = '';
-
-                    if ($targetUser->user_type==5) {
-                        return view('administrators.manage_user',compact('targetUser','creator','customerApplications','customerReviews','customerLastApplication',
-                            'customerLastReview','customerSuspendedCount'));
-                    } else if ($targetUser->user_type==4) {
-                        return view('administrators.manage_user',compact('targetUser','creator','listerListings','listerCustomers','listerPendingApplications',
-                            'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastApplication'));
-                    } else if ($targetUser->user_type==3) {
-                        return view('administrators.manage_user',compact('targetUser','creator','repUsersSuspended','repListingsApproved','repListingsRejected',
-                            'repListingsSuspended','repListingsDeleted','repSuspendedCount'));
-                    } else if ($targetUser->user_type==2) {
-                        return view('administrators.manage_user',compact('targetUser','creator','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
-                            'adminListingsSuspended','adminListingsDeleted','adminUsersCreated','adminSuspendedCount'));
+                    switch ($targetUser->user_type){
+                        case 5:
+                            return $this->fetchUserData($id,$targetUser->user_type);
+                            break;
+                        case 4:
+                            return $this->fetchUserData($id,$targetUser->user_type);
+                            break;
+                        case 3:
+                            return $this->fetchUserData($id,$targetUser->user_type);
+                            break;
+                        case 2:
+                        case 1:
+                            return $this->fetchUserData($id,$targetUser->user_type);
+                            break;
                     }
                 }
-            } else {
-                return redirect()->route('listings.list');
             }
         } else {
             return $this->viewUserManagementLogs('');
         }
     }
 
-    // public function viewUser($id){
-    //     $customerApplications = ListingApplication::where('customer_id',$id)->get();
-    //     $user = Auth::user();
+    public function fetchUserData($id,$type){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        }
 
-    //     $targetUser = User::where('id',$id)->first();
-    //     $creator = '';
+        $user = Auth::user();
+        $targetUser = User::where('id',$id)->first();
 
-    //     return view('administrators.manage_user',compact('customerApplications','creator','targetUser'));
-    // }
+        if ($type == 5){
+            $customerOccupations = ListingApplication::where('action','occupied')->where('action_by_user',$id)->get();
+            $customerReviews = Review::where('user_id',$id)->get();
+            $customerLastOccupation = ListingApplication::where('action','occupied')->where('action_by_user',$id)->first();
+            $customerLastReview = Review::where('user_id',$id)->first();
+            $customerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+
+            return view('administrators.manage_user',compact('targetUser','customerOccupations','customerReviews','customerLastOccupation',
+                'customerLastReview','customerSuspendedCount'));
+        } else if ($type == 4){
+            $listerListings = Listing::where('lister_id',$id)->where('status','!=','unpublished')->get();
+            $listerCustomers = ListingApplication::where('action_by_user',$id)->get();
+            $listerPendingApplications = Listing::where('lister_id',$id)->where('status','pending')->get();
+            $listerSuspendedListings = Listing::where('lister_id',$id)->where('status','suspended')->get();
+            $listerRejectedApplications = Listing::where('lister_id',$id)->where('status','rejected')->get();
+            $listerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+            $listerLastSubmission = Listing::where('lister_id',$id)->where('status','pending')->latest()->first();
+
+            return view('administrators.manage_user',compact('targetUser','creator','listerListings','listerCustomers','listerPendingApplications',
+                'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastSubmission'));
+        } else if ($type == 3){
+            $repUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
+            $repListingsApproved = ListingAdminLog::where('admin_id',$id)->where('action','approved')->get();
+            $repListingsRejected = ListingAdminLog::where('admin_id',$id)->where('action','rejected')->get();
+            $repListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
+            $repListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
+
+            return view('administrators.manage_user',compact('targetUser','creator','repUsersSuspended','repListingsApproved','repListingsRejected',
+                'repListingsSuspended','repListingsDeleted'));
+        } else if ($type == 2 || $type == 1){
+            $adminUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
+            $adminListingsApproved = ListingAdminLog::where('admin_id',$id)->where('action','approved')->get();
+            $adminListingsRejected = ListingAdminLog::where('admin_id',$id)->where('action','rejected')->get();
+            $adminListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
+            $adminListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
+            $adminUsersCreated = UserManagementLog::where('admin_id',$id)->where('status','inactive')->get();
+
+            return view('administrators.manage_user',compact('targetUser','creator','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
+                'adminListingsSuspended','adminListingsDeleted','adminUsersCreated'));
+        }
+    }
 
     public function manageReviews($id){
         if (!$this->checkUserState()) {

@@ -111,7 +111,7 @@
 	                    <div class="card-block" style="border-left:1px dashed grey;">
 	                        <h5 class="card-text">
 	                            <small>
-	                                Total number of listing applications made: {{count($customerApplications)}}
+	                                Total number of times user occupied listings: {{count($customerOccupations)}}
 	                            </small>
 	                        </h5>
 	                        <h5 class="card-text">
@@ -122,8 +122,8 @@
 	                        <h5 class="card-text">
 	                            <small>
 	                                Last application made on:
-	                                @if($customerLastApplication != null)
-	                                    {{$customerLastApplication->created_at}}
+	                                @if($customerLastOccupation != null)
+	                                    {{$customerLastOccupation->created_at}}
 	                                @else
 	                                    (No applications made)
 	                                @endif
@@ -230,8 +230,8 @@
 	                        <h5 class="card-text">
 	                            <small>
 	                                Last listing application approved on:
-	                                @if($listerLastApplication != null)
-	                                    {{$listerLastApplication->created_at}}
+	                                @if($listerLastSubmission != null)
+	                                    {{$listerLastSubmission->created_at}}
 	                                @else
 	                                    (No applications made)
 	                                @endif
@@ -322,7 +322,7 @@
 	                        </h5>
 	                        <h5 class="card-text">
 	                            <small>
-	                                Number of times suspended: {{count($repSuspendedCount)}}
+	                                Number of times suspended: {{count($repUsersSuspended)}}
 	                            </small>
 	                        </h5>
 	                        
@@ -416,7 +416,7 @@
 	                        </h5>
 	                        <h5 class="card-text">
 	                            <small>
-	                                Number of times suspended: {{count($adminSuspendedCount)}}
+	                                Number of times suspended: {{count($adminUsersSuspended)}}
 	                            </small>
 	                        </h5>
 	                        

@@ -120,7 +120,7 @@
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" type="button" id="btn_generate_password">Generate</button>
                                 </span>
-                                <input type="text" class="form-control" placeholder="" id="password">
+                                <input type="text" class="form-control" placeholder="" id="password" name="password" type="password" autocomplete="off">
                             </div>
                         </div>
                     </div>

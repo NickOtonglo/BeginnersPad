@@ -24,4 +24,8 @@ class Listing extends Model
         return $this->belongsTo('App\ZoneEntry','zone_entry_id');
     }
 
+    public function user(){
+        return $this->belongsTo('App\User','lister_id');
+    }
+
 }
