@@ -1105,6 +1105,9 @@ class AdminController extends Controller
         } else if($target == 'all'){
             $logs = UserManagementLog::orderBy('created_at','DESC')->get();
             $targetUsers = "all";
+        } else {
+            $logs = UserManagementLog::where('user_id',$target)->orderBy('created_at','DESC')->get();
+            $targetUsers = "all";
         }
         
         $userType = Auth::user()->user_type;
