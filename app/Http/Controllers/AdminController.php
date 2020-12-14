@@ -127,7 +127,7 @@ class AdminController extends Controller
         $subZonesList = ZoneEntry::orderBy('name')->get();
         $entries = ListingEntry::where('parent_id',$id)->get();
         $actions = AdminAction::where('category','listing')->where('admin_level','>=',$utype)->get();
-        $bookmark = AdminBookmark::where('listing_id',$id)->where('listing_entry_id',null)->first();
+        $bookmark = AdminBookmark::where('listing_id',$id)->where('admin_id',$user->id)->where('listing_entry_id',null)->first();
 
         if ($utype==3 || $utype==2 || $utype==1) {
             $listing = Listing::where('id',$id)->first();
@@ -152,7 +152,7 @@ class AdminController extends Controller
         $user = Auth::user();
         $utype = $user->user_type;
         $entry = ListingEntry::where('id',$entryId)->first();
-        $bookmark = AdminBookmark::where('listing_id',$listingId)->where('listing_entry_id',$entryId)->first();
+        $bookmark = AdminBookmark::where('listing_id',$listingId)->where('admin_id',$user->id)->where('listing_entry_id',$entryId)->first();
 
         if ($utype==3 || $utype==2 || $utype==1) {
             $listing = Listing::where('id',$listingId)->first();
@@ -239,7 +239,7 @@ class AdminController extends Controller
         if ($utype==3 || $utype==2 || $utype==1) {
             switch ($request->input('btn_bookmark')) {
                 case '- Remove Bookmark':
-                    $bookmark = AdminBookmark::where('listing_id',$listingId)->where('listing_entry_id',null)->first();
+                    $bookmark = AdminBookmark::where('listing_id',$listingId)->where('admin_id',$user->id)->where('listing_entry_id',null)->first();
                     $bookmark->delete();
                     return redirect()->back()->with('message', 'Bookmark removed');
                     break;
@@ -275,7 +275,7 @@ class AdminController extends Controller
         if ($utype==3 || $utype==2 || $utype==1) {
             switch ($request->input('btn_bookmark')) {
                 case '- Remove Bookmark':
-                    $bookmark = AdminBookmark::where('listing_id',$listingId)->where('listing_entry_id',$entryId)->first();
+                    $bookmark = AdminBookmark::where('listing_id',$listingId)->where('admin_id',$user->id)->where('listing_entry_id',$entryId)->first();
                     $bookmark->delete();
                     return redirect()->back()->with('message', 'Bookmark removed');
                     break;

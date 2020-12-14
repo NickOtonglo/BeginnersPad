@@ -197,12 +197,12 @@ function populateActionForm(arg){
         if(userStatus != 'suspended'){
             if(userStatus == 'inactive'){
                 $('#btn_activate').show();
-                if(authUser.user_type = 1){
+                if(authUser.user_type == 1){
                     $('#btn_delete').show();
                 }
             } else {
                 $('#btn_suspend').show();
-                if(authUser.user_type = 1){
+                if(authUser.user_type == 1){
                     $('#btn_delete').show();
                 }
             }

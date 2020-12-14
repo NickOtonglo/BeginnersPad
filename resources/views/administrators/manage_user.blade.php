@@ -17,7 +17,8 @@
 	        Not set
 	    @endif
 	</h5>
-	<br>
+</div>
+<div class="card-big card-block" style="box-shadow:5px 5px 15px grey;padding:30px;">
 	@if ($targetUser->user_type == 5)
 	<h5 class="card-text">Total number of times user occupied listings: {{count($customerOccupations)}}</h5>
 	<h5 class="card-text">Total number of listing reviews done: {{count($customerReviews)}}</h5>
