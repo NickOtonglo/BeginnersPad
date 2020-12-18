@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class FAQ extends Model
 {
-    public $table = 'faqs';
+    public $table = 'help_faqs';
     protected $fillable = ['question','answer','category'];
 }
