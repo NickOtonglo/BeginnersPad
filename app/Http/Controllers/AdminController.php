@@ -23,6 +23,9 @@ use App\Zone;
 use App\ZoneEntry;
 use App\FAQ;
 use App\AdminAction;
+use App\Tag;
+use App\TagEntry;
+use App\Topic;
 
 class AdminController extends Controller
 {
@@ -602,7 +605,7 @@ class AdminController extends Controller
             $listerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
             $listerLastSubmission = Listing::where('lister_id',$id)->where('status','pending')->latest()->first();
 
-            return view('administrators.manage_user',compact('targetUser','creator','listerListings','listerCustomers','listerPendingApplications',
+            return view('administrators.manage_user',compact('targetUser','listerListings','listerCustomers','listerPendingApplications',
                 'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastSubmission'));
         } else if ($type == 3){
             $repUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
@@ -611,7 +614,7 @@ class AdminController extends Controller
             $repListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
             $repListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
 
-            return view('administrators.manage_user',compact('targetUser','creator','repUsersSuspended','repListingsApproved','repListingsRejected',
+            return view('administrators.manage_user',compact('targetUser','repUsersSuspended','repListingsApproved','repListingsRejected',
                 'repListingsSuspended','repListingsDeleted'));
         } else if ($type == 2 || $type == 1){
             $adminUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
@@ -621,7 +624,7 @@ class AdminController extends Controller
             $adminListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
             $adminUsersCreated = UserManagementLog::where('admin_id',$id)->where('status','inactive')->get();
 
-            return view('administrators.manage_user',compact('targetUser','creator','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
+            return view('administrators.manage_user',compact('targetUser','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
                 'adminListingsSuspended','adminListingsDeleted','adminUsersCreated'));
         }
     }

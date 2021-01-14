@@ -9,22 +9,22 @@
                 <h5>Property Categorised by Action</h5>
                 <div class="list-group">
                     <a href="{{route('admin.allListings')}}" class="list-group-item">All</a>
-                    @if(count($allListings->where('status','pending'))==0)
+                    @if(count((array)$allListings->where('status','pending'))==0)
                     <a href="#" class="list-group-item">Pending</a>
                     @else
                     <a href="{{route('admin.manageListings',['status'=>'pending'])}}" class="list-group-item">Pending</a>
                     @endif
-                    @if(count($allListings->where('status','approved'))==0)
+                    @if(count((array)$allListings->where('status','approved'))==0)
                     <a href="#" class="list-group-item">Approved</a>
                     @else
                     <a href="{{route('admin.manageListings',['status'=>'approved'])}}" class="list-group-item">Approved</a>
                     @endif
-                    @if(count($allListings->get()->where('status','rejected'))==0)
+                    @if(count((array)$allListings->get()->where('status','rejected'))==0)
                     <a href="#" class="list-group-item">Rejected</a>
                     @else
                     <a href="{{route('admin.manageListings',['status'=>'rejected'])}}" class="list-group-item">Rejected</a>
                     @endif
-                    @if(count($allListings->get()->where('status','suspended'))==0)
+                    @if(count((array)$allListings->get()->where('status','suspended'))==0)
                     <a href="#" class="list-group-item">Suspended</a>
                     @else
                     <a href="{{route('admin.manageListings',['status'=>'suspended'])}}" class="list-group-item">Suspended</a>

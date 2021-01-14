@@ -13,7 +13,7 @@ class CreateTagsEntriesTable extends Migration
      */
     public function up()
     {
-        Schema::table('tags_entries', function (Blueprint $table) {
+        Schema::create('tags_entries', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('parent_id'); // id in "tags" table
             $table->string('source'); //table name e.g. topics, listing, listings_entry etc.
@@ -30,8 +30,6 @@ class CreateTagsEntriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('tags_entries', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('tags_entries');
     }
 }

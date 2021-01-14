@@ -8,13 +8,9 @@
             <div class="col-md-6 col-md-offset-0">
                 @yield('col_left')
             </div>
-            <div class="col-md-5 col-md-offset-1">
+            <div class="col-md-6 col-md-offset-0">
                 @yield('col_right')
             </div>
         </div>
     </div>
-@endsection
-
-@section('bottom_scripts')
-
 @endsection

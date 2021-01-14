@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTopicsTable extends Migration
+class CreateHelpCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateTopicsTable extends Migration
      */
     public function up()
     {
-        Schema::table('topics', function (Blueprint $table) {
+        Schema::table('help_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');
-            $table->text('text');
-            $table->string('category'); //e.g. help
-            $table->integer('user_group')->nullable(); //user group id, null if target is all users
-            $table->integer('author'); //author id
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->int('priority'); // 1 (highest) to 5
             $table->timestamps();
         });
     }
@@ -31,7 +29,7 @@ class CreateTopicsTable extends Migration
      */
     public function down()
     {
-        Schema::table('topics', function (Blueprint $table) {
+        Schema::table('help_categories', function (Blueprint $table) {
             //
         });
     }

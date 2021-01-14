@@ -15,6 +15,7 @@ use App\ReviewModerationLog;
 use App\HelpTicket;
 use App\FAQ;
 use App\ListingStatus;
+use App\HelpCategory;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -243,16 +244,17 @@ class Controller extends BaseController
 
     public function help(){
         $faqs = FAQ::all();
+        $helpCats = HelpCategory::all();
         if (!Auth::user()==null) {
             $user_type = Auth::user()->user_type;
             if ($user_type == 3 || $user_type == 2 || $user_type == 1) {
                 return $this->adminHelp();
             } else {
-                return view('layouts.help',compact('faqs'));
+                return view('layouts.help',compact('faqs','helpCats'));
             }
         }
         else if (Auth::user()==null) {
-            return view('layouts.help',compact('faqs'));
+            return view('layouts.help',compact('faqs','helpCats'));
         }
     }
 
@@ -268,7 +270,7 @@ class Controller extends BaseController
         switch ($user) {
             case null:
                     $this->validate($request,[
-                    'topic' => 'required|string',
+                    'category' => 'required|string',
                     'email' => 'required|string',
                     'description' => 'required|string',
                 ]);
@@ -276,14 +278,14 @@ class Controller extends BaseController
             
             case !null:
                 $this->validate($request,[
-                    'topic' => 'required|string',
+                    'category' => 'required|string',
                     'description' => 'required|string',
                 ]);
                 break;
         }
 
         $ticket = new HelpTicket;
-        $ticket->topic = $request->input('topic');
+        $ticket->topic = $request->input('category');
         $ticket->description = $request->input('description');
         $ticket->status = 'open';
         if ($user==null) {

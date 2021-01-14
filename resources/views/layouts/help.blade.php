@@ -10,7 +10,7 @@
     @if(Auth::check())
         @if(Auth::user()->user_type === 4 || Auth::user()->user_type === 5)
             <div style="float: right;">
-                <a class="btn btn-mid btn-default" href="/help/my_tickets" role="button">Ticket History</a>
+                <a class="btn btn-mid btn-default" href="{{route('viewTicketHistory')}}" role="button">Ticket History</a>
             </div>
         @endif
     @endif
@@ -61,23 +61,36 @@
                 {{ session()->get('message') }}
             </div>
         @endif
-        {{ Form::open(array('url'=>'/help')) }}
+        
+        <form method="post" action="{{route('help')}}" enctype="multipart/form-data" id="help_form">
+            {{csrf_field()}}
             <div class="form-group">
-                @if(Auth::guest())
-                    {{ Form::label('email','Email Address') }}
-                    {{ Form::text('email','',['class'=>'form-control']) }}
-                @endif
+                <label for="email">Email Address *</label>
+                <input class="form-control" name="email" type="text" id="email">
             </div>
             <div class="form-group">
-                {{ Form::label('topic','Help Topic') }}
-                {{ Form::select('topic',[null=>'Select Topic']+['topic1'=>'Topic 1','topic2'=>'Topic 2','topic3'=>'Topic 3','topic4'=>'Topic 4','topic5'=>'Topic 5'],null,['class'=>'form-control']) }}
+                <label for="name">Help Category *</label>
+                <select class="form-control" id="category" name="category">
+                    <option value="">Select Category</option>
+                    @forelse($helpCats as $category)
+                    <option value="{{$category->name}}">{{$category->name}}</option>
+                    @empty
+                    <option value="">-no categories available-</option>
+                    @endforelse
+                </select>
             </div>
             <div class="form-group">
-                {{ Form::label('description','Description') }}
-                {{ Form::textarea('description','',['class'=>'form-control']) }}
+                <label for="name">Text (Describe your problem in detail) *</label>
+                <textarea class="form-control" name="description" type="text" id="description" rows="10"></textarea>
             </div>
-            {{ Form::submit('Submit', ['class'=>'btn btn-primary','value'=>'Submit']) }}
-        {{ Form::close() }}
+            <div class="form-group">
+                <input class="btn btn-primary" value="Submit" type="submit" >
+            </div>
+        </form>
     </div>
 </div>
+@endsection
+
+@section ('bottom_scripts')
+<script src="{{asset('js/help.js')}}"></script>
 @endsection
