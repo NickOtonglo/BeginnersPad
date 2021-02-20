@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHelpCategoriesTable extends Migration
+class CreateHelpCategoriesLogTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateHelpCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::table('help_categories', function (Blueprint $table) {
+        Schema::create('help_categories_log', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('parent_id');
             $table->string('name');
-            $table->text('description')->nullable();
-            $table->int('priority'); // 1 (highest) to 5
+            $table->integer('priority');
+            $table->string('action'); //create,update,delete
+            $table->integer('admin_id');
             $table->timestamps();
         });
     }
@@ -29,8 +31,6 @@ class CreateHelpCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('help_categories', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('help_categories_log');
     }
 }

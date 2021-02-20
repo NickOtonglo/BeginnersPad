@@ -23,6 +23,7 @@
             <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">Statistics</a>
             <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">F.A.Qs</a>
             <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">Help Topics</a>
+            <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewHelpCategories')}}">Help Categories</a>
 	    </div>
         <div class="btn-group" role="group">
             <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">Assigned to me</a>
@@ -91,47 +92,57 @@
                     <div class="modal-body">
                         {{csrf_field()}}
                         <div class="form-group">
-                            <label for="act_name">User name</label>
-                            <div class="alert alert-danger" id="alert_name_act" hidden></div>
-                            <input id="act_name" class="form-control" type="text" name="act_name" readonly>
+                            <label for="mod_id">Ticket ID</label>
+                            <div class="alert alert-danger" id="alert_id" hidden></div>
+                            <input id="mod_id" class="form-control" type="text" name="mod_id" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="act_email">Email</label>
-                            <div class="alert alert-danger" id="alert_email_act" hidden></div>
-                            <input id="act_email" class="form-control" type="email" name="act_email" readonly>
+                            <label for="mod_email">Email</label>
+                            <div class="alert alert-danger" id="alert_email" hidden></div>
+                            <input id="mod_email" class="form-control" type="email" name="mod_email" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="act_telephone">Phone Number (+254xxxxxxxxx)</label>
-                            <div class="alert alert-danger" id="alert_phone_act" hidden></div>
-                            <input id="act_telephone" type="text" class="form-control" name="act_telephone" readonly>
+                            <label for="mod_reg">Is registered</label>
+                            <div class="alert alert-danger" id="alert_reg" hidden></div>
+                            <input id="mod_reg" type="text" class="form-control" name="mod_reg" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="act_user_type">Account Type</label>
-                            <div class="alert alert-danger" id="alert_type_act" hidden></div>
-                            <input id="act_user_type" type="text" class="form-control" name="act_user_type" readonly>
+                            <label for="mod_category">Category</label>
+                            <div class="alert alert-danger" id="alert_category" hidden></div>
+                            <input id="mod_category" type="text" class="form-control" name="mod_category" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="act_timestamp">Time Registered</label>
-                            <div class="alert alert-danger" id="alert_time_act" hidden></div>
-                            <input id="act_timestamp" type="text" class="form-control" name="act_timestamp" readonly>
+                            <label for="mod_priority">Priority</label>
+                            <div class="alert alert-danger" id="alert_priority" hidden></div>
+                            <input id="mod_priority" type="text" class="form-control" name="mod_priority" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="act_status">Status</label>
-                            <div class="alert alert-danger" id="alert_status_act" hidden></div>
-                            <input id="act_status" type="text" class="form-control" name="act_status" readonly>
+                            <label for="mod_status">Status</label>
+                            <div class="alert alert-danger" id="alert_status" hidden></div>
+                            <input id="mod_status" type="text" class="form-control" name="mod_status" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="mod_assign">Assigned to</label>
+                            <div class="alert alert-danger" id="alert_assign" hidden></div>
+                            <input id="mod_assign" type="text" class="form-control" name="mod_assign" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="mod_time">Timestamp</label>
+                            <div class="alert alert-danger" id="alert_time" hidden></div>
+                            <input id="mod_time" type="text" class="form-control" name="mod_time" readonly>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <di v class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <div class="btn-group" role="group" aria-label="...">
-                            <a id="btn_view_profile" type="button" class="btn btn-primary" style="border-radius: 3px 0px 0px 3px;">View Profile</a>
+                            <a id="btn_view_profile" type="button" class="btn btn-primary" style="border-radius: 3px 0px 0px 3px;">Open Ticket</a>
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></button>
                                 <ul class="dropdown-menu">
-                                    <li class="list-action" id="btn_activate" hidden><a role="button" onclick="">Activate</a></li>
-                                    <li class="list-action" id="btn_suspend" hidden><a role="button" onclick="">Suspend</a></li>
-                                    <li class="list-action" id="btn_restore" hidden><a role="button" onclick="">Restore</a></li>
-                                    <li class="list-action" id="btn_delete" hidden><a role="button" onclick="">Delete</a></li>
+                                    <li class="list-action" id="btn_pick" hidden><a role="button" onclick="">Pick Ticket</a></li>
+                                    <li class="list-action" id="btn_release" hidden><a role="button" onclick="">Release Ticket</a></li>
+                                    <li class="list-action" id="btn_close_resolved" hidden><a role="button" onclick="">Close as 'Resolved'</a></li>
+                                    <li class="list-action" id="btn_close" hidden><a role="button" onclick="">Close Ticket</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -144,8 +155,5 @@
 @endsection
 
 @section ('bottom_scripts')
-<script>
-    let authUser = {!! json_encode(Auth::user())!!};
-</script>
-<!-- <script src="{{asset('js/user-management-admin.js')}}"></script> -->
+<script src="{{asset('js/ticket-management-admin.js')}}"></script>
 @endsection

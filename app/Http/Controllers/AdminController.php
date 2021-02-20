@@ -26,6 +26,8 @@ use App\AdminAction;
 use App\Tag;
 use App\TagEntry;
 use App\Topic;
+use App\HelpCategory;
+use App\HelpCategoryLog;
 
 class AdminController extends Controller
 {
@@ -806,6 +808,136 @@ class AdminController extends Controller
             $tickets = HelpTicket::where('assigned_to',$user->id)->orderBy('updated_at')->get();
             $users = User::all();
             return view('administrators.assigned_tickets',compact('tickets','users'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function viewHelpCategories(){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $user = Auth::user();
+        $userType = $user->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $categories = HelpCategory::orderBy('created_at','DESC')->get();
+            return view('administrators.manage_help_categories',compact('categories'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function addHelpCategory(Request $request){
+        $this->validate($request,[
+    		'name_create'=>'required|max:50',
+            'priority_create'=>'required',
+            ]);
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $user = Auth::user();
+        $userType = $user->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $category = new HelpCategory;
+            $category->name = $request->name_create;
+            $category->description = $request->description_create;
+            $category->priority = $request->priority_create;
+            $category->save();
+            $action = 'create';
+            
+            return $this->createHelpCategoryLog($category,$user->id,$action);
+
+            // return redirect()->back()->with('message','Category added');
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function updateHelpCategory($id,Request $request){
+        $this->validate($request,[
+    		'name_create'=>'required|max:50',
+            'priority_create'=>'required',
+            ]);
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $user = Auth::user();
+        $userType = $user->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+
+            $input = HelpCategory::find($id);
+            $input->update($request->all());
+
+            $action = 'update';
+            
+            return $this->createHelpCategoryLog($input,$user->id,$action);
+
+            // return redirect()->back()->with('message','Category added');
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function deleteHelpCategory($id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $user = Auth::user();
+        $userType = $user->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+
+            $input = HelpCategory::find($id);
+            $input->delete;
+
+            $action = 'delete';
+            
+            return $this->createHelpCategoryLog($input,$user->id,$action);
+
+            // return redirect()->back()->with('message','Category added');
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function createHelpCategoryLog($category,$adminId,$action){
+        $categoryLog = new HelpCategoryLog;
+        $categoryLog->parent_id = $category->id;
+        $categoryLog->name = $category->name;
+        $categoryLog->priority = $category->priority;
+        $categoryLog->action = $action;
+        $categoryLog->admin_id = $adminId;
+        $categoryLog->save();
+
+        return redirect()->back()->with('message','Category '.$action.'d');
+    }
+
+    public function viewHelpCategoryLogs($target = null){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $targetUser = '';
+
+        if($target == 'me'){
+            $logs = HelpCategoryLog::where('admin_id',Auth::user()->id)->orderBy('created_at','DESC')->get();
+            $targetUser = 'me';
+        } else if($target == 'all' || empty($target)){
+            $logs = HelpCategoryLog::orderBy('created_at','DESC')->get();
+            $targetUser = 'all';
+        }
+        
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            return view('administrators.logs_help_categories',compact('logs','targetUser'));
         } else {
             return redirect()->route('listings.list');
         }
