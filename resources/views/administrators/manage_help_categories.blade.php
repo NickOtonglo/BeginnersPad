@@ -67,7 +67,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="modalLabel">Add Entry</h4>
                 </div>
-                <form method="post" action="{{route('admin.performHelpCategoryTask',['item'=>'x '])}}" enctype="multipart/form-data" onsubmit="return validateEntrySubmitForm();" id="entryForm">
+                <form method="post" action="{{route('admin.performHelpCategoryTask',['item'=>'x'])}}" enctype="multipart/form-data" onsubmit="return validateEntrySubmitForm();" id="entryForm">
                     <div class="modal-body">
                         {{csrf_field()}}
                         <div class="form-group">
