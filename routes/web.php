@@ -109,9 +109,9 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::get('/help/tickets/{ticket}','AdminController@viewTicket')->name('admin.viewTicket');
 	Route::get('/help/assigned','AdminController@myTickets')->name('admin.myTickets');
 	Route::get('/help/categories','AdminController@viewHelpCategories')->name('admin.viewHelpCategories');
-	Route::post('/help/categories','AdminController@addHelpCategory')->name('admin.addHelpCategory');
-	Route::put('/help/categories/{category}','AdminController@updateHelpCategory')->name('admin.updateHelpCategory');
-	Route::delete('/help/categories/{category}','AdminController@deleteHelpCategory')->name('admin.deleteHelpCategory');
+	Route::post('/help/categories/{item?}','AdminController@performHelpCategoryTask')->name('admin.performHelpCategoryTask');
+	// Route::put('/help/categories/{category}','AdminController@updateHelpCategory')->name('admin.updateHelpCategory');
+	// Route::delete('/help/categories/{category}','AdminController@deleteHelpCategory')->name('admin.deleteHelpCategory');
 	Route::get('/help/categories/logs/{target?}','AdminController@viewHelpCategoryLogs')->name('admin.viewHelpCategoryLogs');
 	Route::get('/manage-zones/all','AdminController@listZones')->name('admin.zones');
 	Route::get('/manage-zone/new','AdminController@createZone')->name('admin.createZone');

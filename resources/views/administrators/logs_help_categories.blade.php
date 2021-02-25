@@ -40,19 +40,23 @@
                         <th scope="col">Name/Title</th>
                         <th scope="col">Priority</th>
                         <th scope="col">Action</th>
+                        @if($targetUser == 'all')
                         <th scope="col">Admin</th>
+                        @endif
                         <th scope="col">Timestamp</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($logs as $log)
-                    <tr class="row-clickable" role="button" onclick="window.location='{{ route('admin.viewTicket',['ticket'=>$log->parent_id]) }}'">
+                    <tr class="row-clickable">
                         <th id="t_body_id" scope="row">{{$log->id}}</th>
                         <td id="t_body_ticket">{{$log->parent_id}}</td>
                         <td id="t_body_name">{{$log->name}}</td>
                         <td id="t_body_priority">{{$log->priority}}</td>
                         <td id="t_body_action">{{$log->action}}</td>
+                        @if($targetUser == 'all')
                         <td id="t_body_admin">{{$log->user->name}}</td>
+                        @endif
                         <td id="t_body_time">{{$log->created_at}}</td>
                     </tr>
                     @empty

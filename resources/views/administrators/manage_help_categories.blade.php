@@ -43,7 +43,7 @@
                 </thead>
                 <tbody>
                     @forelse($categories as $category)
-                    <tr class="row-clickable" role="button" onclick="populateEntryUpdateForm('{{$category}}',this);">
+                    <tr class="row-clickable" role="button" onclick="populateEntrySubmitForm('{{$category}}',this);">
                         <th id="t_body_id" scope="row">{{$category->id}}</th>
                         <td id="t_body_name">{{$category->name}}</td>
                         <td id="t_body_description" style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:200px;">{{$category->description}}</td>
@@ -60,57 +60,14 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="modalNewCategory" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="modalLabel">Add Entry</h4>
                 </div>
-                <form method="post" action="{{route('admin.addHelpCategory')}}" enctype="multipart/form-data" onsubmit="return validateEntryCreateForm();" id="formCreate">
-                    <div class="modal-body">
-                        {{csrf_field()}}
-                        <div class="form-group">
-                            <label for="name_create">Title/Name *</label>
-                            <div class="alert alert-danger" id="alert_name_create" hidden></div>
-                            <input id="name_create" class="form-control" type="text" name="name_create">
-                        </div>
-                        <div class="form-group">
-                            <label for="description_create">Description</label>
-                            <div class="alert alert-danger" id="alert_description_create" hidden></div>
-                            <textarea id="description_create" class="form-control" type="text" rows="3" name="description_create"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="priority_create">Priority *</label>
-                            <div class="alert alert-danger" id="alert_priority_create" hidden></div>
-                            <select class="form-control" id="priority_create" name="priority_create">
-                                <option value="1">1 (Lowest)</option>
-                                <option value="2">2 (Low)</option>
-                                <option value="3">3 (Moderate)</option>
-                                <option value="4">4 (High)</option>
-                                <option value="5">5 (Highest)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <input class="btn btn-primary" type="submit" value="Create" id="btn_create"></input>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade" id="modalViewCategory" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="modalLabel">View Entry</h4>
-                </div>
-                <form onsubmit="" method="post" enctype="multipart/form-data">
+                <form method="post" action="{{route('admin.performHelpCategoryTask',['item'=>'x '])}}" enctype="multipart/form-data" onsubmit="return validateEntrySubmitForm();" id="entryForm">
                     <div class="modal-body">
                         {{csrf_field()}}
                         <div class="form-group">
@@ -134,17 +91,18 @@
                                 <option value="5">5 (Highest)</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="div_timestamp" hidden>
                             <label for="timestamp">Date Added</label>
-                            <input id="timestamp" class="form-control" type="text" name="timestamp" readonly>
+                            <input id="timestamp" class="form-control" type="text" name="timestamp">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <input class="btn btn-primary hidden" type="submit" value="Create" id="btn_create" name="btn_task">
                         <div class="pull-left">
-                            <input class="btn btn-danger" type="submit" value="Delete" id="btn_delete"></input>
+                            <input class="btn btn-danger hidden" type="submit" value="Delete" id="btn_delete" name="btn_task">
                         </div>
-                        <input class="btn btn-primary" type="submit" value="Update" id="btn_update"></input>
+                        <input class="btn btn-primary hidden" type="submit" value="Update" id="btn_update" name="btn_task">
                     </div>
                 </form>
             </div>

@@ -829,10 +829,29 @@ class AdminController extends Controller
         }
     }
 
+    public function performHelpCategoryTask($id,Request $request){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+        
+        switch($request->input('btn_task')){
+            case 'Create':
+                return $this->addHelpCategory($request);
+                break;
+            case 'Update':
+                return $this->updateHelpCategory($id,$request);
+                break;
+            case 'Delete':
+                return $this->deleteHelpCategory($id);
+                break;
+        }
+    }
+
     public function addHelpCategory(Request $request){
         $this->validate($request,[
-    		'name_create'=>'required|max:50',
-            'priority_create'=>'required',
+    		'name'=>'required|max:50',
+            'priority'=>'required',
             ]);
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
@@ -843,9 +862,9 @@ class AdminController extends Controller
         $userType = $user->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $category = new HelpCategory;
-            $category->name = $request->name_create;
-            $category->description = $request->description_create;
-            $category->priority = $request->priority_create;
+            $category->name = $request->name;
+            $category->description = $request->description;
+            $category->priority = $request->priority;
             $category->save();
             $action = 'create';
             
@@ -859,8 +878,8 @@ class AdminController extends Controller
 
     public function updateHelpCategory($id,Request $request){
         $this->validate($request,[
-    		'name_create'=>'required|max:50',
-            'priority_create'=>'required',
+    		'name'=>'required|max:50',
+            'priority'=>'required',
             ]);
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
@@ -895,7 +914,7 @@ class AdminController extends Controller
         if ($userType == 3 || $userType == 2 || $userType == 1) {
 
             $input = HelpCategory::find($id);
-            $input->delete;
+            $input->delete();
 
             $action = 'delete';
             
@@ -916,7 +935,7 @@ class AdminController extends Controller
         $categoryLog->admin_id = $adminId;
         $categoryLog->save();
 
-        return redirect()->back()->with('message','Category '.$action.'d');
+        return redirect()->back()->with('message','Entry '.$action.'d');
     }
 
     public function viewHelpCategoryLogs($target = null){
