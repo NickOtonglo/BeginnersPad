@@ -1,10 +1,12 @@
 let uid;
+let ticketPriority;
 
 $('.row-clickable').on('click',function(){
     $('#modalViewTicket').modal('show');
+
 });
 
-$('#modalViewUser').on('hide.bs.modal', function (e) {
+$('#modalViewTicket').on('hide.bs.modal', function (e) {
     hideActions();
 });
 
@@ -54,43 +56,68 @@ $('#btn_close').on('click',function(e){
 
 function populateActionForm(arg){
     try {
-        let user = JSON.parse(arg);
-        document.getElementById("act_name").value = user.name;
-        document.getElementById("act_email").value = user.email;
-        document.getElementById("act_telephone").value = user.telephone;
-        let userType = user.user_type;
-        if(userType == 1){
-            document.getElementById("act_user_type").value = 'System Administrator';
-        } else if(userType == 2){
-            document.getElementById("act_user_type").value = 'Super Administrator';
-        } else if(userType == 3){
-            document.getElementById("act_user_type").value = 'Representative';
-        } else if(userType == 4){
-            document.getElementById("act_user_type").value = 'Lister';
-        } else if(userType == 5){
-            document.getElementById("act_user_type").value = 'Customer';
+        let ticket = JSON.parse(arg);
+        document.getElementById("mod_id").innerHTML = ticket.id;
+        document.getElementById("mod_email").innerHTML = ticket.email;
+        document.getElementById("mod_reg").innerHTML = ticket.is_registered;
+        document.getElementById("mod_category").innerHTML = ticket.topic;
+        if(ticketPriority == 1){
+            document.getElementById("mod_priority").innerHTML = ticketPriority+' (Lowest)';
+        } else if(ticketPriority == 2){
+            document.getElementById("mod_priority").innerHTML = ticketPriority+' (Low)';
+        } else if(ticketPriority == 3){
+            document.getElementById("mod_priority").innerHTML = ticketPriority+' (Moderate)';
+        } else if(ticketPriority == 4){
+            document.getElementById("mod_priority").innerHTML = ticketPriority+' (High)';
+        } else if(ticketPriority == 5){
+            document.getElementById("mod_priority").innerHTML = ticketPriority+' (Highest)';
         }
-        document.getElementById("act_timestamp").value = user.created_at;
-        let userStatus = user.status;
-        if(userStatus != 'suspended'){
-            if(userStatus == 'inactive'){
-                $('#btn_activate').show();
-                if(authUser.user_type == 1){
-                    $('#btn_delete').show();
-                }
-            } else {
-                $('#btn_suspend').show();
-                if(authUser.user_type == 1){
-                    $('#btn_delete').show();
-                }
-            }
-        } else if(userStatus == 'suspended'){
-            $('#btn_restore').show();
+        document.getElementById("mod_description").innerHTML = ticket.description;
+        document.getElementById("mod_status").innerHTML = ticket.status;
+        if(ticket.assigned_to == null){
+            document.getElementById("mod_assign").innerHTML = '(not assigned)';
+        } else {
+            document.getElementById("mod_assign").innerHTML = ticket.assigned_to;
         }
-        document.getElementById("act_status").value = user.status;
+        document.getElementById("mod_time").innerHTML = ticket.created_at;
+        let ticketStatus = ticket.status;
+        switch (ticketStatus){
+            case 'open':
+                $('#btn_pick').show();
+                $('#btn_close_resolved').show();
+                $('#btn_close').show();
+                $('#btn_release').hide();
+                break;
+            case 'pending':
+                if(authUser.id == ticket.assigned_to || authUser.user_type == 1){
+                    $('#btn_release').show();
+                    $('#btn_close_resolved').show();
+                    $('#btn_close').show();
+                }
+                $('#btn_pick').hide();
+                break;
+            case 'resolved':
+                $('#btn_pick').hide();
+                $('#btn_release').hide();
+                $('#btn_close_resolved').hide();
+                $('#btn_close').hide();
+                break;
+            case 'closed':
+                $('#btn_pick').hide();
+                $('#btn_release').hide();
+                $('#btn_close_resolved').hide();
+                $('#btn_close').hide();
+                break;
+            case 'reopened':
+                $('#btn_pick').show();
+                $('#btn_close_resolved').show();
+                $('#btn_close').show();
+                $('#btn_release').hide();
+                break;
+        }
         
-        setProfileUrl(user.id);
-        uid = user.id;
+        // setProfileUrl(user.id);
+        // uid = user.id;
     } catch (error) {
 
     }
@@ -100,6 +127,10 @@ function hideActions(){
     $('.list-action').hide();
 }
 
-function setProfileUrl(id){
-    $('#btn_view_profile').attr("href","/manage-users/all/"+id);
+function setPriority(args){
+    try{
+        ticketPriority = JSON.parse(args);
+    }catch(error){
+
+    }
 }

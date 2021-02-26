@@ -65,11 +65,19 @@
         <form method="post" action="{{route('help')}}" enctype="multipart/form-data" id="help_form">
             {{csrf_field()}}
             <div class="form-group">
+                @if (!Auth::check())
                 <label for="email">Email Address *</label>
+                <div class="alert alert-danger" id="alert_email" hidden></div>
                 <input class="form-control" name="email" type="text" id="email">
+                @else
+                <label for="email">Email Address *</label>
+                <div class="alert alert-danger" id="alert_email" hidden></div>
+                <input class="form-control" name="email" type="text" id="email" value="{{Auth::user()->email}}" readonly>
+                @endif
             </div>
             <div class="form-group">
-                <label for="name">Help Category *</label>
+                <label for="category">Help Category *</label>
+                <div class="alert alert-danger" id="alert_category" hidden></div>
                 <select class="form-control" id="category" name="category">
                     <option value="">Select Category</option>
                     @forelse($helpCats as $category)
@@ -80,11 +88,12 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="name">Text (Describe your problem in detail) *</label>
+                <label for="description">Text (Describe your problem in detail) *</label>
+                <div class="alert alert-danger" id="alert_description" hidden></div>
                 <textarea class="form-control" name="description" type="text" id="description" rows="10"></textarea>
             </div>
             <div class="form-group">
-                <input class="btn btn-primary" value="Submit" type="submit" >
+                <input class="btn btn-primary" value="Submit" type="submit" id="btn_submit">
             </div>
         </form>
     </div>

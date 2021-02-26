@@ -259,7 +259,7 @@ class Controller extends BaseController
     }
 
     public function adminHelp(){
-        $tickets = HelpTicket::all();
+        $tickets = HelpTicket::orderBy('created_at','DESC')->get();
         $users = User::all();
         return view('administrators.all_tickets',compact('tickets','users'));
     }
@@ -283,6 +283,11 @@ class Controller extends BaseController
                 ]);
                 break;
         }
+        
+        //https://stackoverflow.com/questions/1935918/php-substring-extraction-get-the-string-before-the-first-or-the-whole-strin
+        // $mystring = 'home/cat1/subcat2/';
+        // $first = strtok($mystring, '/');
+        // echo $first; // home
 
         $ticket = new HelpTicket;
         $ticket->topic = $request->input('category');

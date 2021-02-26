@@ -35,7 +35,7 @@ $('#btn_create').on('click',function(e){
 });
 
 $('#btn_update').on('click',function(e){
-    if(validateEntrySubmitForm){
+    if(validateEntrySubmitForm()){
         if (confirm("Are you sure you want to update this entry?")) {
             $('#entryForm').attr('action',setUpdateAction());
             e.stopPropagation();

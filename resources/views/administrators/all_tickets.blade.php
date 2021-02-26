@@ -52,7 +52,7 @@
                         <th scope="col">ID</th>
                         <th scope="col">Email</th>
                         <th scope="col">Is registered</th>
-                        <th scope="col">Category</th>
+                        <th scope="col">Topic</th>
                         <th scope="col">Priority</th>
                         <th scope="col">Status</th>
                         <th scope="col">Assigned to</th>
@@ -61,12 +61,12 @@
                 </thead>
                 <tbody>
                     @forelse($tickets as $ticket)
-                    <tr class="row-clickable" role="button" onclick="populateActionForm('{{$user}}',this);">
+                    <tr class="row-clickable" role="button" onclick="setPriority('{{$ticket->helpCategory->priority}}',this);populateActionForm('{{$ticket}}',this);">
                         <th id="t_body_id" scope="row">{{$ticket->id}}</th>
                         <td id="t_body_email">{{$ticket->email}}</td>
                         <td id="t_body_reg">{{$ticket->is_registered}}</td>
                         <td id="t_body_category">{{$ticket->topic}}</td>
-                        <td id="t_body_priority">Priority</td>
+                        <td id="t_body_priority">{{$ticket->helpCategory->priority}}</td>
                         <td id="t_body_status">{{$ticket->status}}</td>
                         <td id="t_body_assigned">Not assigned</td>
                         <td id="t_body_time">{{$ticket->created_at}}</td>
@@ -81,61 +81,75 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="modalViewTicket" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade bd-example-modal-lg" id="modalViewTicket" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="modalLabel">View User</h4>
+                    <h4 class="modal-title" id="modalLabel">Preview Ticket</h4>
                 </div>
                 <form onsubmit="" method="post" enctype="multipart/form-data">
                     <div class="modal-body">
-                        {{csrf_field()}}
                         <div class="form-group">
-                            <label for="mod_id">Ticket ID</label>
+                            <label for="mod_id" class="text-muted">Ticket ID</label>
                             <div class="alert alert-danger" id="alert_id" hidden></div>
-                            <input id="mod_id" class="form-control" type="text" name="mod_id" readonly>
+                            <h4 id="mod_id" type="text" name="mod_id">Loading...</h4>
                         </div>
+                        <hr>
                         <div class="form-group">
-                            <label for="mod_email">Email</label>
+                            <label for="mod_email" class="text-muted">Email Address</label>
                             <div class="alert alert-danger" id="alert_email" hidden></div>
-                            <input id="mod_email" class="form-control" type="email" name="mod_email" readonly>
+                            <p id="mod_email" type="text" name="mod_email">Loading...</p>
                         </div>
+                        <hr>
                         <div class="form-group">
-                            <label for="mod_reg">Is registered</label>
+                            <label for="mod_reg" class="text-muted">Is registered</label>
                             <div class="alert alert-danger" id="alert_reg" hidden></div>
-                            <input id="mod_reg" type="text" class="form-control" name="mod_reg" readonly>
+                            <p id="mod_reg" type="text" name="mod_reg">Loading...</p>
                         </div>
+                        <hr>
                         <div class="form-group">
-                            <label for="mod_category">Category</label>
+                            <label for="mod_category" class="text-muted">Topic</label>
                             <div class="alert alert-danger" id="alert_category" hidden></div>
-                            <input id="mod_category" type="text" class="form-control" name="mod_category" readonly>
+                            <p class="lead" id="mod_category" type="text" name="mod_category">Loading...</p>
                         </div>
+                        <hr>
                         <div class="form-group">
-                            <label for="mod_priority">Priority</label>
+                            <label for="mod_priority" class="text-muted">Priority</label>
                             <div class="alert alert-danger" id="alert_priority" hidden></div>
-                            <input id="mod_priority" type="text" class="form-control" name="mod_priority" readonly>
+                            <p id="mod_priority" type="text" name="mod_priority">Loading...</p>
                         </div>
+                        <hr>
                         <div class="form-group">
-                            <label for="mod_status">Status</label>
+                            <label for="mod_description" class="text-muted">Description</label>
                             <div class="alert alert-danger" id="alert_status" hidden></div>
-                            <input id="mod_status" type="text" class="form-control" name="mod_status" readonly>
+                            <p class="lead" id="mod_description" type="text" name="mod_description">Loading...</p>
                         </div>
+                        <hr>
                         <div class="form-group">
-                            <label for="mod_assign">Assigned to</label>
+                            <label for="mod_status" class="text-muted">Status</label>
+                            <div class="alert alert-danger" id="alert_status" hidden></div>
+                            <p id="mod_status" type="text" name="mod_status">Loading...</p>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <label for="mod_assign" class="text-muted">Assigned to</label>
                             <div class="alert alert-danger" id="alert_assign" hidden></div>
-                            <input id="mod_assign" type="text" class="form-control" name="mod_assign" readonly>
+                            <p id="mod_assign" type="text" name="mod_assign">Loading...</p>
                         </div>
+                        <hr>
                         <div class="form-group">
-                            <label for="mod_time">Timestamp</label>
+                            <label for="mod_time" class="text-muted">Timestamp</label>
                             <div class="alert alert-danger" id="alert_time" hidden></div>
-                            <input id="mod_time" type="text" class="form-control" name="mod_time" readonly>
+                            <p id="mod_time" type="text" name="mod_time">Loading...</p>
                         </div>
                     </div>
-                    <di v class="modal-footer">
+                    <div class="modal-footer">
+                        <div class="pull-left">
+                            <button type="button" class="btn btn-default">View User</button>
+                        </div>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <div class="btn-group" role="group" aria-label="...">
-                            <a id="btn_view_profile" type="button" class="btn btn-primary" style="border-radius: 3px 0px 0px 3px;">Open Ticket</a>
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></button>
                                 <ul class="dropdown-menu">
@@ -145,6 +159,7 @@
                                     <li class="list-action" id="btn_close" hidden><a role="button" onclick="">Close Ticket</a></li>
                                 </ul>
                             </div>
+                            <a id="btn_view_profile" type="button" class="btn btn-primary" style="border-radius: 0px 3px 3px 0px;">Go To Ticket</a>
                         </div>
                     </div>
                 </form>
@@ -155,5 +170,8 @@
 @endsection
 
 @section ('bottom_scripts')
+<script>
+    let authUser = {!! json_encode(Auth::user())!!};
+</script>
 <script src="{{asset('js/ticket-management-admin.js')}}"></script>
 @endsection
