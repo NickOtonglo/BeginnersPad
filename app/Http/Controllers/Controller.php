@@ -261,7 +261,7 @@ class Controller extends BaseController
     public function adminHelp(){
         $tickets = HelpTicket::orderBy('created_at','DESC')->get();
         $users = User::all();
-        return view('administrators.all_tickets',compact('tickets','users'));
+        return view('administrators.tickets_all',compact('tickets','users'));
     }
 
     public function createTicket(Request $request){

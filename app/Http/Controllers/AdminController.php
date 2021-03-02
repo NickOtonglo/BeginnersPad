@@ -31,6 +31,22 @@ use App\HelpCategoryLog;
 
 class AdminController extends Controller
 {
+
+    public function msgRepo($intent){
+        //permission_denied_not_authorised
+        //permission_denied_reason_required
+        //error_user_does_not_exist
+        if ($intent=='permission_denied_not_authorised'){
+            return 'You are not authorised to perform this action!';
+        }
+        if ($intent=='permission_denied_reason_required'){
+            return 'You must a submit a reason to perform this action!';
+        }
+        if ($intent=='error_user_does_not_exist'){
+            return 'This user does not exist!';
+        }
+    }
+
     public function checkUserState(){
         if (Auth::check() && Auth::user()->status == 'suspended') {
             return false;
@@ -194,7 +210,7 @@ class AdminController extends Controller
             if($action->admin_level >= $utype){
                 if($request->listing_action == 'suspend' || $request->listing_action == 'reject'){
                     if($request->action_reason == ''){
-                        return "a reason is required for this action";
+                        return $this->msgRepo('permission_denied_reason_required');
                     } else {
                         $listing->update(['status'=>$request->listing_action.'ed']);
                         $actionLog->save();
@@ -206,7 +222,7 @@ class AdminController extends Controller
                     return redirect()->back()->with('message', 'Listing '.$request->listing_action.'d');
                 }
             } else {
-                return "you're not authorised to perform this action";
+                return $this->msgRepo('permission_denied_not_authorised');
             }
 
             // return redirect()->back()->with('message','Successful');
@@ -318,7 +334,7 @@ class AdminController extends Controller
                 $bookmark->delete();
                 return redirect()->back()->with('message', 'Bookmark removed');
             } else {
-                return "you're not authorised to perform this action";
+                return $this->msgRepo('permission_denied_not_authorised');
             }   
         } else {
             $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
@@ -556,7 +572,7 @@ class AdminController extends Controller
 
             if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
                 if ($targetUser == ''){
-                    return "This user doesn't exist";
+                    return $this->msgRepo('error_user_does_not_exist');
                 } else {
                     switch ($targetUser->user_type){
                         case 5:
@@ -588,6 +604,7 @@ class AdminController extends Controller
 
         $user = Auth::user();
         $targetUser = User::where('id',$id)->first();
+        $tickets = HelpTicket::where('email',$targetUser->email)->get();
 
         if ($type == 5){
             $customerOccupations = ListingApplication::where('action','occupied')->where('action_by_user',$id)->get();
@@ -597,7 +614,7 @@ class AdminController extends Controller
             $customerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
 
             return view('administrators.manage_user',compact('targetUser','customerOccupations','customerReviews','customerLastOccupation',
-                'customerLastReview','customerSuspendedCount'));
+                'customerLastReview','customerSuspendedCount','tickets'));
         } else if ($type == 4){
             $listerListings = Listing::where('lister_id',$id)->where('status','!=','unpublished')->get();
             $listerCustomers = ListingApplication::where('action_by_user',$id)->get();
@@ -608,7 +625,7 @@ class AdminController extends Controller
             $listerLastSubmission = Listing::where('lister_id',$id)->where('status','pending')->latest()->first();
 
             return view('administrators.manage_user',compact('targetUser','listerListings','listerCustomers','listerPendingApplications',
-                'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastSubmission'));
+                'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastSubmission','tickets'));
         } else if ($type == 3){
             $repUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
             $repListingsApproved = ListingAdminLog::where('admin_id',$id)->where('action','approved')->get();
@@ -675,7 +692,7 @@ class AdminController extends Controller
             
             return redirect()->back();
         } else {
-            return "Not allowed!";
+            return $this->msgRepo('permission_denied_not_authorised');
         } 
     }
 
@@ -686,40 +703,47 @@ class AdminController extends Controller
         } else
 
         $user = Auth::user();
-        $ticket = HelpTicket::where('id',$id)->first();
-        $updateTicket = HelpTicket::find($id);
-        switch ($request->input('review_rating')) {
-            case 'pick_ticket':
-                $updateTicket->status = "pending";
-                $updateTicket->assigned_to = $user->id;
-                $updateTicket->save();
-                return $this->preformTicketActionLog('assign',$id,$ticket->email,$ticket->status,'pending');
-                break;
-            
-            case 'close_ticket':
-                $updateTicket->status = "closed";
-                // $updateTicket->assigned_to = $user->id;
-                $updateTicket->save();
-                return $this->preformTicketActionLog('close',$id,$ticket->email,$ticket->status,'closed');
-                break;
 
-            case 'leave_ticket':
-                $updateTicket->status = "open";
-                $updateTicket->assigned_to = null;
-                $updateTicket->save();
-                return $this->preformTicketActionLog('unassign',$id,$ticket->email,$ticket->status,'open');
-                break;
+        $utype = $user->user_type;
+        
+        if ($utype==3 || $utype==2 || $utype==1) {
+            $ticket = HelpTicket::where('id',$id)->first();
+            $updateTicket = HelpTicket::find($id);
+            switch ($request->input('btn_action')) {
+                case 'Pick Ticket':
+                    $updateTicket->status = "pending";
+                    $updateTicket->assigned_to = $user->id;
+                    $updateTicket->save();
+                    return $this->preformTicketActionLog('assign',$id,$ticket->email,$ticket->status,'pending');
+                    break;
+                
+                case 'Release Ticket':
+                    $updateTicket->status = "closed";
+                    // $updateTicket->assigned_to = $user->id;
+                    $updateTicket->save();
+                    return $this->preformTicketActionLog('close',$id,$ticket->email,$ticket->status,'closed');
+                    break;
 
-            case 'close_resolved_ticket':
-                $updateTicket->status = "resolved";
-                $updateTicket->assigned_to = $user->id;
-                $updateTicket->save();
-                return $this->preformTicketActionLog('resolved',$id,$ticket->email,$ticket->status,'resolved');
-                break;
+                case "Close as 'Resolved'":
+                    $updateTicket->status = "open";
+                    $updateTicket->assigned_to = null;
+                    $updateTicket->save();
+                    return $this->preformTicketActionLog('unassign',$id,$ticket->email,$ticket->status,'open');
+                    break;
 
-            default:
-                return redirect()->back();
-                break;
+                case 'Close Ticket':
+                    $updateTicket->status = "resolved";
+                    $updateTicket->assigned_to = $user->id;
+                    $updateTicket->save();
+                    return $this->preformTicketActionLog('resolved',$id,$ticket->email,$ticket->status,'resolved');
+                    break;
+
+                default:
+                    return redirect()->back();
+                    break;
+            }
+        } else {
+            return $this->msgRepo('permission_denied_not_authorised');
         }
     }
 
@@ -773,7 +797,7 @@ class AdminController extends Controller
                 $actionLog->save();
                 break;
         }
-        return redirect()->back();
+        return redirect()->back()->with('message','Action performed successfully!');
         // return redirect()->back()->with('message','Your ticket has been issued. A representative will get in touch with you shortly. Please be patient.');
     }
 
@@ -796,18 +820,76 @@ class AdminController extends Controller
         }
     }
 
-    public function myTickets(){
+    public function assignedTickets($id){
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();
         } else
 
-        $user = Auth::user();
-        $userType = $user->user_type;
+        $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
-            $tickets = HelpTicket::where('assigned_to',$user->id)->orderBy('updated_at')->get();
-            $users = User::all();
-            return view('administrators.assigned_tickets',compact('tickets','users'));
+            if($id == 'me'){
+                $tickets = HelpTicket::where('assigned_to',Auth::user()->id)->orderBy('updated_at')->get();
+                $targetUser = Auth::user();
+            } else {
+                $tickets = HelpTicket::where('assigned_to',$id)->orderBy('updated_at')->get();
+                $targetUser = User::where('id',$id)->first();
+            }
+            return view('administrators.tickets_all_reusable',compact('tickets','targetUser'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function viewTicketLogs($ticket){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            if($ticket == '' || $ticket == 'all'){
+                $logs = HelpTicketLog::all();
+            } else {
+                $logs = HelpTicketLog::where('ticket_id',$ticket)->get();
+            }
+            return view('administrators.logs_tickets',compact('logs'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function viewAdminTicketLogs($user){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            if($user == '' || $user == 'me'){
+                $logs = HelpTicketLog::where('action_by',Auth::user()->id)->get();
+            } else {
+                $logs = HelpTicketLog::where('action_by',$user)->get();
+            }
+            return view('administrators.logs_tickets',compact('logs'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function viewUserTicket($email){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $tickets = HelpTicket::where('email',$email)->orderBy('updated_at')->get();
+            
+            return view('administrators.tickets_reusable',compact('tickets'));
         } else {
             return redirect()->route('listings.list');
         }
@@ -872,7 +954,7 @@ class AdminController extends Controller
 
             // return redirect()->back()->with('message','Category added');
         } else {
-            return redirect()->route('listings.list');
+            return $this->msgRepo('permission_denied_not_authorised');
         }
     }
 

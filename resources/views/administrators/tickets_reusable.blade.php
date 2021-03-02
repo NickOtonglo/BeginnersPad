@@ -18,32 +18,13 @@
             {{ $errors->first() }}
         </div>
     @endforeach
-	<div class="pull-right">
-        <div class="btn-group" role="group">
-            <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">Statistics</a>
-            <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">F.A.Qs</a>
-            <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">Help Topics</a>
-            <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewHelpCategories')}}">Help Categories</a>
-	    </div>
-        <div class="btn-group" role="group">
-            <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">Assigned to me</a>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Assigned to<span class="caret"></span></button>
-            <ul class="dropdown-menu">
-                @forelse($users->where('user_type','<=','3')->where('id','!=',Auth::user()->id) as $user)
-                <li class="list-action" id="btn_activate"><a role="button" onclick="">{{$user->name}}</a></li>
-                @empty
-                <li class="list-action" id=""><a role="button" onclick="">-not applicable-</a></li>
-                @endforelse
-            </ul>
-        </div>
-	</div>
 </div>
 <br>
 @endsection
 
 @section ('col_centre')
 <div class="panel panel-default">
-    <div class="panel-heading text-capitalize">All Tickets</div>
+    <div class="panel-heading">Tickets issued by @if ($tickets->first()->is_registered == 'true') {{$tickets->first()->user->name}} @else {{$tickets->first()->email}} @endif</div>
     <div class="panel-body">
         <div class="post">
             <table class="table table-hover">
@@ -61,14 +42,27 @@
                 </thead>
                 <tbody>
                     @forelse($tickets as $ticket)
-                    <tr class="row-clickable" role="button" onclick="setPriority('{{$ticket->helpCategory->priority}}',this);populateActionForm('{{$ticket}}',this);">
+                    @if($ticket->assigned_to != null)
+                    <tr class="row-clickable" role="button" onclick="setPriority('{{$ticket->helpCategory->priority}}',this);
+                    setAssignedTo('{{$ticket->assignedToUser->name}}',this);
+                    showViewUser('{{$ticket->user}}',this);
+                    populateActionForm('{{$ticket}}',this);">
+                    @else
+                    <tr class="row-clickable" role="button" onclick="setPriority('{{$ticket->helpCategory->priority}}',this);
+                    showViewUser('{{$ticket->user}}',this);
+                    populateActionForm('{{$ticket}}',this);">
+                    @endif
                         <th id="t_body_id" scope="row">{{$ticket->id}}</th>
                         <td id="t_body_email">{{$ticket->email}}</td>
                         <td id="t_body_reg">{{$ticket->is_registered}}</td>
                         <td id="t_body_category">{{$ticket->topic}}</td>
                         <td id="t_body_priority">{{$ticket->helpCategory->priority}}</td>
                         <td id="t_body_status">{{$ticket->status}}</td>
+                        @if($ticket->assigned_to != null)
+                        <td id="t_body_assigned">{{$ticket->assignedToUser->name}}</td>
+                        @else
                         <td id="t_body_assigned">Not assigned</td>
+                        @endif
                         <td id="t_body_time">{{$ticket->created_at}}</td>
                     </tr>
                     @empty
@@ -88,7 +82,8 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="modalLabel">Preview Ticket</h4>
                 </div>
-                <form onsubmit="" method="post" enctype="multipart/form-data">
+                <form onsubmit="return true;" method="post" enctype="multipart/form-data" id="formAction">
+                    {{csrf_field()}}
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="mod_id" class="text-muted">Ticket ID</label>
@@ -146,20 +141,29 @@
                     </div>
                     <div class="modal-footer">
                         <div class="pull-left">
-                            <button type="button" class="btn btn-default">View User</button>
+                            <div class="btn-group" data-toggle="buttons">
+                                <a id="btn_view_user" type="button" class="btn btn-default hidden">View User</a>
+                                <a id="btn_view_tickets" type="button" class="btn btn-default">View User's Tickets</a>
+                            </div>
                         </div>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <div class="btn-group" role="group" aria-label="...">
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></button>
                                 <ul class="dropdown-menu">
-                                    <li class="list-action" id="btn_pick" hidden><a role="button" onclick="">Pick Ticket</a></li>
-                                    <li class="list-action" id="btn_release" hidden><a role="button" onclick="">Release Ticket</a></li>
-                                    <li class="list-action" id="btn_close_resolved" hidden><a role="button" onclick="">Close as 'Resolved'</a></li>
-                                    <li class="list-action" id="btn_close" hidden><a role="button" onclick="">Close Ticket</a></li>
+                                    <li class="list-action" id="pick_ticket" hidden><a role="button" onclick="">Pick Ticket</a></li>
+                                    <li class="list-action" id="release_ticket" hidden><a role="button" onclick="">Release Ticket</a></li>
+                                    <li class="list-action" id="close_resolved_ticket" hidden><a role="button" onclick="">Close as 'Resolved'</a></li>
+                                    <li class="list-action" id="close_ticket" hidden><a role="button" onclick="">Close Ticket</a></li>
                                 </ul>
                             </div>
                             <a id="btn_view_profile" type="button" class="btn btn-primary" style="border-radius: 0px 3px 3px 0px;">Go To Ticket</a>
+                        </div>
+                        <div class="form-group hidden" hidden>
+                            <input type="submit" id="btn_pick" value="Pick Ticket" name="btn_action">
+                            <input type="submit" id="btn_release" value="Release Ticket" name="btn_action">
+                            <input type="submit" id="btn_close_resolved" value="Close as 'Resolved'" name="btn_action">
+                            <input type="submit" id="btn_close" value="Close Ticket" name="btn_action">
                         </div>
                     </div>
                 </form>

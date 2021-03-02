@@ -107,7 +107,10 @@ Route::group(['middleware'=>'auth'],function(){
 	]);
 	Route::post('/help/tickets/{ticket}/action','AdminController@preformTicketAction')->name('admin.preformTicketAction');
 	Route::get('/help/tickets/{ticket}','AdminController@viewTicket')->name('admin.viewTicket');
-	Route::get('/help/assigned','AdminController@myTickets')->name('admin.myTickets');
+	Route::get('/help/tickets/logs/{ticket?}','AdminController@viewTicketLogs')->name('admin.viewTicketLogs');
+	Route::get('/help/tickets/admin/{user?}/logs','AdminController@viewAdminTicketLogs')->name('admin.viewAdminTicketLogs');
+	Route::get('/help/tickets/user/{email?}/logs','AdminController@viewUserTicket')->name('admin.viewUserTicket');
+	Route::get('/help/tickets/assigned/{user?}','AdminController@assignedTickets')->name('admin.assignedTickets');
 	Route::get('/help/categories','AdminController@viewHelpCategories')->name('admin.viewHelpCategories');
 	Route::post('/help/categories/{item?}','AdminController@performHelpCategoryTask')->name('admin.performHelpCategoryTask');
 	// Route::put('/help/categories/{category}','AdminController@updateHelpCategory')->name('admin.updateHelpCategory');

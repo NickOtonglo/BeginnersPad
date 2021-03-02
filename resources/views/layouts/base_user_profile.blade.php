@@ -53,7 +53,12 @@
                 <div class="col-md-9 col-md-offset-0">
                     @if(Auth::user()->user_type === 3 || Auth::user()->user_type === 2 || Auth::user()->user_type === 1)
                     <div class="btn-group" role="group" aria-label="..." style="float:right;">
-                        <a id="btn_view_profile" type="button" class="btn btn-default" style="border-radius: 3px 0px 0px 3px;" href="{{route('admin.viewUserManagementLogs',['target'=>$targetUser])}}">View Management Logs</a>
+                        @if ($targetUser->user_type >= 4 && $tickets->isNotEmpty())
+                        <a id="btn_view_profile" type="button" class="btn btn-default" style="border-radius: 3px 0px 0px 3px;" href="{{route('admin.viewUserTicket',['user'=>$targetUser->email])}}">Tickets</a>
+                        <a id="btn_view_profile" type="button" class="btn btn-default" style="border-radius: 0px 0px 0px 0px;" href="{{route('admin.viewUserManagementLogs',['target'=>$targetUser])}}">Management Log</a>
+                        @else
+                        <a id="btn_view_profile" type="button" class="btn btn-default" style="border-radius: 3px 0px 0px 3px;" href="{{route('admin.viewUserManagementLogs',['target'=>$targetUser])}}">Management Log</a>
+                        @endif
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></button>
                             <ul class="dropdown-menu">
