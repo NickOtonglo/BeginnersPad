@@ -36,6 +36,7 @@ class AdminController extends Controller
         //permission_denied_not_authorised
         //permission_denied_reason_required
         //error_user_does_not_exist
+        //error_not_allowed
         if ($intent=='permission_denied_not_authorised'){
             return 'You are not authorised to perform this action!';
         }
@@ -44,6 +45,9 @@ class AdminController extends Controller
         }
         if ($intent=='error_user_does_not_exist'){
             return 'This user does not exist!';
+        }
+        if ($intent=='error_not_allowed'){
+            return 'Not allowed!';
         }
     }
 
@@ -696,7 +700,7 @@ class AdminController extends Controller
         } 
     }
 
-    public function preformTicketAction(Request $request,$id){
+    public function performTicketAction(Request $request,$id){
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();
@@ -711,31 +715,44 @@ class AdminController extends Controller
             $updateTicket = HelpTicket::find($id);
             switch ($request->input('btn_action')) {
                 case 'Pick Ticket':
+                    if($ticket->status == "pending"){
+                        redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                    } else
                     $updateTicket->status = "pending";
                     $updateTicket->assigned_to = $user->id;
                     $updateTicket->save();
-                    return $this->preformTicketActionLog('assign',$id,$ticket->email,$ticket->status,'pending');
+                    return $this->performTicketActionLog('assign',$id,$ticket->email,$ticket->status,'pending');
                     break;
                 
                 case 'Release Ticket':
-                    $updateTicket->status = "closed";
+                    if($ticket->status == "open"){
+                        redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                    } else
+                    $updateTicket->status = "open";
+                    $updateTicket->assigned_to = null;
                     // $updateTicket->assigned_to = $user->id;
                     $updateTicket->save();
-                    return $this->preformTicketActionLog('close',$id,$ticket->email,$ticket->status,'closed');
+                    return $this->performTicketActionLog('unassign',$id,$ticket->email,$ticket->status,'open');
                     break;
 
                 case "Close as 'Resolved'":
-                    $updateTicket->status = "open";
+                    if($ticket->status == "resolved"){
+                        redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                    } else
+                    $updateTicket->status = "resolved";
                     $updateTicket->assigned_to = null;
                     $updateTicket->save();
-                    return $this->preformTicketActionLog('unassign',$id,$ticket->email,$ticket->status,'open');
+                    return $this->performTicketActionLog('resolve',$id,$ticket->email,$ticket->status,'resolved');
                     break;
 
                 case 'Close Ticket':
-                    $updateTicket->status = "resolved";
+                    if($ticket->status == "closed"){
+                        redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                    } else
+                    $updateTicket->status = "closed";
                     $updateTicket->assigned_to = $user->id;
                     $updateTicket->save();
-                    return $this->preformTicketActionLog('resolved',$id,$ticket->email,$ticket->status,'resolved');
+                    return $this->performTicketActionLog('close',$id,$ticket->email,$ticket->status,'closed');
                     break;
 
                 default:
@@ -747,56 +764,31 @@ class AdminController extends Controller
         }
     }
 
-    public function preformTicketActionLog($action,$ticket_id,$issuer,$status_old,$status_new){
+    public function performTicketActionLog($action,$ticket_id,$issuer,$status_old,$status_new){
         $user = Auth::user();
         $targetUser = $user;
 
         $actionLog = new HelpTicketLog;
-        switch ($action) {
-            case 'assign':
-                $actionLog->ticket_id = $ticket_id;
-                $actionLog->user_email = $issuer;
-                $actionLog->old_status = $status_old;
-                $actionLog->action = $action;
-                $actionLog->action_by = $user->id;
-                $actionLog->action_to = $targetUser->id;
-                $actionLog->new_status = $status_new;
-                $actionLog->save();
-                break;
-
-            case 'unassign':
-                $actionLog->ticket_id = $ticket_id;
-                $actionLog->user_email = $issuer;
-                $actionLog->old_status = $status_old;
-                $actionLog->action = $action;
-                $actionLog->action_by = $user->id;
-                $actionLog->action_to = $targetUser->id;
-                $actionLog->new_status = $status_new;
-                $actionLog->save();
-                break;
-
-            case 'close':
-                $actionLog->ticket_id = $ticket_id;
-                $actionLog->user_email = $issuer;
-                $actionLog->old_status = $status_old;
-                $actionLog->action = $action;
-                $actionLog->action_by = $user->id;
-                $actionLog->action_to = $targetUser->id;
-                $actionLog->new_status = $status_new;
-                $actionLog->save();
-                break;
-
-            case 'resolved':
-                $actionLog->ticket_id = $ticket_id;
-                $actionLog->user_email = $issuer;
-                $actionLog->old_status = $status_old;
-                $actionLog->action = 'close';
-                $actionLog->action_by = $user->id;
-                $actionLog->action_to = $targetUser->id;
-                $actionLog->new_status = $status_new;
-                $actionLog->save();
-                break;
+        if ($action == 'assign' || $action == 'unassign' || $action == 'close'){
+            $actionLog->ticket_id = $ticket_id;
+            $actionLog->user_email = $issuer;
+            $actionLog->old_status = $status_old;
+            $actionLog->action = $action;
+            $actionLog->action_by = $user->id;
+            $actionLog->action_to = $targetUser->id;
+            $actionLog->new_status = $status_new;
+            $actionLog->save();
+        } else if($action == 'resolve'){
+            $actionLog->ticket_id = $ticket_id;
+            $actionLog->user_email = $issuer;
+            $actionLog->old_status = $status_old;
+            $actionLog->action = 'close';
+            $actionLog->action_by = $user->id;
+            $actionLog->action_to = $targetUser->id;
+            $actionLog->new_status = $status_new;
+            $actionLog->save();
         }
+       
         return redirect()->back()->with('message','Action performed successfully!');
         // return redirect()->back()->with('message','Your ticket has been issued. A representative will get in touch with you shortly. Please be patient.');
     }
@@ -811,10 +803,8 @@ class AdminController extends Controller
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $ticket = HelpTicket::where('id',$id)->first();
-            $user = User::where('email',$ticket->email)->first();
-            $admin = User::where('id',$ticket->assigned_to)->first();
-            $reps = User::where('user_type',3)->get();
-            return view('administrators.manage_ticket',compact('ticket','user','admin','reps'));
+            $logs = HelpTicketLog::where('ticket_id',$id)->orderBy('created_at','DESC')->get();
+            return view('administrators.manage_ticket',compact('ticket','logs'));
         } else {
 
         }
@@ -835,7 +825,7 @@ class AdminController extends Controller
                 $tickets = HelpTicket::where('assigned_to',$id)->orderBy('updated_at')->get();
                 $targetUser = User::where('id',$id)->first();
             }
-            return view('administrators.tickets_all_reusable',compact('tickets','targetUser'));
+            return view('administrators.tickets_assigned',compact('tickets','targetUser'));
         } else {
             return redirect()->route('listings.list');
         }

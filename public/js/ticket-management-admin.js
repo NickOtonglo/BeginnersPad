@@ -16,6 +16,10 @@ $('#btn_view_tickets').on('click',function(e){
     window.location.href = "/help/tickets/user/"+email+"/logs";
 });
 
+$('#btn_open_ticket').on('click',function(e){
+    window.location.href = "/help/tickets/"+ticketId;
+});
+
 $('#modalViewTicket').on('hide.bs.modal', function (e) {
     hideActions();
     removeAssignedTo();
@@ -153,6 +157,7 @@ function populateActionForm(arg){
         
         setProfileUrl(uid);
         setTicketsUrl(email);
+        setGoToTicketUrl(ticketId);
         // uid = user.id;
     } catch (error) {
 
@@ -205,4 +210,8 @@ function setProfileUrl(id){
 
 function setTicketsUrl(email){
     $('#btn_view_tickets').attr("href","/help/tickets/user/"+email+"/logs");
+}
+
+function setGoToTicketUrl(ticket){
+    $('#btn_open_ticket').attr("href","/help/tickets/"+ticket);
 }

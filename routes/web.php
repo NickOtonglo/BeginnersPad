@@ -105,7 +105,7 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::delete('/manage-listings/{listing}/manage-reviews/{review}/remove', [
 		'as' => 'deleteReview', 'uses' => 'AdminController@deleteReview'
 	]);
-	Route::post('/help/tickets/{ticket}/action','AdminController@preformTicketAction')->name('admin.preformTicketAction');
+	Route::post('/help/tickets/{ticket}/action','AdminController@performTicketAction')->name('admin.performTicketAction');
 	Route::get('/help/tickets/{ticket}','AdminController@viewTicket')->name('admin.viewTicket');
 	Route::get('/help/tickets/logs/{ticket?}','AdminController@viewTicketLogs')->name('admin.viewTicketLogs');
 	Route::get('/help/tickets/admin/{user?}/logs','AdminController@viewAdminTicketLogs')->name('admin.viewAdminTicketLogs');
