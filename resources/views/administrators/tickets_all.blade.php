@@ -1,10 +1,10 @@
-@extends('layouts.base_tickets')
+@extends('layouts.base_admin_tickets')
 
 @section('ticket_button_area')
     <div class="pull-right">
         <div class="btn-group" role="group">
             <a class="btn btn-mid btn-default" role="button" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">Statistics</a>
-            <a class="btn btn-mid btn-default" role="button" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">F.A.Qs</a>
+            <a class="btn btn-mid btn-default" role="button" href="{{route('admin.viewHelpFAQs')}}">F.A.Qs</a>
             <a class="btn btn-mid btn-default" role="button" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">Help Topics</a>
             <a class="btn btn-mid btn-default" role="button" href="{{route('admin.viewHelpCategories')}}">Help Categories</a>
 	    </div>

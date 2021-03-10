@@ -1034,6 +1034,76 @@ class AdminController extends Controller
         }
     }
 
+    public function viewHelpFAQs(){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $entries = FAQ::orderBy('created_at','DESC')->get();
+        
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            return view('administrators.help_faqs_manage',compact('entries'));
+        } else {
+            return redirect()->route('listings.list');
+        }
+    }
+
+    public function addHelpFAQ(Request $request){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1){
+            $entry = new FAQ();
+            $entry->question = $request->qn_create;
+            $entry->answer = $request->ans_create;
+            $entry->category = strtoupper($request->cat_create);
+            $entry->save();
+
+            return redirect()->back()->with('message','Entry added');
+        } else {
+            return $this->msgRepo('permission_denied_not_authorised');
+        }
+    }
+
+    public function updateHelpFAQ($id,Request $request){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1){
+            $entry = FAQ::find($id);
+            $entry->update($request->all());
+
+            return redirect()->back()->with('message','Entry updated');
+        } else {
+            return $this->msgRepo('permission_denied_not_authorised');
+        }
+    }
+
+    public function deleteHelpFAQ($id){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1){
+            $entry = FAQ::find($id);
+            $entry->delete();
+
+            return redirect()->back()->with('message','Entry deleted');
+        } else {
+            return $this->msgRepo('permission_denied_not_authorised');
+        }
+    }
+
     public function listZones(){
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');

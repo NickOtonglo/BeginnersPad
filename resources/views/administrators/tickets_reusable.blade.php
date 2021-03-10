@@ -1,4 +1,4 @@
-@extends('layouts.base_tickets')
+@extends('layouts.base_admin_tickets')
 
 @section('ticket_button_area')
     

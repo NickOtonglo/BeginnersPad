@@ -17,7 +17,7 @@ class CreateFaqTable extends Migration
             $table->increments('id');
             $table->text('question');
             $table->text('answer');
-            $table->string('category');
+            $table->string('category'); //account,billing,listings...etc
             $table->timestamps();
         });
     }

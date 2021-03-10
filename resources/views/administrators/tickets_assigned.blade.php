@@ -1,4 +1,4 @@
-@extends('layouts.base_tickets')
+@extends('layouts.base_admin_tickets')
 
 @section('ticket_button_area')
     @if($targetUser->user_type === 3 || $targetUser->user_type === 2 || $targetUser->user_type === 1)

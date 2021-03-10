@@ -116,6 +116,10 @@ Route::group(['middleware'=>'auth'],function(){
 	// Route::put('/help/categories/{category}','AdminController@updateHelpCategory')->name('admin.updateHelpCategory');
 	// Route::delete('/help/categories/{category}','AdminController@deleteHelpCategory')->name('admin.deleteHelpCategory');
 	Route::get('/help/categories/logs/{target?}','AdminController@viewHelpCategoryLogs')->name('admin.viewHelpCategoryLogs');
+	Route::get('/help/faq/manage/','AdminController@viewHelpFAQs')->name('admin.viewHelpFAQs');
+	Route::post('/help/faq/manage/','AdminController@addHelpFAQ')->name('admin.addHelpFAQ');
+	Route::put('/help/faq/manage/{entry}','AdminController@updateHelpFAQ')->name('admin.updateHelpFAQ');
+	Route::delete('/help/faq/manage/{entry}','AdminController@deleteHelpFAQ')->name('admin.deleteHelpFAQ');
 	Route::get('/manage-zones/all','AdminController@listZones')->name('admin.zones');
 	Route::get('/manage-zone/new','AdminController@createZone')->name('admin.createZone');
 	Route::post('/manage-zone/new','AdminController@saveZone')->name('admin.saveZone');
