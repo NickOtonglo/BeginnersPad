@@ -22,6 +22,7 @@ use App\UserReport;
 use App\Zone;
 use App\ZoneEntry;
 use App\FAQ;
+use App\FAQLog;
 use App\AdminAction;
 use App\Tag;
 use App\TagEntry;
@@ -1051,6 +1052,7 @@ class AdminController extends Controller
     }
 
     public function addHelpFAQ(Request $request){
+        //validation required
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();
@@ -1064,13 +1066,14 @@ class AdminController extends Controller
             $entry->category = strtoupper($request->cat_create);
             $entry->save();
 
-            return redirect()->back()->with('message','Entry added');
+            return $this->createHelpFAQLogs($entry,'create');
         } else {
             return $this->msgRepo('permission_denied_not_authorised');
         }
     }
 
     public function updateHelpFAQ($id,Request $request){
+        //validation required
         if (!$this->checkUserState()) {
             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
             Auth::logout();
@@ -1081,7 +1084,7 @@ class AdminController extends Controller
             $entry = FAQ::find($id);
             $entry->update($request->all());
 
-            return redirect()->back()->with('message','Entry updated');
+            return $this->createHelpFAQLogs($entry,'update');
         } else {
             return $this->msgRepo('permission_denied_not_authorised');
         }
@@ -1098,9 +1101,44 @@ class AdminController extends Controller
             $entry = FAQ::find($id);
             $entry->delete();
 
-            return redirect()->back()->with('message','Entry deleted');
+            return $this->createHelpFAQLogs($entry,'delete');
         } else {
             return $this->msgRepo('permission_denied_not_authorised');
+        }
+    }
+
+    public function createHelpFAQLogs($faq,$action){
+        $entry = new FAQLog();
+        $entry->entry_id = $faq->id;
+        $entry->question = $faq->question;
+        $entry->answer = $faq->answer;
+        $entry->category = $faq->category;
+        $entry->action = $action;
+        $entry->action_by = Auth::user()->id;
+        $entry->save();
+
+        return redirect()->back()->with('message','Entry '.$action.'d');
+    }
+    
+    public function viewHelpFAQLogs($target){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $userType = Auth::user()->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            
+            if($target=='' || $target=='me'){
+                $logs = FAQLog::where('action_by',Auth::user()->id)->orderBy('created_at','DESC')->get();
+                return view('administrators.logs_help_faqs_manage',compact('logs','target'));
+            } elseif($target=='all'){
+                $logs = FAQLog::orderBy('created_at','DESC')->get();
+                return view('administrators.logs_help_faqs_manage',compact('logs','target'));
+            }
+            
+        } else {
+            return redirect()->route('listings.list');
         }
     }
 

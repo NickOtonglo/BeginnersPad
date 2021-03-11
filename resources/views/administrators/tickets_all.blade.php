@@ -3,9 +3,9 @@
 @section('ticket_button_area')
     <div class="pull-right">
         <div class="btn-group" role="group">
-            <a class="btn btn-mid btn-default" role="button" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">Statistics</a>
+            <a class="btn btn-mid btn-default" role="button" href="">Statistics</a>
             <a class="btn btn-mid btn-default" role="button" href="{{route('admin.viewHelpFAQs')}}">F.A.Qs</a>
-            <a class="btn btn-mid btn-default" role="button" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">Help Topics</a>
+            <a class="btn btn-mid btn-default" role="button" href="">Help Topics</a>
             <a class="btn btn-mid btn-default" role="button" href="{{route('admin.viewHelpCategories')}}">Help Categories</a>
 	    </div>
         <div class="btn-group" role="group">

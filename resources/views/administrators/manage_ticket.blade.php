@@ -31,7 +31,6 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Email Address</th>
                         <th scope="col">Previous status</th>
                         <th scope="col">Action</th>
                         <th scope="col">Action by</th>
@@ -43,7 +42,6 @@
                     @forelse($logs as $log)
                     <tr class="row-clickable">
                         <th id="t_body_id" scope="row">{{$log->id}}</th>
-                        <td id="t_body_email">{{$log->user_email}}</td>
                         <td id="t_body_old_status">{{$log->old_status}}</td>
                         <td id="t_body_action">{{$log->action}}</td>
                         <td id="t_body_action_by">{{$log->actionByUser->name}}</td>

@@ -120,6 +120,7 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::post('/help/faq/manage/','AdminController@addHelpFAQ')->name('admin.addHelpFAQ');
 	Route::put('/help/faq/manage/{entry}','AdminController@updateHelpFAQ')->name('admin.updateHelpFAQ');
 	Route::delete('/help/faq/manage/{entry}','AdminController@deleteHelpFAQ')->name('admin.deleteHelpFAQ');
+	Route::get('/help/faq/manage/logs/{target}','AdminController@viewHelpFAQLogs')->name('admin.viewHelpFAQLogs');
 	Route::get('/manage-zones/all','AdminController@listZones')->name('admin.zones');
 	Route::get('/manage-zone/new','AdminController@createZone')->name('admin.createZone');
 	Route::post('/manage-zone/new','AdminController@saveZone')->name('admin.saveZone');

@@ -20,7 +20,7 @@
     @endforeach
 	<div class="pull-right btn-group" role="group">
     <a class="btn btn-mid btn-default" role="button" id="btn_logs" href="{{route('admin.viewHelpCategoryLogs',['target'=>NULL])}}">View Logs</a>
-        <a class="btn btn-mid btn-info" role="button" id="btn_add_entry">+ Add Category</a>
+    <a class="btn btn-mid btn-info" role="button" id="btn_add_entry">+ Add Category</a>
 	</div>
 </div>
 <br>

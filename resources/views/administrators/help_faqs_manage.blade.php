@@ -20,7 +20,7 @@
             </div>
         @endforeach
         <div class="pull-right">
-            <a class="btn btn-sm btn-info" role="button" 
+            <a class="btn btn-mid btn-info" role="button" 
             data-toggle="modal" data-target="#modalCreateEntry">+ Add FAQ Entry</a>
         </div>
         <div class="modal fade" id="modalCreateEntry" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
@@ -101,9 +101,9 @@
     <div class="row">
         <div class="col-md-3">
             <div class="list-group">
-                <a href="" class="list-group-item">FAQ Logs</a>
+                <a href="{{route('admin.viewHelpFAQLogs','all')}}" class="list-group-item">FAQ Logs</a>
                 <a href="" class="list-group-item">Help Topics</a>
-                <a href="" class="list-group-item">Help Caegories</a>
+                <a href="{{route('admin.viewHelpCategories')}}" class="list-group-item">Help Caegories</a>
             </div>
         </div>
         <div class="col-md-7 col-md-offset-2">

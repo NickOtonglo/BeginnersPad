@@ -25,7 +25,7 @@
 
 @section ('col_centre')
 <div class="panel panel-default">
-    <div class="panel-heading text-capitalize">@yield('panel_heading')</div>
+    <div class="panel-heading">@yield('panel_heading')</div>
     <div class="panel-body">
         <div class="post">
             <table class="table table-hover">
