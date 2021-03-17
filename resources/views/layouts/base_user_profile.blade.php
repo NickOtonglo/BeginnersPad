@@ -46,40 +46,28 @@
                         @elseif($targetUser->user_type == 2)
                         <h5 class="bp-navbar-text-colour">Registered on {{$targetUser->created_at->format('j M Y')}}</h5>
                         @elseif($targetUser->user_type == 1)
-                        
+                        <h5 class="bp-navbar-text-colour">Created by the Big Bang!</h5>
                         @endif
                     </div>
                 </div>
                 <div class="col-md-9 col-md-offset-0">
-                    @if(Auth::user()->user_type === 3 || Auth::user()->user_type === 2 || Auth::user()->user_type === 1)
                     <div class="btn-group" role="group" aria-label="..." style="float:right;">
-                        @if ($targetUser->user_type >= 4 && $tickets->isNotEmpty())
-                        <a id="btn_view_profile" type="button" class="btn btn-default" style="border-radius: 3px 0px 0px 3px;" href="{{route('admin.viewUserTicket',['user'=>$targetUser->email])}}">Tickets</a>
-                        <a id="btn_view_profile" type="button" class="btn btn-default" style="border-radius: 0px 0px 0px 0px;" href="{{route('admin.viewUserManagementLogs',['target'=>$targetUser])}}">Management Log</a>
-                        @else
-                        <a id="btn_view_profile" type="button" class="btn btn-default" style="border-radius: 3px 0px 0px 3px;" href="{{route('admin.viewUserManagementLogs',['target'=>$targetUser])}}">Management Log</a>
+                        @if(Auth::user()->user_type === 3 || Auth::user()->user_type === 2 || Auth::user()->user_type === 1)    
+                            @if ($targetUser->user_type >= 4 && $tickets->isNotEmpty())
+                            <a type="button" class="btn btn-default" style="border-radius: 3px 0px 0px 3px;" href="{{route('admin.viewUserTicket',['user'=>$targetUser->email])}}">Tickets</a>
+                            <a type="button" class="btn btn-default" style="border-radius: 0px 0px 0px 0px;" href="{{route('admin.viewUserManagementLogs',['target'=>$targetUser])}}">Management Log</a>
+                            @else
+                            <a type="button" class="btn btn-default" style="border-radius: 3px 0px 0px 3px;" href="{{route('admin.viewUserManagementLogs',['target'=>$targetUser])}}">Management Log</a>
+                            @endif
+                            @yield('admin_actions')
                         @endif
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                @if(Auth::user()->user_type < $targetUser->user_type)
-                                    @if($targetUser->status == 'inactive')
-                                    <li class="list-action" id="btn_activate"><a role="button" onclick="">Activate</a></li>
-                                    @endif
-                                    @if($targetUser->status == 'active')
-                                    <li class="list-action" id="btn_suspend"><a role="button" onclick="">Suspend</a></li>
-                                    @endif
-                                    @if($targetUser->status == 'suspended')
-                                    <li class="list-action" id="btn_restore"><a role="button" onclick="">Restore</a></li>
-                                    @endif
-                                @endif
-                                @if(Auth::user()->user_type === 1)
-                                <li class="list-action" id="btn_delete"><a role="button" onclick="">Delete</a></li>
-                                @endif
-                            </ul>
-                        </div>
+                        @if($targetUser->id == Auth::user()->id)
+                            @if(Auth::user()->user_type >= 4)
+                            <a type="button" class="btn btn-default" style="border-radius: 3px 0px 0px 3px;" href="{{route('viewTicketHistory')}}">View My Tickets</a>
+                            @endif
+                            @yield('account_actions')
+                        @endif
                     </div>
-                    @endif
                 </div>
             </div>
         </div>
@@ -96,11 +84,4 @@
         </div>
     </div>
 </div>
-@endsection
-
-@section('bottom_scripts')
-<script>
-    let user = {!! json_encode($targetUser)!!};
-</script>
-<script src="{{asset('js/user-management-admin-individual.js')}}"></script>
 @endsection

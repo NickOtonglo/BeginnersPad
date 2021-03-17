@@ -122,49 +122,47 @@ class Controller extends BaseController
         $users = $user;
         $id = $user->id;
         $targetUser = $users;
+        $tickets = HelpTicket::where('email',$targetUser->email)->get();
 
-        $customerApplications = ListingApplication::where('action_by_user',$id)->where('action','occupied')->get();
-        $customerReviews = Review::where('user_id',$id)->get();
-        $customerLastApplication = ListingApplication::where('action_by_user',$id)->where('action','occupied')->first();
-        $customerLastReview = Review::where('user_id',$id)->first();
-        $customerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+        if ($targetUser->user_type == 5){
+            $customerOccupations = ListingApplication::where('action','occupied')->where('action_by_user',$id)->get();
+            $customerReviews = Review::where('user_id',$id)->get();
+            $customerLastOccupation = ListingApplication::where('action','occupied')->where('action_by_user',$id)->first();
+            $customerLastReview = Review::where('user_id',$id)->first();
+            $customerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
 
-        $listerListings = Listing::where('lister_id',$id)->get();
-        $listerCustomers = ListingApplication::where('action_by_user',$id)->where('action','occupied')->get();
-        $listerPendingApplications = Listing::where('lister_id',$id)->where('status','pending')->get();
-        $listerSuspendedListings = Listing::where('lister_id',$id)->where('status','suspended')->get();
-        $listerRejectedApplications = Listing::where('lister_id',$id)->where('status','rejected')->get();
-        $listerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
-        // $listerLastApplication = Listing::where('user_id',$id)->where('status','pending')->first();
-        $listerLastApplication = Listing::where('lister_id',$id)->where('status','approved')->latest()->first();
+            return view('layouts.account',compact('targetUser','customerOccupations','customerReviews','customerLastOccupation',
+                'customerLastReview','customerSuspendedCount','tickets'));
+        } else if ($targetUser->user_type == 4){
+            $listerListings = Listing::where('lister_id',$id)->where('status','!=','unpublished')->get();
+            $listerCustomers = ListingApplication::where('action_by_user',$id)->get();
+            $listerPendingApplications = Listing::where('lister_id',$id)->where('status','pending')->get();
+            $listerSuspendedListings = Listing::where('lister_id',$id)->where('status','suspended')->get();
+            $listerRejectedApplications = Listing::where('lister_id',$id)->where('status','rejected')->get();
+            $listerSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+            $listerLastSubmission = Listing::where('lister_id',$id)->where('status','pending')->latest()->first();
 
-        $repUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
-        $repListingsApproved = ListingAdminLog::where('admin_id',$id)->where('action','approved')->get();
-        $repListingsRejected = ListingAdminLog::where('admin_id',$id)->where('action','rejected')->get();
-        $repListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
-        $repListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
-        $repSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+            return view('layouts.account',compact('targetUser','listerListings','listerCustomers','listerPendingApplications',
+                'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastSubmission','tickets'));
+        } else if ($targetUser->user_type == 3){
+            $repUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
+            $repListingsApproved = ListingAdminLog::where('admin_id',$id)->where('action','approved')->get();
+            $repListingsRejected = ListingAdminLog::where('admin_id',$id)->where('action','rejected')->get();
+            $repListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
+            $repListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
 
-        $adminUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
-        $adminListingsApproved = ListingAdminLog::where('admin_id',$id)->where('action','approved')->get();
-        $adminListingsRejected = ListingAdminLog::where('admin_id',$id)->where('action','rejected')->get();
-        $adminListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
-        $adminListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
-        $adminUsersCreated = UserManagementLog::where('admin_id',$id)->where('status','inactive')->get();
-        $adminSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
+            return view('layouts.account',compact('targetUser','repUsersSuspended','repListingsApproved','repListingsRejected',
+                'repListingsSuspended','repListingsDeleted'));
+        } else if ($targetUser->user_type == 2 || $targetUser->user_type == 1){
+            $adminUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
+            $adminListingsApproved = ListingAdminLog::where('admin_id',$id)->where('action','approved')->get();
+            $adminListingsRejected = ListingAdminLog::where('admin_id',$id)->where('action','rejected')->get();
+            $adminListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
+            $adminListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
+            $adminUsersCreated = UserManagementLog::where('admin_id',$id)->where('status','inactive')->get();
 
-        if ($targetUser->user_type==5) {
-            return view('layouts.account', compact('users','targetUser','customerApplications','customerReviews','customerLastApplication',
-                'customerLastReview','customerSuspendedCount'));
-        } else if ($targetUser->user_type==4) {
-            return view('layouts.account', compact('users','targetUser','listerListings','listerCustomers','listerPendingApplications',
-                'listerSuspendedListings','listerRejectedApplications','listerSuspendedCount','listerLastApplication'));
-        } else if ($targetUser->user_type==3) {
-            return view('layouts.account', compact('users','targetUser','repUsersSuspended','repListingsApproved','repListingsRejected',
-                'repListingsSuspended','repListingsDeleted','repSuspendedCount'));
-        } else if ($targetUser->user_type==2 || $targetUser->user_type==1) {
-            return view('layouts.account', compact('users','targetUser','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
-                'adminListingsSuspended','adminListingsDeleted','adminUsersCreated','adminSuspendedCount'));
+            return view('layouts.account',compact('targetUser','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
+                'adminListingsSuspended','adminListingsDeleted','adminUsersCreated'));
         }
     }
 
@@ -308,8 +306,17 @@ class Controller extends BaseController
     public function viewTicketHistory(){
         if (Auth::user()!=null) {
             $user = Auth::user();
-            $tickets = HelpTicket::where('email',$user->email)->orderBy('created_at','id')->get();
-            return view('layouts.ticket_history',compact('tickets'));
+            if($user->user_type == 4 || $user->user_type == 5){
+                $tickets = HelpTicket::where('email',$user->email)->orderBy('created_at','id')->get();
+                return view('layouts.ticket_history',compact('tickets'));
+            } elseif($user->user_type == 3 || $user->user_type == 2 || $user->user_type == 1) {
+                return redirect()->route('help')->with('tickets',HelpTicket::orderBy('created_at','DESC')->get())->with('users',User::all());
+            } else {
+                $faqs = FAQ::all();
+                $helpCats = HelpCategory::all();
+                return view('layouts.help',compact('faqs','helpCats'));
+            }
+            
         }
     }
 

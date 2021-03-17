@@ -1,6 +1,6 @@
-$(document).ready(function () {
+$(document).on('ready',function () {
     tooltip = 'If this option is checked, you will be required to set the rent price only once for all the listings that will fall under this property.';
-    $('#checkbox').change(function () {
+    $('#checkbox').on('change',function () {
         if (this.checked) {
             $('#form_price').show();
             tooltip = 'If this option is unchecked, you will be required to set the rent price for each individual listing that will fall under this property seperately.';
@@ -9,11 +9,11 @@ $(document).ready(function () {
             tooltip = 'If this option is checked, you will be required to set the rent price only once for all the listings that will fall under this property.';
         }
     });
-    $('#checkbox-tag').hover(function () {
+    $('#checkbox-tag').on('hover',function () {
         $('#checkbox-tag').attr('data-original-title', tooltip).tooltip('show');
     });
 
-    $('#checkbox-tag').click(function () {
+    $('#checkbox-tag').on('click',function () {
         $('#checkbox-tag').attr('data-original-title', tooltip).tooltip('show');
     });
 
@@ -27,7 +27,7 @@ $(document).ready(function () {
 
 hideListingCreateAlert();
 
-$('#btn_submit').click(function (e) {
+$('#btn_submit').on('click',function (e) {
     if (confirm("This action will submit this property to representatives and/or administrators for approval. This means that they might reach out to you to request extra information about your listing that may be necessary for your property to be approved on the platform.\nThe property may also be rejected for one or various reasons, and you will be notified with valid reason if this is the case. Are you sure you want to proceed?")) {
         e.stopPropagation();
         return true;
@@ -37,7 +37,7 @@ $('#btn_submit').click(function (e) {
     }
 });
 
-$('#btn_revoke').click(function (e) {
+$('#btn_revoke').on('click',function (e) {
     if (confirm("Are you sure you want to withdraw submission of this property for approval?")) {
         e.stopPropagation();
         return true;
@@ -47,7 +47,7 @@ $('#btn_revoke').click(function (e) {
     }
 });
 
-$('#btn_thumb_listing_faux').click(function (){
+$('#btn_thumb_listing_faux').on('click',function (e) {
     if($('#btn_thumb_listing_real').val()){
         $('#listing_thumb_form').trigger('submit');
     } else {
@@ -55,7 +55,7 @@ $('#btn_thumb_listing_faux').click(function (){
     }
 });
 
-$('#btn_thumb_listing_real').change(function (){
+$('#btn_thumb_listing_real').on('change',function(e){
     if($('#btn_thumb_listing_real').val()){
         // newText.innerHTML = 'Upload '+realBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
         $("#btn_thumb_listing_faux").prop('value', 'Save');

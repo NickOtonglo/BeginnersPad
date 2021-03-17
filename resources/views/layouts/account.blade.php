@@ -1,477 +1,180 @@
-@extends('layouts.base_no_panel')
+@extends('layouts.base_user_profile')
 
 @section('title')
-    <title>Account | Beginners Pad</title>
+    <title>My Profile | Beginners Pad</title>
 @endsection
 
-@section('stylesheets')
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-@endsection
-
-@section('top_scripts')
-    <script src="{{asset('js/telephone-validation.js')}}"></script>
-@endsection
-
-@section ('content')
-<div class="row">
-    <div class="container">
-    @if ($errors->has('post_avatar'))
-        <span class="help-block">
-            <strong class="text-danger">{{ $errors->first('post_avatar') }}</strong><br>
-        </span>
-    @endif
-    </div>
+@section('account_actions')
+<div class="btn-group" role="group">
+	<button type="button" class="btn btn-primary" id="btn_edit_profile">Edit Profile</button>
 </div>
-<div class="container">
-    <div class="row">
-        <div class="col-md-4 col-md-offset-1">
-            <div class="card-big text-center"
-            style="width:250px;border:1px solid white;background-image: linear-gradient(rgba(220, 217, 46, 0.6),rgba(220, 46, 138, 0.22)), url();box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);">
-                <div class="row">
-                    <div style="padding-top:30px;">
-                    @if ($targetUser->avatar != null)
-                        <img class="center" style="width:150px;height:150px; float:center; border-radius:50%; border:1px solid white" src="/images/avatar/{{$targetUser->id}}/{{$targetUser->avatar}}" alt="unable to display image">
-                    @elseif ($targetUser->avatar == null)
-                        <img class="center" style="width:150px;height:150px; float:center; border-radius:50%; border:1px solid white" src="/images/avatar/avatar.png"
-                        alt="unable to display image">
-                    @endif
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="pagination-centered" style="padding:20px;">
-                        <div class="row"><h4><strong>{{$targetUser->name}}</strong></h4></div>
-                        <div class="row"><i>{{$targetUser->email}}</i></div>
-                        @if ($targetUser->telephone != null)
-                            <div class="row">{{$targetUser->telephone}}</div>
-                        @endif
-                        <form action="/account" method="POST" enctype="multipart/form-data">
-                            {{csrf_field()}}
-                            <div class="row" style="padding:20px">
-                                <input class="file-path-wrapper" accept="image/*" name="post_avatar" id="post_avatar" type="file" required>
-                            </div>
-                            <div class="row">
-                                <input class="btn btn-sm btn-primary" type="submit" value="Update Avatar" name="btn_submit"></input>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-6">
-        <!-- @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif -->
-        @if(session()->has('message'))
-            <div class="alert alert-success">
-                {{ session()->get('message') }}
-            </div>
-        @endif
-        <div class="container">
-            <div class="flex-sect">
-                <div class="pull-xs-right">
-                    
-                </div>
-                <h1>Hello {{ ucfirst(Auth::user()->name) }},</h1>
-                <p>Manage your account here.</p>
-                
-            </div>
-        </div>
-    </div>
+@endsection
+
+@section('col_left')
+<div class="card-big card-block" style="box-shadow:5px 5px 15px grey;padding:30px;">
+	<h5 class="text-muted">Email address: {{$targetUser->email}}</h5>
+	<h5 class="text-muted">Registered on {{$targetUser->created_at}}</h5>
+	<h5 class="text-muted">Account status: <strong>{{$targetUser->status}}</strong></h5>
+	<h5 class="text-muted">
+	    Phone number:
+	    @if ($targetUser->telephone != null)
+	        {{$targetUser->telephone}}
+	    @else
+	        Not set
+	    @endif
+	</h5>
 </div>
+<div class="card-big card-block" style="box-shadow:5px 5px 15px grey;padding:30px;">
+	@if ($targetUser->user_type == 5)
+	<h5 class="card-text">Total number of times user occupied listings: {{count($customerOccupations)}}</h5>
+	<h5 class="card-text">Total number of listing reviews done: {{count($customerReviews)}}</h5>
+	<h5 class="card-text">
+		Last listing occupied on:
+	    @if($customerLastOccupation != null)
+	    	{{$customerLastOccupation->created_at}}
+	    @else
+	    	(No listings occupied)
+		@endif
+	</h5>
+	<h5 class="card-text">
+		Last listing review done on:
+	    @if($customerLastReview != null)
+	    	{{$customerLastReview->updated_at}}
+	    @else
+	    	(No reviews done)
+	    @endif
+	</h5>
+	<h5 class="card-text">Number of times suspended: {{count($customerSuspendedCount)}}</h5>
+	@elseif ($targetUser->user_type == 4)
+	<h5 class="card-text">Number of active properties listed: {{count($listerListings)}}</h5>
+	<h5 class="card-text">Current number of customers: {{count($listerCustomers)}}</h5>
+	<h5 class="card-text">Current number of pending applications: {{count($listerPendingApplications)}}</h5>
+	<h5 class="card-text">Current number of suspended listings: {{count($listerSuspendedListings)}}</h5>
+	<h5 class="card-text">Current number of rejected applications: {{count($listerRejectedApplications)}}</h5>
+	<h5 class="card-text">
+		Last listing application approved on:
+	    @if($listerLastSubmission != null)
+	        {{$listerLastSubmission->created_at}}
+	    @else
+	        (No applications made)
+		@endif
+	</h5>
+	<h5 class="card-text">Number of times suspended: {{count($listerSuspendedCount)}}</h5>
+	@elseif ($targetUser->user_type == 3)
+	<h5 class="card-text">Total number of suspended users: {{count($repUsersSuspended)}}</h5>
+	<h5 class="card-text">Total number of approved listings: {{count($repListingsApproved)}}</h5>
+	<h5 class="card-text">Total number of rejected listing applications: {{count($repListingsRejected)}}</h5>
+	<h5 class="card-text">Total number of suspended listings: {{count($repListingsSuspended)}}</h5>
+	<h5 class="card-text">Total number of deleted listings: {{count($repListingsDeleted)}}</h5>
+	<h5 class="card-text">Number of times suspended: {{count($repUsersSuspended)}}</h5>
+	@elseif ($targetUser->user_type == 2 || $targetUser->user_type == 1)
+	<h5 class="card-text">Total number of users created: {{count($adminUsersCreated)}}</h5>
+	<h5 class="card-text">Total number of suspended users: {{count($adminUsersSuspended)}}</h5>
+	<h5 class="card-text">Total number of approved listings: {{count($adminListingsApproved)}}</h5>
+	<h5 class="card-text">Total number of rejected listing applications: {{count($adminListingsRejected)}}</h5>
+	<h5 class="card-text">Total number of suspended listings: {{count($adminListingsSuspended)}}</h5>
+	<h5 class="card-text">Total number of deleted listings: {{count($adminListingsDeleted)}}</h5>
+	<h5 class="card-text">Number of times suspended: {{count($adminUsersSuspended)}}</h5>
+	@endif
+</div>
+@endsection
+
+@section('col_right')
+
 
 <div class="row">
-    <div class="col-md-4">
-        @if ($targetUser->user_type == 5)
-        <div style="border:1px solid lightgrey; padding:16px">
-            <h4>Account Details</h4>
-            <hr>
-            <h5 class="card-text">
-                <small class="card-text">
-                    Email address: {{$targetUser->email}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Registered on {{$targetUser->created_at}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Account type: 
-                    @if ($targetUser->user_type == 5)
-                        <strong>Customer</strong>
-                    @elseif ($targetUser->user_type == 4)
-                        <strong>Lister</strong>
-                    @elseif ($targetUser->user_type == 3)
-                        <strong>Representative</strong>
-                    @elseif ($targetUser->user_type == 2)
-                        <strong>Super Administrator</strong>
-                    @elseif ($targetUser->user_type == 1)
-                        <strong>System Administrator</strong>
-                    @endif
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Account status: <strong>{{$targetUser->status}}</strong>
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Phone number:
-                    @if ($targetUser->telephone != null)
-                        {{$targetUser->telephone}}
-                    @else
-                        Not set
-                    @endif
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of listing applications made: {{count($customerApplications)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of listing reviews done: {{count($customerReviews)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Last application made on:
-                    @if($customerLastApplication != null)
-                        {{$customerLastApplication->created_at}}
-                    @else
-                        (No applications made)
-                    @endif
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Last listing review done on:
-                    @if($customerLastReview != null)
-                        {{$customerLastReview->updated_at}}
-                    @else
-                        (No reviews done)
-                    @endif
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Number of times suspended: {{count($customerSuspendedCount)}}
-                </small>
-            </h5>
-        </div>
-        @elseif($targetUser->user_type == 4)
-        <div style="border:1px solid lightgrey; padding:16px">
-            <h4>Account Details</h4>
-            <hr>
-            <h5 class="card-text">
-                <small class="card-text">
-                    Email address: {{$targetUser->email}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Registered on {{$targetUser->created_at}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Account type: 
-                    @if ($targetUser->user_type == 5)
-                        <strong>Customer</strong>
-                    @elseif ($targetUser->user_type == 4)
-                        <strong>Lister</strong>
-                    @elseif ($targetUser->user_type == 3)
-                        <strong>Representative</strong>
-                    @elseif ($targetUser->user_type == 2)
-                        <strong>Super Administrator</strong>
-                    @elseif ($targetUser->user_type == 1)
-                        <strong>System Administrator</strong>
-                    @endif
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Account status: <strong>{{$targetUser->status}}</strong>
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Phone number:
-                    @if ($targetUser->telephone != null)
-                        {{$targetUser->telephone}}
-                    @else
-                        Not set
-                    @endif
-                </small>
-            </h5>
-            <hr>
-            <h5 class="card-text">
-                <small>
-                    Number of active properties listed: {{count($listerListings)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Current number of customers: {{count($listerCustomers)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Current number of pending applications: {{count($listerPendingApplications)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Current number of suspended listings: {{count($listerSuspendedListings)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Current number of rejected applications: {{count($listerRejectedApplications)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Last listing application approved on:
-                    @if($listerLastApplication != null)
-                        {{$listerLastApplication->created_at}}
-                    @else
-                        (No applications made)
-                    @endif
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Number of times suspended: {{count($listerSuspendedCount)}}
-                </small>
-            </h5>
-        </div>
-        @elseif($targetUser->user_type == 3)
-        <div style="border:1px solid lightgrey; padding:16px">
-            <h4>Account Details</h4>
-            <hr>
-            <h5 class="card-text">
-                <small class="card-text">
-                    Email address: {{$targetUser->email}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Registered on {{$targetUser->created_at}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Account type: 
-                    @if ($targetUser->user_type == 5)
-                        <strong>Customer</strong>
-                    @elseif ($targetUser->user_type == 4)
-                        <strong>Lister</strong>
-                    @elseif ($targetUser->user_type == 3)
-                        <strong>Representative</strong>
-                    @elseif ($targetUser->user_type == 2)
-                        <strong>Super Administrator</strong>
-                    @elseif ($targetUser->user_type == 1)
-                        <strong>System Administrator</strong>
-                    @endif
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Account status: <strong>{{$targetUser->status}}</strong>
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Phone number:
-                    @if ($targetUser->telephone != null)
-                        {{$targetUser->telephone}}
-                    @else
-                        Not set
-                    @endif
-                </small>
-            </h5>
-            <hr>
-            <h5 class="card-text">
-                <small>
-                    Total number of suspended users: {{count($repUsersSuspended)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of approved listings: {{count($repListingsApproved)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of rejected listing applications: {{count($repListingsRejected)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of suspended listings: {{count($repListingsSuspended)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of deleted listings: {{count($repListingsDeleted)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Number of times suspended: {{count($repSuspendedCount)}}
-                </small>
-            </h5>
-        </div>
-        @elseif($targetUser->user_type == 2 || $targetUser->user_type == 1)
-        <div style="border:1px solid lightgrey; padding:16px">
-            <h4>Account Details</h4>
-            <hr>
-            <h5 class="card-text">
-                <small class="card-text">
-                    Email address: {{$targetUser->email}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Registered on {{$targetUser->created_at}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Account type: 
-                    @if ($targetUser->user_type == 5)
-                        <strong>Customer</strong>
-                    @elseif ($targetUser->user_type == 4)
-                        <strong>Lister</strong>
-                    @elseif ($targetUser->user_type == 3)
-                        <strong>Representative</strong>
-                    @elseif ($targetUser->user_type == 2)
-                        <strong>Super Administrator</strong>
-                    @elseif ($targetUser->user_type == 1)
-                        <strong>System Administrator</strong>
-                    @endif
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Account status: <strong>{{$targetUser->status}}</strong>
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Phone number:
-                    @if ($targetUser->telephone != null)
-                        {{$targetUser->telephone}}
-                    @else
-                        Not set
-                    @endif
-                </small>
-            </h5>
-            <hr>
-            <h5 class="card-text">
-                <small>
-                    Total number of users created: {{count($adminUsersCreated)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of suspended users: {{count($adminUsersSuspended)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of approved listings: {{count($adminListingsApproved)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of rejected listing applications: {{count($adminListingsRejected)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of suspended listings: {{count($adminListingsSuspended)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Total number of deleted listings: {{count($adminListingsDeleted)}}
-                </small>
-            </h5>
-            <h5 class="card-text">
-                <small>
-                    Number of times suspended: {{count($adminSuspendedCount)}}
-                </small>
-            </h5>
-        </div>
-        @endif
-    </div>
-    <div class="col-md-7 col-md-offset-1">
-        <div class="panel panel-info">
-            <div class="panel-heading">Edit account details</div>
-            <div class="panel-body">
-                <form action="/account" method="POST">
-                    {{csrf_field()}}
-                    <div class="form-group">
-                        <label for="name">Account Name</label>
-                        <input class="form-control" type="text" name="name" value="{{$users->name}}" required>
-                        @if ($errors->has('name'))
-                            <span class="help-block">
-                                <strong class="text-danger">{{ $errors->first('name') }}</strong><br>
-                            </span>
-                        @endif
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalLabel">Add Entry</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-4 col-md-offset-0"></div>
+                            <div class="col-md-4 col-md-offset-0">
+                                <form id="formAvatar" method="post" action="" enctype="multipart/form-data">
+                                    {{csrf_field()}}
+                                    <div id="div_img" >
+                                        <input class="file-path-wrapper" accept="image/*" name="btn_submit" id="btn_img" type="file" onchange="loadAvatar(event);"/>
+                                    </div>
+                                </form>
+                                <div class="row">
+                                    <div class="card" style="width:150px;height:150px;margin: auto;border-radius:50%" data-toggle="tooltip" title="Click to change" id="btn_img_faux">
+                                        @if ($targetUser->avatar != null)
+                                        <img style="width:150px;height:150px; display:block;margin-left:auto;margin-right:auto; border-radius:50%"
+                                         src="/images/avatar/{{$targetUser->id}}/{{$targetUser->avatar}}" alt="unable to display image" id="img_avatar">
+                                        @elseif ($targetUser->avatar == null)
+                                        <img style="width:150px;height:150px; display:block;margin-left:auto;margin-right:auto; border-radius:50%"
+                                         src="/images/avatar/avatar.png" alt="unable to display image" id="img_avatar">
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-md-offset-0"></div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="telephone">Phone Number (+254xxxxxxxxx)</label>
-                        <input id="telephone" type="number" class="form-control" name="telephone" value="{{$users->telephone}}"
-                        onfocusout="telephoneValidation(document.getElementById('telephone').value)" required>
-                        @if ($errors->has('telephone'))
-                            <span class="help-block">
-                                <strong class="text-danger">{{ $errors->first('telephone') }}</strong><br>
-                            </span>
-                        @endif
-                    </div>
-                    <input class="btn btn-primary" type="submit" value="Update" name="btn_submit"></input>
-                </form>
-                <hr>
-                <form action="/account" method="POST" enctype="multipart/form-data">
-                    {{csrf_field()}}
-                    <div class="form-group">
-                        <label for="current_password">Current Password</label>
-                        <input class="form-control" type="password" name="current_password" required>
-                        @if ($errors->has('current_password'))
-                            <span class="help-block">
-                                <strong class="text-danger">{{ $errors->first('current_password') }}</strong><br>
-                            </span>
-                        @endif
-                        <label for="password">New Password</label>
-                        <input class="form-control" type="password" name="password" required>
-                        @if ($errors->has('password'))
-                            <span class="help-block">
-                                <strong class="text-danger">{{ $errors->first('password') }}</strong><br>
-                            </span>
-                        @endif
-                        <label for="password_confirmation">Re-enter New Password</label>
-                        <input class="form-control" type="password" name="password_confirmation" required>
-                        @if ($errors->has('password_confirmation'))
-                            <span class="help-block">
-                                <strong class="text-danger">{{ $errors->first('password_confirmation') }}</strong><br>
-                            </span>
-                        @endif
-                    </div>
-                    <input class="btn btn-primary" type="submit" value="Change Password" name="btn_submit"></input>
-                </form>
+                    <hr>
+                    <form method="post" action="/account" enctype="multipart/form-data" onsubmit="return validateDetailsForm();" id="formDetails">
+                        {{csrf_field()}}
+                        <div class="form-group">
+                            <h3>Account Details</h3>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Full name</label>
+                            <div class="alert alert-danger" id="alert_name" hidden></div>
+                            <input id="name" class="form-control" type="text" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <div class="alert alert-danger" id="alert_email" hidden></div>
+                            <input id="email" class="form-control" type="text" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="telephone">Phone Number (+254xxxxxxxxx)</label>
+                            <div class="alert alert-danger" id="alert_phone" hidden></div>
+                            <input id="telephone" type="text" class="form-control" name="telephone">
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username (must be unique)</label>
+                            <div class="alert alert-danger" id="alert_username" hidden></div>
+                            <input id="username" type="text" class="form-control" name="username">
+                        </div>
+                        <div class="form-group">
+                            <input class="btn btn-primary" type="submit" value="Update" name="btn_submit"></input>
+                        </div>
+                    </form>
+                    <hr>
+                    <form method="post" action="/account" enctype="multipart/form-data" onsubmit="return validatePasswordForm();" id="formPassword">
+                        {{csrf_field()}}
+                        <div class="form-group">
+                            <h3>Password</h3>
+                        </div>
+                        <div class="form-group">
+                            <label for="password_current">Current Password</label>
+                            <div class="alert alert-danger" id="alert_password_current" hidden></div>
+                            <input class="form-control" type="password" name="password_current" id="password_current">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">New Password</label>
+                            <div class="alert alert-danger" id="alert_password" hidden></div>
+                            <input class="form-control" type="password" name="password" id="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="password_confirmation">Re-enter New Password</label>
+                            <div class="alert alert-danger" id="alert_password_confirmation" hidden></div>
+                            <input class="form-control" type="password" name="password_confirmation" id="password_confirmation">
+                        </div>
+                        <div class="form-group">
+                            <input class="btn btn-primary" type="submit" value="Change Password" name="btn_submit"></input>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -479,5 +182,8 @@
 @endsection
 
 @section('bottom_scripts')
-    <script src="{{asset('js/telephone-validation.js')}}"></script>
+<script>
+    let authUser = {!! json_encode(Auth::user())!!};
+</script>
+<script src="{{asset('js/account.js')}}"></script>
 @endsection

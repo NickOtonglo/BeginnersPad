@@ -4,6 +4,30 @@
     <title>Manage User | Beginners Pad</title>
 @endsection
 
+@section('admin_actions')
+	@if($targetUser->id !== Auth::user()->id)
+	<div class="btn-group" role="group">
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></button>
+		<ul class="dropdown-menu">
+			@if(Auth::user()->user_type < $targetUser->user_type)
+				@if($targetUser->status == 'inactive')
+				<li class="list-action" id="btn_activate"><a role="button" onclick="">Activate</a></li>
+				@endif
+				@if($targetUser->status == 'active')
+				<li class="list-action" id="btn_suspend"><a role="button" onclick="">Suspend</a></li>
+				@endif
+				@if($targetUser->status == 'suspended')
+				<li class="list-action" id="btn_restore"><a role="button" onclick="">Restore</a></li>
+				@endif
+			@endif
+			@if(Auth::user()->user_type === 1)
+			<li class="list-action" id="btn_delete"><a role="button" onclick="">Delete</a></li>
+			@endif
+		</ul>
+	</div>
+	@endif
+@endsection
+
 @section('col_left')
 <div class="card-big card-block" style="box-shadow:5px 5px 15px grey;padding:30px;">
 	<h5 class="text-muted">Email address: {{$targetUser->email}}</h5>
@@ -71,4 +95,11 @@
 	<h5 class="card-text">Number of times suspended: {{count($adminUsersSuspended)}}</h5>
 	@endif
 </div>
+@endsection
+
+@section('bottom_scripts')
+<script>
+    let user = {!! json_encode($targetUser)!!};
+</script>
+<script src="{{asset('js/user-management-admin-individual.js')}}"></script>
 @endsection

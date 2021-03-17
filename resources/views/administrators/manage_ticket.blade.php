@@ -1,4 +1,4 @@
-@extends('layouts.base_view_ticket')
+@extends('layouts.base_admin_view_ticket')
 
 @section('title')
     <title>Manage Ticket | Beginners Pad</title>

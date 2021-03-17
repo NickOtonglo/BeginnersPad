@@ -103,7 +103,7 @@
             <div class="list-group">
                 <a href="{{route('admin.viewHelpFAQLogs','all')}}" class="list-group-item">FAQ Logs</a>
                 <a href="" class="list-group-item">Help Topics</a>
-                <a href="{{route('admin.viewHelpCategories')}}" class="list-group-item">Help Caegories</a>
+                <a href="{{route('admin.viewHelpCategories')}}" class="list-group-item">Help Categories</a>
             </div>
         </div>
         <div class="col-md-7 col-md-offset-2">

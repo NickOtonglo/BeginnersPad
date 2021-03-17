@@ -81,7 +81,7 @@
                     <div class="modal-body">
                         {{csrf_field()}}
                         <div class="form-group">
-                            <label for="name">User name</label>
+                            <label for="name">Full name</label>
                             <div class="alert alert-danger" id="alert_name" hidden></div>
                             <input id="name" class="form-control" type="text" name="name">
                         </div>
