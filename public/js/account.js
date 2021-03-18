@@ -11,6 +11,42 @@ $('#modal').on('hide.bs.modal',function (e) {
     clearAllAlerts();
 });
 
+$('#modal').on('show.bs.modal',function (e) {
+    populateModal();
+    toggleUpdateButton();
+    togglePasswordButton();
+});
+
+$('#username').on('keydown', function(e) {
+    if (e.key === ' '){
+        return false; 
+    } 
+});
+
+$('#btn_update').on('click',function (e) {
+    if (validateDetailsForm()) {
+        if (confirm("Are you sure you want to update your account information?")) {
+            e.stopPropagation();
+            return true;
+        } else {
+            e.stopPropagation();
+            return false;
+        }
+    }
+});
+
+$('#btn_password').on('click',function (e) {
+    if (validatePasswordForm()) {
+        if (confirm("Are you sure you want to update your account password?")) {
+            e.stopPropagation();
+            return true;
+        } else {
+            e.stopPropagation();
+            return false;
+        }
+    }
+});
+
 hideDetailsAlerts();
 hidePasswordsAlerts();
 
@@ -26,6 +62,7 @@ var loadAvatar = function (event) {
         setTimeout(function() { 
             if (confirm("Are you sure you want to update your avatar?")) {
                 event.stopPropagation();
+                $('#formAvatar').trigger('submit');
                 return true;
             } else {
                 event.stopPropagation();
@@ -39,7 +76,9 @@ var loadAvatar = function (event) {
 };
 
 function populateModal() {
-    
+    $('#name').val(authUser.name);
+    $('#email').val(authUser.email);
+    $('#telephone').val(authUser.telephone);
 }
 
 function validateDetailsForm(){
@@ -83,7 +122,7 @@ function validateDetailsForm(){
             return false;
         } else if (!validatePhone(document.getElementById("telephone").value.trim())) {
             $('#alert_phone').html('<li>Phone number must be in the format "+254XXXXXXXXX"</li>').show();
-            $('#email').addClass('alert alert-danger');
+            $('#telephone').addClass('alert alert-danger');
             return false;
         }  else {
             return true;
@@ -110,13 +149,14 @@ function validatePasswordForm(){
         return false;
     } else {
         if (!validatePassword(document.getElementById("password").value.trim())) {
-            $('#alert_password').html('<li>Password must be of at least 6 characters, and not consist of spaces entirely"</li>').show();
+            $('#alert_password').html('<li>Password must be of at least 6 characters, and consist of no spaces</li>').show();
             $('#password').addClass('alert alert-danger');
             return false;
         } else if (document.getElementById("password").value.trim() != document.getElementById("password_confirmation").value.trim()) {
-            $('#alert_password').html('<li>These passwords do not match!"</li>').show();
+            $('#alert_password').html('<li>These passwords do not match!</li>').show();
             $('#password').addClass('alert alert-danger');
             $('#password_confirmation').addClass('alert alert-danger');
+            return false;
         }  else {
             return true;
         }
@@ -127,18 +167,24 @@ function hideDetailsAlerts(){
     $('#name').on('input', function () {
         $('#alert_name').hide();
         $('#name').removeClass('alert alert-danger');
+        toggleUpdateButton();
     });
     $('#email').on('input', function () {
         $('#alert_email').hide();
         $('#email').removeClass('alert alert-danger');
+        toggleUpdateButton();
     });
     $('#telephone').on('input', function () {
         $('#alert_phone').hide();
         $('#telephone').removeClass('alert alert-danger');
+        toggleUpdateButton();
     });
-    $('#username').on('input', function () {
+    $('#username').on('input', function (e) {
         $('#alert_username').hide();
         $('#username').removeClass('alert alert-danger');
+        // $(this).val($(this).val().replace(/\s+/g, ''));
+        $(this).val($(this).val().replace(/[|&;$%@"<>(){},]/g, ''));
+        //toggleUpdateButton();
     });
 }
 
@@ -146,14 +192,17 @@ function hidePasswordsAlerts(){
     $('#password_current').on('input', function () {
         $('#alert_password_current').hide();
         $('#password_current').removeClass('alert alert-danger');
+        togglePasswordButton();
     });
     $('#password').on('input', function () {
         $('#alert_password').hide();
         $('#password').removeClass('alert alert-danger');
+        togglePasswordButton();
     });
     $('#password_confirmation').on('input', function () {
         $('#alert_password_confirmation').hide();
         $('#password_confirmation').removeClass('alert alert-danger');
+        togglePasswordButton();
     });
 }
 
@@ -172,4 +221,47 @@ function clearAllAlerts(){
     $('#password').removeClass('alert alert-danger');
     $('#alert_password_confirmation').hide();
     $('#password_confirmation').removeClass('alert alert-danger');
+}
+
+function toggleUpdateButton() {
+    if($('#name').val() == authUser.name && $('#email').val() == authUser.email && $('#telephone').val() == authUser.telephone){
+        $('#btn_update').prop('disabled','true');
+    } else {
+        $('#btn_update').prop('disabled',null);
+    }
+}
+
+function togglePasswordButton() {
+    if($('#password_current').val() == '' && $('#password').val() == '' && $('#password_confirmation').val() == ''){
+        $('#btn_password').prop('disabled','true');
+    } else {
+        $('#btn_password').prop('disabled',null);
+    }
+}
+
+function validateEmail(mail){
+    var mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (mail.match(mailFormat)){
+        return true;
+    } else {
+        return false;
+    } 
+}
+
+function validatePhone(phone){
+    var phoneFormat = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,7}$/im;
+    if (phone.match(phoneFormat)){
+        return true;
+    } else {
+        return false;
+    } 
+}
+
+function validatePassword(pass){
+    var password = pass;
+    if (password.length >= 6){
+        return true;
+    } else {
+        return false;
+    }
 }

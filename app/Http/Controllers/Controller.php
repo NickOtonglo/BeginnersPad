@@ -23,12 +23,24 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Image;
 use File;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public function msgRepo($intent){
+        //error_incorrect_password
+        //error_error_occured
+        if ($intent=='error_incorrect_password'){
+            return 'The password you entered is incorrect. Please try again.';
+        }
+        if ($intent=='error_error_occured'){
+            return 'An error occured. Please try again.';
+        }
+    }
 
     public function checkUserState(){
         if (Auth::check() && Auth::user()->status == 'suspended') {
@@ -175,14 +187,18 @@ class Controller extends BaseController
 
                 $this->validate($request,[
                     'name' => 'required|string|max:255',
-                    // 'email' => 'required|string|email|max:255|unique:users',
+                    'email' => 'required|string|email|max:255',Rule::unique('users')->ignore($user->id),
                     'telephone' => 'required|string|size:12',
+                    //'username' => 'required|string|email|max:255|unique:users',
                 ]);
 
                 // User::where('id',$user->id)->update(['name'=>$request->name,'telephone'=>$request->telephone]);
-                $user->name = $request->name;
-                $user->telephone = $request->telephone;
-                $user->save();
+                $input = User::find($user->id);
+                $input->update(['name'=>$request->name,'telephone'=>$request->telephone,'email'=>$request->email]);
+                // $user->name = $request->name;
+                // $user->telephone = $request->telephone;
+                // $user->email = $request->email;
+                // $user->save();
                 return back()->with('message','Account info updated');
                 
                 break;
@@ -191,32 +207,34 @@ class Controller extends BaseController
 
                 $this->validate($request,[
                     // 'email' => 'required|string|email|max:255|unique:users',
-                    'current_password' => 'required',
+                    'password_current' => 'required',
                     'password' => 'required|string|min:6|confirmed|',
                     // 'password' => 'required|string|min:6|confirmed|required_with:password_confirmation|same:password_confirmation',
                     'password_confirmation' => 'required',
                 ]);
 
-                if (Hash::check($request->current_password, $user->password)) {
+                if (Hash::check($request->password_current, $user->password)) {
                     if ($request->password==$request->password_confirmation) {
-                        $user->password = bcrypt($request->password);
-                        $user->save();
+                        // $user->password = bcrypt($request->password);
+                        // $user->save();
+                        $input = User::find($user->id);
+                        $input->update(['password'=>bcrypt($request->password)]);
                         return back()->with('message','Password changed');
                     }
                 } else {
-                    return 'Wrong password!';
+                    return back()->withErrors([$this->msgRepo('error_incorrect_password')]);
                 }
                 
                 break;
 
-            case 'Update Avatar':
+            default:
                 
                 $this->validate($request,[
                     'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
                 ]);
 
-                if ($request->hasFile('post_avatar')) {
-                    $image = $request->file('post_avatar');
+                if ($request->hasFile('btn_submit')) {
+                    $image = $request->file('btn_submit');
 
                     if (!File::exists('images/avatar/'.$user->id.'/')) {
                         File::makeDirectory('images/avatar/'.$user->id.'/',0777,true);
@@ -231,9 +249,9 @@ class Controller extends BaseController
                         $constraint->aspectRatio();
                     })->save($location); 
                     $user->save();
-                    return back();
+                    return back()->with('message','Avatar updated');
                 } else {
-                    return 'An error occured! Please try again.';
+                    return back()->withErrors([$this->msgRepo('error_error_occured')]);
                 }
 
                 break;

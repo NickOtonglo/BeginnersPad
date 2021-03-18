@@ -95,7 +95,7 @@
                         <div class="form-group">
                             <div class="col-md-4 col-md-offset-0"></div>
                             <div class="col-md-4 col-md-offset-0">
-                                <form id="formAvatar" method="post" action="" enctype="multipart/form-data">
+                                <form id="formAvatar" method="post" action="{{route('updateAccountDetails')}}" enctype="multipart/form-data">
                                     {{csrf_field()}}
                                     <div id="div_img" >
                                         <input class="file-path-wrapper" accept="image/*" name="btn_submit" id="btn_img" type="file" onchange="loadAvatar(event);"/>
@@ -117,7 +117,7 @@
                         </div>
                     </div>
                     <hr>
-                    <form method="post" action="/account" enctype="multipart/form-data" onsubmit="return validateDetailsForm();" id="formDetails">
+                    <form method="post" action="{{route('updateAccountDetails')}}" enctype="multipart/form-data" onsubmit="return validateDetailsForm();" id="formDetails">
                         {{csrf_field()}}
                         <div class="form-group">
                             <h3>Account Details</h3>
@@ -125,29 +125,44 @@
                         <div class="form-group">
                             <label for="name">Full name</label>
                             <div class="alert alert-danger" id="alert_name" hidden></div>
+                            @if ($errors->has('name'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('name') }}</strong><br>
+                                </span>
+                            @endif
                             <input id="name" class="form-control" type="text" name="name">
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
                             <div class="alert alert-danger" id="alert_email" hidden></div>
+                            @if ($errors->has('email'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('email') }}</strong><br>
+                                </span>
+                            @endif
                             <input id="email" class="form-control" type="text" name="email">
                         </div>
                         <div class="form-group">
-                            <label for="telephone">Phone Number (+254xxxxxxxxx)</label>
+                            <label for="telephone">Phone Number (254xxxxxxxxx)</label>
                             <div class="alert alert-danger" id="alert_phone" hidden></div>
+                            @if ($errors->has('telephone'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('telephone') }}</strong><br>
+                                </span>
+                            @endif
                             <input id="telephone" type="text" class="form-control" name="telephone">
                         </div>
                         <div class="form-group">
                             <label for="username">Username (must be unique)</label>
                             <div class="alert alert-danger" id="alert_username" hidden></div>
-                            <input id="username" type="text" class="form-control" name="username">
+                            <input id="username" type="text" class="form-control" name="username" onkeyup="/*this.value = this.value.toLowerCase();*/">
                         </div>
                         <div class="form-group">
-                            <input class="btn btn-primary" type="submit" value="Update" name="btn_submit"></input>
+                            <input class="btn btn-primary" type="submit" value="Update" name="btn_submit" id="btn_update"></input>
                         </div>
                     </form>
                     <hr>
-                    <form method="post" action="/account" enctype="multipart/form-data" onsubmit="return validatePasswordForm();" id="formPassword">
+                    <form method="post" action="{{route('updateAccountDetails')}}" enctype="multipart/form-data" onsubmit="return validatePasswordForm();" id="formPassword">
                         {{csrf_field()}}
                         <div class="form-group">
                             <h3>Password</h3>
@@ -155,11 +170,21 @@
                         <div class="form-group">
                             <label for="password_current">Current Password</label>
                             <div class="alert alert-danger" id="alert_password_current" hidden></div>
+                            @if ($errors->has('password_current'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('password_current') }}</strong><br>
+                                </span>
+                            @endif
                             <input class="form-control" type="password" name="password_current" id="password_current">
                         </div>
                         <div class="form-group">
                             <label for="password">New Password</label>
                             <div class="alert alert-danger" id="alert_password" hidden></div>
+                            @if ($errors->has('password'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('password') }}</strong><br>
+                                </span>
+                            @endif
                             <input class="form-control" type="password" name="password" id="password">
                         </div>
                         <div class="form-group">
@@ -168,7 +193,7 @@
                             <input class="form-control" type="password" name="password_confirmation" id="password_confirmation">
                         </div>
                         <div class="form-group">
-                            <input class="btn btn-primary" type="submit" value="Change Password" name="btn_submit"></input>
+                            <input class="btn btn-primary" type="submit" value="Change Password" name="btn_submit" id="btn_password"></input>
                         </div>
                     </form>
                 </div>

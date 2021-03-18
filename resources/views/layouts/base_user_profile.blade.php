@@ -1,6 +1,22 @@
 @extends('layouts.base_no_panel')
 
 @section('content')
+<div class="row">
+    <div class="container">
+        @if(session()->has('message'))
+        <div class="alert alert-success alert-dismissible">
+            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> {{ session()->get('message') }}
+        </div>
+        @endif
+        @foreach ($errors->all() as $error)
+        <div class="alert alert-danger alert-dismissible">
+            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{ $errors->first() }}
+        </div>
+        @endforeach
+    </div>
+</div>
 <div class="row" style="margin: 30px;">
     <div class="container">
         <div class="card-big card-block" style="box-shadow:5px 5px 15px grey;padding:30px;">
