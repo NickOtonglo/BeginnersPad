@@ -18,7 +18,7 @@
 	<h5 class="text-muted">
 	    Phone number:
 	    @if ($targetUser->telephone != null)
-	        {{$targetUser->telephone}}
+	        +{{$targetUser->telephone}}
 	    @else
 	        Not set
 	    @endif
@@ -74,7 +74,7 @@
 	<h5 class="card-text">Total number of rejected listing applications: {{count($adminListingsRejected)}}</h5>
 	<h5 class="card-text">Total number of suspended listings: {{count($adminListingsSuspended)}}</h5>
 	<h5 class="card-text">Total number of deleted listings: {{count($adminListingsDeleted)}}</h5>
-	<h5 class="card-text">Number of times suspended: {{count($adminUsersSuspended)}}</h5>
+	<h5 class="card-text">Number of times suspended: {{count($adminUsersSuspended)}}</h5> <!--incorrect-->
 	@endif
 </div>
 @endsection
@@ -111,6 +111,11 @@
                                          src="/images/avatar/avatar.png" alt="unable to display image" id="img_avatar">
                                         @endif
                                     </div>
+                                    <form id="formNoAvatar" method="post" action="{{route('updateAccountDetails')}}" enctype="multipart/form-data">
+                                        {{csrf_field()}}
+                                        <input class="btn btn-sm btn-danger btn-top-delete btn-delete" style="border-radius:50%;margin: 25px" type="submit" value="X" name="btn_submit" data-toggle="tooltip"
+                                            title="Remove" id="btn_remove_avatar">
+                                    </form>
                                 </div>
                             </div>
                             <div class="col-md-4 col-md-offset-0"></div>

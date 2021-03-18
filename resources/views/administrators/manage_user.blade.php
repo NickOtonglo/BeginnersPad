@@ -36,7 +36,7 @@
 	<h5 class="text-muted">
 	    Phone number:
 	    @if ($targetUser->telephone != null)
-	        {{$targetUser->telephone}}
+	        +{{$targetUser->telephone}}
 	    @else
 	        Not set
 	    @endif
@@ -92,7 +92,7 @@
 	<h5 class="card-text">Total number of rejected listing applications: {{count($adminListingsRejected)}}</h5>
 	<h5 class="card-text">Total number of suspended listings: {{count($adminListingsSuspended)}}</h5>
 	<h5 class="card-text">Total number of deleted listings: {{count($adminListingsDeleted)}}</h5>
-	<h5 class="card-text">Number of times suspended: {{count($adminUsersSuspended)}}</h5>
+	<h5 class="card-text">Number of times suspended: {{count($adminUsersSuspended)}}</h5> <!--incorrect-->
 	@endif
 </div>
 @endsection

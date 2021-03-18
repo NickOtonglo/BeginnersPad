@@ -1,3 +1,7 @@
+if (authUser.avatar == null){
+    $('#btn_remove_avatar').hide();
+}
+
 $('#btn_edit_profile').on('click',function (e) {
     $('#div_img').hide();
     $('#modal').modal('show');
@@ -44,6 +48,17 @@ $('#btn_password').on('click',function (e) {
             e.stopPropagation();
             return false;
         }
+    }
+});
+
+$('#btn_remove_avatar').on('click',function (e) {
+    if (confirm("Are you sure you want to remove your avatar?")) {
+        e.stopPropagation();
+        $('#formNoAvatar').trigger('submit');
+        return true;
+    } else {
+        e.stopPropagation();
+        return false;
     }
 });
 

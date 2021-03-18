@@ -188,7 +188,7 @@ class Controller extends BaseController
                 $this->validate($request,[
                     'name' => 'required|string|max:255',
                     'email' => 'required|string|email|max:255',Rule::unique('users')->ignore($user->id),
-                    'telephone' => 'required|string|size:12',
+                    'telephone' => 'required|string|min:10|max:13',
                     //'username' => 'required|string|email|max:255|unique:users',
                 ]);
 
@@ -225,6 +225,22 @@ class Controller extends BaseController
                     return back()->withErrors([$this->msgRepo('error_incorrect_password')]);
                 }
                 
+                break;
+
+            case 'X':
+                //check if user profile dir exists
+                if (File::exists('images/avatar/'.$user->id.'/')) {
+                    $fileName = $user->avatar;
+                    $location = public_path('images/avatar/'.$user->id.'/'.$fileName);
+                    unlink($location);
+                    $input = User::find($user->id);
+                    $input->update(['avatar'=>null]);
+
+                    return back()->with('message','Avatar removed');
+                } else {
+                    return back()->withErrors([$this->msgRepo('error_error_occured')]);
+                }
+
                 break;
 
             default:
