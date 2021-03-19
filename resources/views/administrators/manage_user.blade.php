@@ -84,7 +84,7 @@
 	<h5 class="card-text">Total number of rejected listing applications: {{count($repListingsRejected)}}</h5>
 	<h5 class="card-text">Total number of suspended listings: {{count($repListingsSuspended)}}</h5>
 	<h5 class="card-text">Total number of deleted listings: {{count($repListingsDeleted)}}</h5>
-	<h5 class="card-text">Number of times suspended: {{count($repUsersSuspended)}}</h5>
+	<h5 class="card-text">Number of times suspended: {{count($repSuspendedCount)}}</h5>
 	@elseif ($targetUser->user_type == 2 || $targetUser->user_type == 1)
 	<h5 class="card-text">Total number of users created: {{count($adminUsersCreated)}}</h5>
 	<h5 class="card-text">Total number of suspended users: {{count($adminUsersSuspended)}}</h5>
@@ -92,7 +92,9 @@
 	<h5 class="card-text">Total number of rejected listing applications: {{count($adminListingsRejected)}}</h5>
 	<h5 class="card-text">Total number of suspended listings: {{count($adminListingsSuspended)}}</h5>
 	<h5 class="card-text">Total number of deleted listings: {{count($adminListingsDeleted)}}</h5>
-	<h5 class="card-text">Number of times suspended: {{count($adminUsersSuspended)}}</h5> <!--incorrect-->
+		@if($targetUser->user_type == 2)
+		<h5 class="card-text">Number of times suspended: {{count($adminSuspendedCount)}}</h5>
+		@endif
 	@endif
 </div>
 @endsection

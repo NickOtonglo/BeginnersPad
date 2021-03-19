@@ -44,23 +44,53 @@
                 <tbody>
                     @forelse($tickets as $ticket)
                     @if($ticket->assigned_to != null)
-                    <tr class="row-clickable" role="button" onclick="setPriority('{{$ticket->helpCategory->priority}}',this);
-                    setAssignedTo('{{$ticket->assignedToUser->name}}',this);
-                    showViewUser('{{$ticket->user}}',this);
-                    populateActionForm('{{$ticket}}',this);">
+                        @if($ticket->assignedToUser != null)
+                            @if($ticket->helpCategory != null)
+                            <tr class="row-clickable" role="button" onclick="setPriority('{{$ticket->helpCategory->priority}}',this);
+                                setAssignedTo('{{$ticket->assignedToUser->name}}',this);
+                                showViewUser('{{$ticket->user}}',this);
+                                populateActionForm('{{$ticket}}',this);">
+                            @else
+                            <tr class="row-clickable" role="button" onclick="setAssignedTo('{{$ticket->assignedToUser->name}}',this);
+                                showViewUser('{{$ticket->user}}',this);
+                                populateActionForm('{{$ticket}}',this);">
+                            @endif
+                        @else
+                            @if($ticket->helpCategory != null)
+                            <tr class="row-clickable" role="button" onclick="setPriority('{{$ticket->helpCategory->priority}}',this);
+                                showViewUser('{{$ticket->user}}',this);
+                                populateActionForm('{{$ticket}}',this);">
+                            @else
+                            <tr class="row-clickable" role="button" onclick="showViewUser('{{$ticket->user}}',this);
+                                populateActionForm('{{$ticket}}',this);">
+                            @endif
+                        @endif
                     @else
-                    <tr class="row-clickable" role="button" onclick="setPriority('{{$ticket->helpCategory->priority}}',this);
-                    showViewUser('{{$ticket->user}}',this);
-                    populateActionForm('{{$ticket}}',this);">
+                        @if($ticket->helpCategory != null)
+                        <tr class="row-clickable" role="button" onclick="setPriority('{{$ticket->helpCategory->priority}}',this);
+                            showViewUser('{{$ticket->user}}',this);
+                            populateActionForm('{{$ticket}}',this);">
+                        @else
+                        <tr class="row-clickable" role="button" onclick="showViewUser('{{$ticket->user}}',this);
+                            populateActionForm('{{$ticket}}',this);">
+                        @endif
                     @endif
                         <th id="t_body_id" scope="row">{{$ticket->id}}</th>
                         <td id="t_body_email">{{$ticket->email}}</td>
                         <td id="t_body_reg">{{$ticket->is_registered}}</td>
                         <td id="t_body_category">{{$ticket->topic}}</td>
+                        @if($ticket->helpCategory != null)
                         <td id="t_body_priority">{{$ticket->helpCategory->priority}}</td>
+                        @else
+                        <td id="t_body_priority">invalid</td>
+                        @endif
                         <td id="t_body_status">{{$ticket->status}}</td>
                         @if($ticket->assigned_to != null)
-                        <td id="t_body_assigned">{{$ticket->assignedToUser->name}}</td>
+                            @if($ticket->assignedToUser != null)
+                            <td id="t_body_assigned">{{$ticket->assignedToUser->name}}</td>
+                            @else
+                            <td id="t_body_assigned">invalid [id = {{$ticket->assigned_to}}]</td>
+                            @endif
                         @else
                         <td id="t_body_assigned">Not assigned</td>
                         @endif

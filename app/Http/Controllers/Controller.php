@@ -162,9 +162,10 @@ class Controller extends BaseController
             $repListingsRejected = ListingAdminLog::where('admin_id',$id)->where('action','rejected')->get();
             $repListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
             $repListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
+            $repSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
 
             return view('layouts.account',compact('targetUser','repUsersSuspended','repListingsApproved','repListingsRejected',
-                'repListingsSuspended','repListingsDeleted'));
+                'repListingsSuspended','repListingsDeleted','repSuspendedCount'));
         } else if ($targetUser->user_type == 2 || $targetUser->user_type == 1){
             $adminUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
             $adminListingsApproved = ListingAdminLog::where('admin_id',$id)->where('action','approved')->get();
@@ -172,9 +173,10 @@ class Controller extends BaseController
             $adminListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
             $adminListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
             $adminUsersCreated = UserManagementLog::where('admin_id',$id)->where('status','inactive')->get();
+            $adminSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
 
             return view('layouts.account',compact('targetUser','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
-                'adminListingsSuspended','adminListingsDeleted','adminUsersCreated'));
+                'adminListingsSuspended','adminListingsDeleted','adminUsersCreated','adminSuspendedCount'));
         }
     }
 

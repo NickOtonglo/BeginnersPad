@@ -215,7 +215,7 @@ class AdminController extends Controller
             if($action->admin_level >= $utype){
                 if($request->listing_action == 'suspend' || $request->listing_action == 'reject'){
                     if($request->action_reason == ''){
-                        return $this->msgRepo('permission_denied_reason_required');
+                        return back()->withErrors([$this->msgRepo('permission_denied_reason_required')]);
                     } else {
                         $listing->update(['status'=>$request->listing_action.'ed']);
                         $actionLog->save();
@@ -227,7 +227,7 @@ class AdminController extends Controller
                     return redirect()->back()->with('message', 'Listing '.$request->listing_action.'d');
                 }
             } else {
-                return $this->msgRepo('permission_denied_not_authorised');
+                return back()->withErrors([$this->msgRepo('permission_denied_not_authorised')]);
             }
 
             // return redirect()->back()->with('message','Successful');
@@ -339,7 +339,7 @@ class AdminController extends Controller
                 $bookmark->delete();
                 return redirect()->back()->with('message', 'Bookmark removed');
             } else {
-                return $this->msgRepo('permission_denied_not_authorised');
+                return back()->withErrors([$this->msgRepo('permission_denied_not_authorised')]);
             }   
         } else {
             $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
@@ -577,7 +577,7 @@ class AdminController extends Controller
 
             if ($user->user_type==3 || $user->user_type==2 || $user->user_type==1) {
                 if ($targetUser == ''){
-                    return $this->msgRepo('error_user_does_not_exist');
+                    return back()->withErrors([$this->msgRepo('error_user_does_not_exist')]);
                 } else {
                     switch ($targetUser->user_type){
                         case 5:
@@ -639,9 +639,10 @@ class AdminController extends Controller
                 $repListingsRejected = ListingAdminLog::where('admin_id',$id)->where('action','rejected')->get();
                 $repListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
                 $repListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
+                $repSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
 
                 return view('administrators.manage_user',compact('targetUser','repUsersSuspended','repListingsApproved','repListingsRejected',
-                    'repListingsSuspended','repListingsDeleted'));
+                    'repListingsSuspended','repListingsDeleted','repSuspendedCount'));
             } else if ($type == 2 || $type == 1){
                 $adminUsersSuspended = UserManagementLog::where('admin_id',$id)->where('status','suspended')->get();
                 $adminListingsApproved = ListingAdminLog::where('admin_id',$id)->where('action','approved')->get();
@@ -649,12 +650,13 @@ class AdminController extends Controller
                 $adminListingsSuspended = ListingAdminLog::where('admin_id',$id)->where('action','suspended')->get();
                 $adminListingsDeleted = ListingAdminLog::where('admin_id',$id)->where('action','deleted')->get();
                 $adminUsersCreated = UserManagementLog::where('admin_id',$id)->where('status','inactive')->get();
+                $adminSuspendedCount = UserManagementLog::where('user_id',$id)->where('status','suspended')->get();
 
                 return view('administrators.manage_user',compact('targetUser','adminUsersSuspended','adminListingsApproved','adminListingsRejected',
-                    'adminListingsSuspended','adminListingsDeleted','adminUsersCreated'));
+                    'adminListingsSuspended','adminListingsDeleted','adminUsersCreated','adminSuspendedCount'));
             }
         } else {
-            $this->msgRepo('permission_denied_not_authorised');
+            return back()->withErrors([$this->msgRepo('permission_denied_not_authorised')]);
         }
             
     }
@@ -703,7 +705,7 @@ class AdminController extends Controller
             
             return redirect()->back();
         } else {
-            return $this->msgRepo('permission_denied_not_authorised');
+            return back()->withErrors([$this->msgRepo('permission_denied_not_authorised')]);
         } 
     }
 
@@ -723,7 +725,8 @@ class AdminController extends Controller
             switch ($request->input('btn_action')) {
                 case 'Pick Ticket':
                     if($ticket->status == "pending"){
-                        redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                        //redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                        redirect()->back()->withErrors([$this->msgRepo('error_not_allowed')]);
                     } else
                     $updateTicket->status = "pending";
                     $updateTicket->assigned_to = $user->id;
@@ -733,7 +736,8 @@ class AdminController extends Controller
                 
                 case 'Release Ticket':
                     if($ticket->status == "open"){
-                        redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                        //redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                        redirect()->back()->withErrors([$this->msgRepo('error_not_allowed')]);
                     } else
                     $updateTicket->status = "open";
                     $updateTicket->assigned_to = null;
@@ -744,7 +748,8 @@ class AdminController extends Controller
 
                 case "Close as 'Resolved'":
                     if($ticket->status == "resolved"){
-                        redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                        //redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                        redirect()->back()->withErrors([$this->msgRepo('error_not_allowed')]);
                     } else
                     $updateTicket->status = "resolved";
                     $updateTicket->assigned_to = null;
@@ -754,7 +759,8 @@ class AdminController extends Controller
 
                 case 'Close Ticket':
                     if($ticket->status == "closed"){
-                        redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                        //redirect()->back()->withErrors(['Error', $this->msgRepo('error_not_allowed')]);
+                        redirect()->back()->withErrors([$this->msgRepo('error_not_allowed')]);
                     } else
                     $updateTicket->status = "closed";
                     $updateTicket->assigned_to = $user->id;
@@ -767,7 +773,7 @@ class AdminController extends Controller
                     break;
             }
         } else {
-            return $this->msgRepo('permission_denied_not_authorised');
+            return back()->withErrors([$this->msgRepo('permission_denied_not_authorised')]);
         }
     }
 
@@ -813,7 +819,7 @@ class AdminController extends Controller
             $logs = HelpTicketLog::where('ticket_id',$id)->orderBy('created_at','DESC')->get();
             return view('administrators.manage_ticket',compact('ticket','logs'));
         } else {
-
+            return back()->withErrors([$this->msgRepo('permission_denied_not_authorised')]);
         }
     }
 
@@ -951,7 +957,7 @@ class AdminController extends Controller
 
             // return redirect()->back()->with('message','Category added');
         } else {
-            return $this->msgRepo('permission_denied_not_authorised');
+            return back()->withErrors([$this->msgRepo('permission_denied_not_authorised')]);
         }
     }
 
@@ -1074,7 +1080,7 @@ class AdminController extends Controller
 
             return $this->createHelpFAQLogs($entry,'create');
         } else {
-            return $this->msgRepo('permission_denied_not_authorised');
+            return back()->withErrors([$this->msgRepo('permission_denied_not_authorised')]);
         }
     }
 
@@ -1092,7 +1098,7 @@ class AdminController extends Controller
 
             return $this->createHelpFAQLogs($entry,'update');
         } else {
-            return $this->msgRepo('permission_denied_not_authorised');
+            return back()->withErrors([$this->msgRepo('permission_denied_not_authorised')]);
         }
     }
 
@@ -1109,7 +1115,7 @@ class AdminController extends Controller
 
             return $this->createHelpFAQLogs($entry,'delete');
         } else {
-            return $this->msgRepo('permission_denied_not_authorised');
+            return back()->withErrors([$this->msgRepo('permission_denied_not_authorised')]);
         }
     }
 

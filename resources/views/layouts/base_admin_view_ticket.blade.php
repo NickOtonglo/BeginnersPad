@@ -37,10 +37,14 @@
     </div>
     <div>
         @if($ticket->assigned_to != null)
-            @if($ticket->assignedToUser->user_type > Auth::user()->user_type)
-            <div>Assigned to: <a href="{{route('admin.viewUser',$ticket->assignedToUser->id)}}" role="button"><strong>{{$ticket->assignedToUser->name}}</strong></a></div>
+            @if($ticket->assignedToUser != null)
+                @if($ticket->assignedToUser->user_type > Auth::user()->user_type)
+                <div>Assigned to: <a href="{{route('admin.viewUser',$ticket->assignedToUser->id)}}" role="button"><strong>{{$ticket->assignedToUser->name}}</strong></a></div>
+                @else
+                Assigned to: <strong>{{$ticket->assignedToUser->name}}</strong>
+                @endif
             @else
-            Assigned to: <strong>{{$ticket->assignedToUser->name}}</strong>
+            Assigned to: <strong>invalid [id ={{$ticket->assigned_to}}]</strong>
             @endif
         @endif
     </div>
