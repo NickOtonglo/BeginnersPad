@@ -21,27 +21,37 @@
 
 @section ('col_left')
 <div class="jumbotron">
-    <div class="flex-desc"><h3>Frequently asked questions</h3></div>
-    <dl>
-        @forelse($faqs as $faq)
-        <dt>{{$faq->question}}?</dt>
-        <dd>{{$faq->answer}}.</dd>
-        @empty
-        <dd>Unavailable</dd>
-        @endforelse
-    </dl>
+    <div class="row" style="margin: 10px;">
+        <div class="flex-desc"><h3>Frequently asked questions</h3></div>
+        <dl>
+            @forelse($faqs as $faq)
+            <dt>{{$faq->question}}?</dt>
+            <dd>{{$faq->answer}}.</dd>
+            @empty
+            <dd>Unavailable</dd>
+            @endforelse
+        </dl>
+    </div>
+    <div class="row" style="margin: 5px;">
+        <a class="pull-right" style="color:deepskyblue;text-decoration: underline deepskyblue;" href="{{route('helpFAQ')}}">View all FAQs</a>
+    </div>
 </div>
 
 <div class="jumbotron">
-    <div class="flex-desc"><h3>Help topics</h3></div>
-    <dl>
-        @forelse($faqs as $faq)
-        <dt>{{$faq->question}}?</dt>
-        <dd>{{$faq->answer}}.</dd>
-        @empty
-        <dd>Unavailable</dd>
-        @endforelse
-    </dl>
+    <div class="row" style="margin: 10px;">
+        <div class="flex-desc"><h3>Help topics</h3></div>
+        <dl>
+            @forelse($topics as $topic)
+            <dt>{{$topic->title}}?</dt>
+            <dd>{{$topic->text}}.</dd>
+            @empty
+            <dd>Unavailable</dd>
+            @endforelse
+        </dl>
+    </div>
+    <div class="row" style="margin: 5px;">
+        <a class="pull-right" style="color:deepskyblue;text-decoration: underline deepskyblue;" href="">View all help topics</a>
+    </div>
 </div>
 @endsection
 

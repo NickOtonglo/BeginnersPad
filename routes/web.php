@@ -34,6 +34,7 @@ Route::get('/listings/{listings}/view','Controller@view')->name('listing.view');
 
 Route::get('/listings/{listings}/reviews','Controller@viewReviews')->name('listing.viewReviews');
 Route::get('/help','Controller@help')->name('help');
+Route::get('/help/faq','Controller@helpFAQ')->name('helpFAQ');
 Route::post('/help','Controller@createTicket')->name('createTicket');
 
 Route::group(['middleware'=>'auth'],function(){

@@ -16,6 +16,7 @@ use App\HelpTicket;
 use App\FAQ;
 use App\ListingStatus;
 use App\HelpCategory;
+use App\Topic;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -277,18 +278,19 @@ class Controller extends BaseController
     }
 
     public function help(){
-        $faqs = FAQ::all();
+        $faqs = FAQ::paginate(3);
         $helpCats = HelpCategory::all();
+        $topics = Topic::where('category','help')->paginate(3);
         if (!Auth::user()==null) {
             $user_type = Auth::user()->user_type;
             if ($user_type == 3 || $user_type == 2 || $user_type == 1) {
                 return $this->adminHelp();
             } else {
-                return view('layouts.help',compact('faqs','helpCats'));
+                return view('layouts.help',compact('faqs','helpCats','topics'));
             }
         }
         else if (Auth::user()==null) {
-            return view('layouts.help',compact('faqs','helpCats'));
+            return view('layouts.help',compact('faqs','helpCats','topics'));
         }
     }
 
@@ -296,6 +298,11 @@ class Controller extends BaseController
         $tickets = HelpTicket::orderBy('created_at','DESC')->get();
         $users = User::all();
         return view('administrators.tickets_all',compact('tickets','users'));
+    }
+
+    public function helpFAQ(){
+        $faqs = FAQ::get();
+        return view('layouts.help_faq',compact('faqs'));
     }
 
     public function createTicket(Request $request){
@@ -366,12 +373,14 @@ class Controller extends BaseController
         $userType = Auth::user()->user_type;
         if ($userType == 4 || $userType == 5) {
             $ticket = HelpTicket::where('id',$id)->first();
-            $user = User::where('email',$ticket->email)->first();
-            $admin = User::where('id',$ticket->assigned_to)->first();
-            $reps = User::where('user_type',3)->get();
-            return view('layouts.view_ticket',compact('ticket','user','admin','reps'));
+            
+            if ($ticket->user == Auth::user()){
+                return view('layouts.view_ticket',compact('ticket'));
+            } else {
+                return $this->viewTicketCategory('all');
+            }
         } else {
-
+            return $this->help();
         }
     }
 
