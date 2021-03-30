@@ -1465,4 +1465,15 @@ class AdminController extends Controller
 
     }
 
+    public function listTopics(){
+        if (!$this->checkUserState()) {
+            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+            Auth::logout();
+        } else
+
+        $entries = '';
+        
+        return view('administrators.topics_all',compact('entries'));
+    }
+
 }

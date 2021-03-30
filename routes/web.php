@@ -134,6 +134,8 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::put('/manage-zone/{zone}/{entry}/edit','AdminController@updateZoneEntry')->name('admin.updateZoneEntry');
 	Route::delete('/manage-zone/{zone}/{entry}/edit','AdminController@deleteZoneEntry')->name('admin.deleteZoneEntry');
 
+	Route::get('/topics','AdminController@listTopics')->name('admin.topics');
+
 	//SuperAdministrator Routes
 	Route::get('/manage-users/create','SuperAdminController@createUser')->name('superAdmin.createUser');
 	Route::post('/manage-users/create','SuperAdminController@storeUser')->name('superAdmin.storeUser');

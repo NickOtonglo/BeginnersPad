@@ -65,6 +65,9 @@
               <li class="{{ Route::currentRouteNamed('admin.zones') ? 'active' : '' }}">
                 <a href="{{route('admin.zones')}}">Zones</a>
               </li>
+              <li class="{{ Route::currentRouteNamed('admin.topics') ? 'active' : '' }}">
+                <a href="{{route('admin.topics')}}">Topics</a>
+              </li>
               <li class="">
                 <a href="{{route('listings.list')}}">Reports</a>
               </li>
