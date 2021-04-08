@@ -3968,30 +3968,6 @@ input[type="button"].btn-block {
   }
 }
 
-.card-big {
-  position: relative;
-  display: block;
-  margin-bottom: 0.75rem;
-  background-color: #fff;
-  border-radius: 0.25rem;
-  border: 1px solid rgba(0, 0, 0, 0.125);
-}
-
-.card-big-clickable {
-  position: relative;
-  display: block;
-  margin-bottom: 0.75rem;
-  background-color: #fff;
-  border-radius: 0.25rem;
-  transition: all 0.5s ease;
-  border: 1px solid rgba(0, 0, 0, 0.125);
-}
-
-.card-big-clickable:hover {
-  margin-top: -5px;
-  box-shadow: 0 20px 30px 0 rgba(0, 0, 0, 0.2);
-}
-
 .card {
   position: relative;
   display: block;

@@ -263,7 +263,7 @@
                     <form action="/manage-zone/{{$zone->id}}/{{$entry->id}}/edit" method="post" enctype="multipart/form-data" >
                         {{csrf_field()}}
                         {{method_field('DELETE')}}
-                        <input class="btn btn-sm btn-danger btn-top-delete btn-delete" type="submit" value="x" name="btn_delete" data-toggle="tooltip" title="Delete" id="btnDelete">
+                        <input class="btn btn-sm btn-outline-danger btn-top-delete btn-delete" type="submit" value="x" name="btn_delete" data-toggle="tooltip" title="Delete" id="btnDelete">
                     </form>
                     <div class="row">
                         <div class="col-md-12"><h4 class="text-capitalize">{{$entry->name}}</h4></div>

@@ -110,3 +110,86 @@ ul ul a {
     display: flex;
     width: 100%;
 }
+
+.card-big {
+  position: relative;
+  display: block;
+  margin-bottom: 0.75rem;
+  background-color: #fff;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-big-clickable {
+  position: relative;
+  display: block;
+  margin-bottom: 0.75rem;
+  background-color: #fff;
+  border-radius: 0.25rem;
+  transition: all 0.5s ease;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-big-clickable:hover {
+  margin-top: -5px;
+  box-shadow: 0 20px 30px 0 rgba(0, 0, 0, 0.2);
+}
+
+.btn-top-delete, .btn-top-delete-xs {
+    border-radius: 15%;
+}
+
+.btn-top-delete {
+    position: absolute;
+    top:-10px;
+    right:-10px;
+}
+
+.btn-top-delete-xs {
+    position: absolute;
+    top:-5px;
+    right:-5px;
+}
+
+.btn-outline-danger {
+    color: #d9534f;
+    background-image: none;
+    background-color: white;
+    border-color: #d9534f;
+  }
+  
+  .btn-outline-danger:hover {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d9534f;
+  }
+  
+  .btn-outline-danger:focus, .btn-outline-danger.focus {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d9534f;
+  }
+  
+  .btn-outline-danger:active, .btn-outline-danger.active,
+  .open > .btn-outline-danger.dropdown-toggle {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d9534f;
+  }
+  
+  .btn-outline-danger:active:hover, .btn-outline-danger:active:focus, .btn-outline-danger:active.focus, .btn-outline-danger.active:hover, .btn-outline-danger.active:focus, .btn-outline-danger.active.focus,
+  .open > .btn-outline-danger.dropdown-toggle:hover,
+  .open > .btn-outline-danger.dropdown-toggle:focus,
+  .open > .btn-outline-danger.dropdown-toggle.focus {
+    color: #fff;
+    background-color: #ac2925;
+    border-color: #8b211e;
+  }
+  
+  .btn-outline-danger.disabled:focus, .btn-outline-danger.disabled.focus, .btn-outline-danger:disabled:focus, .btn-outline-danger:disabled.focus {
+    border-color: #eba5a3;
+  }
+  
+  .btn-outline-danger.disabled:hover, .btn-outline-danger:disabled:hover {
+    border-color: #eba5a3;
+  }

@@ -114,7 +114,7 @@
                     <form action="{{route('admin.deleteHelpFAQ',$entry->id)}}" method="post" enctype="multipart/form-data" id="formEntryDelete" onsubmit="return true">
                         {{csrf_field()}}
                         {{method_field('DELETE')}}
-                        <input class="btn btn-sm btn-danger btn-top-delete btn-delete" type="submit" value="x" name="btn_action" data-toggle="tooltip"
+                        <input class="btn btn-sm btn-outline-danger btn-top-delete btn-delete" type="submit" value="x" name="btn_action" data-toggle="tooltip"
                          title="Delete" id="btn_delete">
                     </form>
                     <div role="button" data-toggle="modal" data-target="#modalUpdateEntry" onclick="populateEntryUpdateForm('{{$entry->id}}',this);">
