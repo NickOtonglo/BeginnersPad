@@ -19,9 +19,9 @@
         </div>
     @endforeach
 	<div class="pull-right btn-group" role="group">
-        <a class="btn btn-mid btn-default" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">My Management History</a>
+        <a class="btn btn-sm btn-outline-secondary" role="button" id="btn_history" href="{{route('admin.viewUserManagementLogs',['target'=>''])}}">My Management History</a>
         @if (Auth::user()->user_type === 2 || Auth::user()->user_type === 1)
-        <a class="btn btn-mid btn-info" role="button" id="btn_add_user">+ Add User</a>
+        <a class="btn btn-sm btn-outline-primary" role="button" id="btn_add_user">+ Add User</a>
         @endif
 	</div>
 </div>
@@ -29,9 +29,9 @@
 @endsection
 
 @section ('col_centre')
-<div class="panel panel-default">
-    <div class="panel-heading text-capitalize">All Users</div>
-    <div class="panel-body">
+<div class="card">
+    <div class="card-header text-capitalize">All Users</div>
+    <div class="card-body">
         <div class="post">
             <table class="table table-hover">
                 <thead>
@@ -70,42 +70,42 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="modalNewUser" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+    <div class="modal fade" id="modalNewUser" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="modalLabel">Create User</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" action="{{route('superAdmin.storeUser')}}" enctype="multipart/form-data" onsubmit="return validateCreateUserForm();" id="formCreate">
                     <div class="modal-body">
                         {{csrf_field()}}
-                        <div class="form-group">
-                            <label for="name">Full name</label>
-                            <div class="alert alert-danger" id="alert_name" hidden></div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full name</label>
+                            <div class="alert alert-danger" id="alert_name" role="alert" hidden></div>
                             <input id="name" class="form-control" type="text" name="name">
                         </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
                             <div class="alert alert-danger" id="alert_email" hidden></div>
                             <input id="email" class="form-control" type="text" name="email">
                         </div>
-                        <div class="form-group">
-                            <label for="telephone">Phone Number (+254xxxxxxxxx)</label>
+                        <div class="mb-3">
+                            <label for="telephone" class="form-label">Phone Number (+254xxxxxxxxx)</label>
                             <div class="alert alert-danger" id="alert_phone" hidden></div>
                             <input id="telephone" type="text" class="form-control" name="telephone">
                         </div>
                         @if (Auth::user()->user_type === 2)
-                        <div class="form-group">
-                            <label for="user_type">Account type</label>
+                        <div class="mb-3">
+                            <label for="user_type" class="form-label">Account type</label>
                             <div class="alert alert-danger" id="alert_type" hidden></div>
                             <select class="form-control" id="user_type" name="user_type">
                                 <option value="3">Representative</option>
                             </select>
                         </div>
                         @elseif (Auth::user()->user_type === 1)
-                        <div class="form-group">
-                            <label for="user_type">Account type</label>
+                        <div class="mb-3">
+                            <label for="user_type" class="form-label">Account type</label>
                             <div class="alert alert-danger" id="alert_type" hidden></div>
                             <select class="form-control" id="user_type" name="user_type">
                                 <option value="3">Representative</option>
@@ -113,20 +113,18 @@
                             </select>
                         </div>
                         @endif
-                        <div class="form-group">
-                            <label for="password">Password</label>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
                             <div class="alert alert-danger" id="alert_password" hidden></div>
                             <div class="input-group">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" id="btn_generate_password">Generate</button>
-                                </span>
+                                <button class="btn btn-outline-secondary" type="button" id="btn_generate_password">Generate</button>
                                 <input type="text" class="form-control" placeholder="" id="password" name="password" type="password" autocomplete="off">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <input class="btn btn-primary" type="submit" value="Create" id="btn_create"></input>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <input class="btn btn-outline-primary" type="submit" value="Create" id="btn_create"></input>
                     </div>
                 </form>
             </div>
@@ -135,60 +133,60 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="modalViewUser" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+    <div class="modal fade" id="modalViewUser" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="modalLabel">View User</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form onsubmit="" method="post" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        {{csrf_field()}}
-                        <div class="form-group">
-                            <label for="act_name">User name</label>
-                            <div class="alert alert-danger" id="alert_name_act" hidden></div>
-                            <input id="act_name" class="form-control" type="text" name="act_name" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="act_email">Email</label>
-                            <div class="alert alert-danger" id="alert_email_act" hidden></div>
-                            <input id="act_email" class="form-control" type="email" name="act_email" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="act_telephone">Phone Number (+254xxxxxxxxx)</label>
-                            <div class="alert alert-danger" id="alert_phone_act" hidden></div>
-                            <input id="act_telephone" type="text" class="form-control" name="act_telephone" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="act_user_type">Account Type</label>
-                            <div class="alert alert-danger" id="alert_type_act" hidden></div>
-                            <input id="act_user_type" type="text" class="form-control" name="act_user_type" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="act_timestamp">Time Registered</label>
-                            <div class="alert alert-danger" id="alert_time_act" hidden></div>
-                            <input id="act_timestamp" type="text" class="form-control" name="act_timestamp" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="act_status">Status</label>
-                            <div class="alert alert-danger" id="alert_status_act" hidden></div>
-                            <input id="act_status" type="text" class="form-control" name="act_status" readonly>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <div class="btn-group" role="group" aria-label="...">
-                            <a id="btn_view_profile" type="button" class="btn btn-primary" style="border-radius: 3px 0px 0px 3px;">View Profile</a>
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></button>
-                                <ul class="dropdown-menu">
-                                    <li class="list-action" id="btn_activate" hidden><a role="button" onclick="">Activate</a></li>
-                                    <li class="list-action" id="btn_suspend" hidden><a role="button" onclick="">Suspend</a></li>
-                                    <li class="list-action" id="btn_restore" hidden><a role="button" onclick="">Restore</a></li>
-                                    <li class="list-action" id="btn_delete" hidden><a role="button" onclick="">Delete</a></li>
-                                </ul>
+                    <fieldset disabled>
+                        <div class="modal-body">
+                            {{csrf_field()}}
+                            <div class="mb-3">
+                                <label for="act_name" class="form-label">User name</label>
+                                <div class="alert alert-danger" id="alert_name_act" hidden></div>
+                                <input id="act_name" class="form-control" type="text" name="act_name" readonly>
                             </div>
+                            <div class="mb-3">
+                                <label for="act_email" class="form-label">Email</label>
+                                <div class="alert alert-danger" id="alert_email_act" hidden></div>
+                                <input id="act_email" class="form-control" type="email" name="act_email" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="act_telephone" class="form-label">Phone Number (+254xxxxxxxxx)</label>
+                                <div class="alert alert-danger" id="alert_phone_act" hidden></div>
+                                <input id="act_telephone" type="text" class="form-control" name="act_telephone" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="act_user_type" class="form-label">Account Type</label>
+                                <div class="alert alert-danger" id="alert_type_act" hidden></div>
+                                <input id="act_user_type" type="text" class="form-control" name="act_user_type" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="act_timestamp" class="form-label">Time Registered</label>
+                                <div class="alert alert-danger" id="alert_time_act" hidden></div>
+                                <input id="act_timestamp" type="text" class="form-control" name="act_timestamp" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="act_status" class="form-label">Status</label>
+                                <div class="alert alert-danger" id="alert_status_act" hidden></div>
+                                <input id="act_status" type="text" class="form-control" name="act_status" readonly>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <div class="btn-group me-2" role="group" aria-label="example">
+                            <a id="btn_view_profile" type="button" class="btn btn-outline-primary" style="border-radius: 3px 0px 0px 3px;">View Profile</a>
+                            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                            <ul class="dropdown-menu">
+                                <li class="list-action" id="btn_activate" hidden><a class="dropdown-item" role="button" onclick="">Activate</a></li>
+                                <li class="list-action" id="btn_suspend" hidden><a class="dropdown-item" role="button" onclick="">Suspend</a></li>
+                                <li class="list-action" id="btn_restore" hidden><a class="dropdown-item" role="button" onclick="">Restore</a></li>
+                                <li class="list-action" id="btn_delete" hidden><a class="dropdown-item" role="button" onclick="">Delete</a></li>
+                            </ul>
                         </div>
                     </div>
                 </form>
