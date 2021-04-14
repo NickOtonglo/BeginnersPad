@@ -6,22 +6,22 @@
 
 @section('admin_actions')
 	@if($targetUser->id !== Auth::user()->id)
-	<div class="btn-group" role="group">
-		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></button>
+	<div class="btn-group me-2" role="group" aria-label="...">
+		<button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
 		<ul class="dropdown-menu">
 			@if(Auth::user()->user_type < $targetUser->user_type)
 				@if($targetUser->status == 'inactive')
-				<li class="list-action" id="btn_activate"><a role="button" onclick="">Activate</a></li>
+				<li class="list-action" id="btn_activate"><a class="dropdown-item" role="button" onclick="">Activate</a></li>
 				@endif
 				@if($targetUser->status == 'active')
-				<li class="list-action" id="btn_suspend"><a role="button" onclick="">Suspend</a></li>
+				<li class="list-action" id="btn_suspend"><a class="dropdown-item" role="button" onclick="">Suspend</a></li>
 				@endif
 				@if($targetUser->status == 'suspended')
-				<li class="list-action" id="btn_restore"><a role="button" onclick="">Restore</a></li>
+				<li class="list-action" id="btn_restore"><a class="dropdown-item" role="button" onclick="">Restore</a></li>
 				@endif
 			@endif
 			@if(Auth::user()->user_type === 1)
-			<li class="list-action" id="btn_delete"><a role="button" onclick="">Delete</a></li>
+			<li class="list-action" id="btn_delete"><a class="dropdown-item" role="button" onclick="">Delete</a></li>
 			@endif
 		</ul>
 	</div>
@@ -29,71 +29,71 @@
 @endsection
 
 @section('col_left')
-<div class="card-big card-block" style="box-shadow:5px 5px 15px grey;padding:30px;">
-	<h5 class="text-muted">Email address: {{$targetUser->email}}</h5>
-	<h5 class="text-muted">Registered on {{$targetUser->created_at}}</h5>
-	<h5 class="text-muted">Account status: <strong>{{$targetUser->status}}</strong></h5>
-	<h5 class="text-muted">
+<div class="card-big card-block bp-card-big-shadow-fx">
+	<h6 class="bp-profile-text">Email address: {{$targetUser->email}}</h6>
+	<h6 class="bp-profile-text">Registered on {{$targetUser->created_at}}</h6>
+	<h6 class="bp-profile-text">Account status: <strong>{{$targetUser->status}}</strong></h6>
+	<h6 class="bp-profile-text">
 	    Phone number:
 	    @if ($targetUser->telephone != null)
 	        +{{$targetUser->telephone}}
 	    @else
 	        Not set
 	    @endif
-	</h5>
+	</h6>
 </div>
-<div class="card-big card-block" style="box-shadow:5px 5px 15px grey;padding:30px;">
+<div class="card-big card-block bp-card-big-shadow-fx">
 	@if ($targetUser->user_type == 5)
-	<h5 class="card-text">Total number of times user occupied listings: {{count($customerOccupations)}}</h5>
-	<h5 class="card-text">Total number of listing reviews done: {{count($customerReviews)}}</h5>
-	<h5 class="card-text">
+	<h6 class="text-muted">Total number of times user occupied listings: {{count($customerOccupations)}}</h6>
+	<h6 class="text-muted">Total number of listing reviews done: {{count($customerReviews)}}</h6>
+	<h6 class="text-muted">
 		Last listing occupied on:
 	    @if($customerLastOccupation != null)
 	    	{{$customerLastOccupation->created_at}}
 	    @else
 	    	(No listings occupied)
 		@endif
-	</h5>
-	<h5 class="card-text">
+	</h6>
+	<h6 class="text-muted">
 		Last listing review done on:
 	    @if($customerLastReview != null)
 	    	{{$customerLastReview->updated_at}}
 	    @else
 	    	(No reviews done)
 	    @endif
-	</h5>
-	<h5 class="card-text">Number of times suspended: {{count($customerSuspendedCount)}}</h5>
+	</h6>
+	<h6 class="text-muted">Number of times suspended: {{count($customerSuspendedCount)}}</h6>
 	@elseif ($targetUser->user_type == 4)
-	<h5 class="card-text">Number of active properties listed: {{count($listerListings)}}</h5>
-	<h5 class="card-text">Current number of customers: {{count($listerCustomers)}}</h5>
-	<h5 class="card-text">Current number of pending applications: {{count($listerPendingApplications)}}</h5>
-	<h5 class="card-text">Current number of suspended listings: {{count($listerSuspendedListings)}}</h5>
-	<h5 class="card-text">Current number of rejected applications: {{count($listerRejectedApplications)}}</h5>
-	<h5 class="card-text">
+	<h6 class="text-muted">Number of active properties listed: {{count($listerListings)}}</h6>
+	<h6 class="text-muted">Current number of customers: {{count($listerCustomers)}}</h6>
+	<h6 class="text-muted">Current number of pending applications: {{count($listerPendingApplications)}}</h6>
+	<h6 class="text-muted">Current number of suspended listings: {{count($listerSuspendedListings)}}</h6>
+	<h6 class="text-muted">Current number of rejected applications: {{count($listerRejectedApplications)}}</h6>
+	<h6 class="text-muted">
 		Last listing application approved on:
 	    @if($listerLastSubmission != null)
 	        {{$listerLastSubmission->created_at}}
 	    @else
 	        (No applications made)
 		@endif
-	</h5>
-	<h5 class="card-text">Number of times suspended: {{count($listerSuspendedCount)}}</h5>
+	</h6>
+	<h6 class="text-muted">Number of times suspended: {{count($listerSuspendedCount)}}</h6>
 	@elseif ($targetUser->user_type == 3)
-	<h5 class="card-text">Total number of suspended users: {{count($repUsersSuspended)}}</h5>
-	<h5 class="card-text">Total number of approved listings: {{count($repListingsApproved)}}</h5>
-	<h5 class="card-text">Total number of rejected listing applications: {{count($repListingsRejected)}}</h5>
-	<h5 class="card-text">Total number of suspended listings: {{count($repListingsSuspended)}}</h5>
-	<h5 class="card-text">Total number of deleted listings: {{count($repListingsDeleted)}}</h5>
-	<h5 class="card-text">Number of times suspended: {{count($repSuspendedCount)}}</h5>
+	<h6 class="text-muted">Total number of suspended users: {{count($repUsersSuspended)}}</h6>
+	<h6 class="text-muted">Total number of approved listings: {{count($repListingsApproved)}}</h6>
+	<h6 class="text-muted">Total number of rejected listing applications: {{count($repListingsRejected)}}</h6>
+	<h6 class="text-muted">Total number of suspended listings: {{count($repListingsSuspended)}}</h6>
+	<h6 class="text-muted">Total number of deleted listings: {{count($repListingsDeleted)}}</h6>
+	<h6 class="text-muted">Number of times suspended: {{count($repSuspendedCount)}}</h6>
 	@elseif ($targetUser->user_type == 2 || $targetUser->user_type == 1)
-	<h5 class="card-text">Total number of users created: {{count($adminUsersCreated)}}</h5>
-	<h5 class="card-text">Total number of suspended users: {{count($adminUsersSuspended)}}</h5>
-	<h5 class="card-text">Total number of approved listings: {{count($adminListingsApproved)}}</h5>
-	<h5 class="card-text">Total number of rejected listing applications: {{count($adminListingsRejected)}}</h5>
-	<h5 class="card-text">Total number of suspended listings: {{count($adminListingsSuspended)}}</h5>
-	<h5 class="card-text">Total number of deleted listings: {{count($adminListingsDeleted)}}</h5>
+	<h6 class="text-muted">Total number of users created: {{count($adminUsersCreated)}}</h6>
+	<h6 class="text-muted">Total number of suspended users: {{count($adminUsersSuspended)}}</h6>
+	<h6 class="text-muted">Total number of approved listings: {{count($adminListingsApproved)}}</h6>
+	<h6 class="text-muted">Total number of rejected listing applications: {{count($adminListingsRejected)}}</h6>
+	<h6 class="text-muted">Total number of suspended listings: {{count($adminListingsSuspended)}}</h6>
+	<h6 class="text-muted">Total number of deleted listings: {{count($adminListingsDeleted)}}</h6>
 		@if($targetUser->user_type == 2)
-		<h5 class="card-text">Number of times suspended: {{count($adminSuspendedCount)}}</h5>
+		<h6 class="text-muted">Number of times suspended: {{count($adminSuspendedCount)}}</h6>
 		@endif
 	@endif
 </div>

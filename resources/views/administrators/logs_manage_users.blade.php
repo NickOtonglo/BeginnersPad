@@ -6,27 +6,25 @@
 
 @section('top_buttons')
 <div class="container">
-	<div class="pull-right">
-        @if($targetUsers == 'me')
-        <form method="get" action="{{route('admin.viewUserManagementLogs',['$target'=>'all'])}}" enctype="multipart/form-data">
-        @else
-        <form method="get" action="{{route('admin.viewUserManagementLogs',['$target'=>''])}}" enctype="multipart/form-data">
-        @endif
-		{{csrf_field()}}
-			@if($targetUsers == 'me')
-			<input class="btn btn-sm btn-default btn-filter" type="submit" name="btn_sort" value="Show All Administrators" id="btn_fetch_all">
-			@else
-			@endif
-		</form>
-	</div>
+    @if($targetUsers == 'me')
+    <form method="get" action="{{route('admin.viewUserManagementLogs',['$target'=>'all'])}}" enctype="multipart/form-data">
+    @else
+    <form method="get" action="{{route('admin.viewUserManagementLogs',['$target'=>''])}}" enctype="multipart/form-data">
+    @endif
+	{{csrf_field()}}
+		@if($targetUsers == 'me')
+		<input class="btn btn-sm btn-outline-secondary btn-filter" type="submit" name="btn_sort" value="Show All Administrators" id="btn_fetch_all">
+		@else
+		@endif
+	</form>
 </div>
 <br>
 @endsection
 
 @section ('col_centre')
-<div class="panel panel-default">
-    <div class="panel-heading text-capitalize">Activity History</div>
-    <div class="panel-body">
+<div class="card">
+    <div class="card-header text-capitalize">Activity History</div>
+    <div class="card-body">
         <div class="post">
             <table class="table table-hover">
                 <thead>

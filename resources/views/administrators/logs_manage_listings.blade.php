@@ -14,9 +14,7 @@
         @endif
 		{{csrf_field()}}
 			@if($targetUsers == 'me')
-			<input class="btn btn-sm btn-default btn-filter" type="submit" name="btn_sort" value="Show All Administrators" id="btn_fetch_all">
-			@else
-			<!-- <input class="btn btn-sm btn-primary btn-filter" type="submit" name="btn_sort" value="Show Me Only" hidden> -->
+			<input class="btn btn-sm btn-outline-secondary btn-filter" type="submit" name="btn_sort" value="Show All Administrators" id="btn_fetch_all">
 			@endif
 		</form>
 	</div>
@@ -26,38 +24,38 @@
 
 @section ('col_centre')
 <div class="row">
-    <div class="modal fade" id="modalViewLog" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+    <div class="modal fade" id="modalViewLog" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="modalLabel">View Action</h4>
+                    <h4 class="modal-title" id="modalLabel">View Log</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="log_id">#</label>
                         <input class="form-control" name="log_id" type="text" id="log_id" readonly>
                     </div>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="features">Action</label>
                         <input class="form-control" name="action" type="text" id="action" readonly>
                     </div>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="features">Reason</label>
                         <input class="form-control" name="reason" type="text" id="reason" readonly>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="panel panel-default">
-    <div class="panel-heading text-capitalize">Activity History</div>
-    <div class="panel-body">
+<div class="card">
+    <div class="card-header">Activity History</div>
+    <div class="card-body">
         <div class="post">
             <table class="table table-hover">
                 <thead>

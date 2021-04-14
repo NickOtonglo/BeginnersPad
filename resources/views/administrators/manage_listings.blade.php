@@ -5,51 +5,57 @@
 @endsection
 
 @section ('lister_col_centre')
-<div class="panel panel-default">
+<div class="card">
     @isset ($category)
         @if ($category == 'zone' || $category == 'subzone')
-        <div class="panel-heading text-capitalize">Properties listed in {{$statusItem}} area</div>
+        <div class="card-header">Properties listed in {{$statusItem}} area</div>
         @elseif ($category == 'lister')
-        <div class="panel-heading text-capitalize">Properties listed by {{$statusItem}}</div>
+        <div class="card-header">Properties listed by {{$statusItem}}</div>
         @endif
     @else
-    <div class="panel-heading text-capitalize">{{$statusItem}} Properties Listed</div>
+    <div class="card-header">{{$statusItem}} Properties Listed</div>
     @endif
-    <div class="panel-body">
+    <div class="card-body">
         <div class="post">
             <div class="row">
                 @forelse($listings as $listing)
-                    <a class="card-big-clickable card-block" style="margin:9px;" role="button" href="{{route('admin.manageListing',['listing'=>$listing->id])}}">
-                        <div class="col-md-8 col-md-offset-0">
-                            <span style="display: inline-block;width: 210px;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;"><h4>{{$listing->property_name}}</h4></span><br>
-                            @if($listing->status=='unpublished')
-                            <span><small><strong class="text-default">not submitted for publishing</strong></small></span><br>
-                            @elseif($listing->status=='pending')
-                            <span><small><strong class="text-info">pending approval</strong></small></span><br>
-                            @elseif($listing->status=='approved')
-                            <span><small><strong class="text-success">approved</strong></small></span><br>
-                            @elseif($listing->status=='rejected')
-                            <span><small><strong class="text-danger">rejected</strong></small></span><br>
-                            @elseif($listing->status=='suspended')
-                            <span><small><strong class="text-danger">suspended</strong></small></span><br>
-                            @else
-                            <span><small><strong>invalid status</strong></small></span><br>
-                            @endif
-                            <span><small>Location: <i>{{$listing->zoneEntry->name}} ({{$listing->zoneEntry->zone->county}})</i></small></span><br>
-                            @if($listing->listing_type=='single')
-                            <span><small>Type: <i>Single-listing property</i></small></span>
-                            @elseif($listing->listing_type=='multi')
-                            <span><small>Type: <i>Multiple-listing property</i></small></span>
-                            @endif
-                        </div>
-                        <div class="col-md-4">
+                <a role="button" href="{{route('admin.manageListing',['listing'=>$listing->id])}}">
+                    <div class="card mb-3" style="max-width: 540px;margin: auto">
+                        <div class="row g-0">
                             @if($listing->thumbnail != null)
-                            <img class="img-rounded" style="width:125px;height:100px;float:right;" src="/images/listings/{{$listing->id}}/thumbnails/{{$listing->thumbnail}}" alt="unable to display image">
+                            <div class="col-md-4" style="background-image: url('/images/listings/{{$listing->id}}/thumbnails/{{$listing->thumbnail}}');background-position: center;"></div>
                             @elseif($listing->thumbnail == null)
-                            <img class="img-rounded" style="width:125px;height:100px;float:right;" src="/images/listings/vector-house-icon.jpg" alt="unable to display image">
+                            <div class="col-md-4" style="background-image: url('/images/listings/vector-house-icon.jpg');background-position: center;"></div>
                             @endif
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <span style="display: inline-block;width: calc(95%);white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;">
+                                        <h5 class="card-title">{{$listing->property_name}}</h5>
+                                    </span>
+                                    @if($listing->status=='unpublished')
+                                    <p class="card-text"><small>not submitted for publishing</small></p>
+                                    @elseif($listing->status=='pending')
+                                    <p class="card-text text-info"><small>pending approval</small></p>
+                                    @elseif($listing->status=='approved')
+                                    <p class="card-text text-success"><small>approved</small></p>
+                                    @elseif($listing->status=='rejected')
+                                    <p class="card-text text-danger"><small>rejected</small></p>
+                                    @elseif($listing->status=='suspended')
+                                    <p class="card-text text-danger"><small>suspended</small></p>
+                                    @else
+                                    <p class="card-text"><small>invalid status</small></p>
+                                    @endif
+                                    <p class="card-text"><small>Location: <i>{{$listing->zoneEntry->name}} ({{$listing->zoneEntry->zone->county}})</i></small></p>
+                                    @if($listing->listing_type=='single')
+                                    <p class="card-text"><small>Type: <i>Single-listing property</i></small></p>
+                                    @elseif($listing->listing_type=='multi')
+                                    <p class="card-text"><small>Type: <i>Multiple-listing property</i></i></small></p>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-                    </a>
+                    </div>
+                </a>
                 @empty
                     <h4 style="text-align:center;">No listings to manage</h4>
                 @endforelse

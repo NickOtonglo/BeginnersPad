@@ -178,7 +178,7 @@
                     </fieldset>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                        <div class="btn-group me-2" role="group" aria-label="example">
+                        <div class="btn-group me-2" role="group" aria-label="...">
                             <a id="btn_view_profile" type="button" class="btn btn-outline-primary" style="border-radius: 3px 0px 0px 3px;">View Profile</a>
                             <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                             <ul class="dropdown-menu">

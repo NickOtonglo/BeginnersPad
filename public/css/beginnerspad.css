@@ -1,3 +1,13 @@
+/* body {
+  font-family: Roboto,Lora,sans-serif;
+} */
+
+/* html {
+  font-family: Roboto, Lora, sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+} */
+
 .welcome-extension {
     background-color:#b68fbf;
     background-image: url("//grapesjs.com/img/bg-gr-v.png"), url("city_clipart.png");
@@ -29,7 +39,7 @@
 	font-size: 0.75em;
 }
 
-.bp-navbar-text-colour {
+.bp-navbar-text-colour, .bp-profile-text {
 	color: #703680
 }
 
@@ -223,4 +233,24 @@ a.navbar-account:hover, a.navbar-account:active {
   outline-width: 2px;
   outline-color: rgb(248, 54, 80);
   color: rgb(245, 26, 55); */
+}
+
+.bp-user-avatar {
+  width: 180px;
+  display: block;
+  margin: auto;
+  padding: 20px;
+  border-radius:50%
+}
+
+.bp-card-big-shadow-fx {
+  box-shadow: 5px 5px 15px grey;
+  padding: 30px;
+}
+
+.bp-cover {
+  width: 100%;
+  height: 180px;
+  background: url("https://source.unsplash.com/7JX0-bfiuxQ/1200x1200") no-repeat center;
+  background-size: cover;
 }
