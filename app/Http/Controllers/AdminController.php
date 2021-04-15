@@ -155,11 +155,17 @@ class AdminController extends Controller
         $actions = AdminAction::where('category','listing')->where('admin_level','>=',$utype)->get();
         $bookmark = AdminBookmark::where('listing_id',$id)->where('admin_id',$user->id)->where('listing_entry_id',null)->first();
 
+        // ListingEntries thumbnails array
+        $data = [];
+        foreach ($entries as $entry) {
+            $data[$entry->id] = $entry->listingFile()->where('category','thumbnail')->first()->file_name;
+        }
+
         if ($utype==3 || $utype==2 || $utype==1) {
             $listing = Listing::where('id',$id)->first();
             if($id != 'logs'){
                 return view('administrators.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)
-                ->with('entries',$entries)->with('actions',$actions)->with('bookmark',$bookmark);
+                ->with('entries',$entries)->with('actions',$actions)->with('bookmark',$bookmark)->with('data',$data);
             } else {
                 return $this->viewListingManagementLogs('');
             } 

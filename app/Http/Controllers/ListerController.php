@@ -276,10 +276,17 @@ class ListerController extends Controller
         $subZonesList = ZoneEntry::orderBy('name')->get();
         $entries = ListingEntry::where('parent_id',$id)->get();
 
+        // ListingEntries thumbnails array
+        $data = [];
+        foreach ($entries as $entry) {
+            $data[$entry->id] = $entry->listingFile()->where('category','thumbnail')->first()->file_name;
+        }
+
         if ($user->user_type==4 && Listing::where('id',$id)->first()->lister_id==$user->id) {
             $listing = Listing::where('id',$id)->first();
             if ($listing->lister_id == $user->id) {
-                return view('listers.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)->with('entries',$entries);
+                return view('listers.manage_listing')->with('listing',$listing)->with('API_KEY',$API_KEY)->with('subZonesList',$subZonesList)->with('entries',$entries)
+                ->with('data',$data);
             } else {
                 $listings = Listing::where('lister_id',$user->id)->orderBy('created_at','id')->get();
                 return redirect()->route('lister.manageListings')->with('listings',$listings);

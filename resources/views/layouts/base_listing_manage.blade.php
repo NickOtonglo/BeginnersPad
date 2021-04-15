@@ -101,13 +101,11 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            @if($entry->listingFile()->where('category','thumbnail')->first() != null)
-                                            <img style="width:100%;height:155px" src="/images/listings/{{$listing->id}}/thumbnails/{{$entry->listingFile()->where('category','thumbnail')->first()->file_name}}" alt="unable to display image">
-                                            @else
-                                            <img style="width:125px;height:100px;float:right;" src="/images/listings/vector-house-icon.jpg" alt="unable to display image">
-                                            @endif
-                                        </div>
+                                        @if($entry->listingFile()->where('category','thumbnail')->first() != null)
+                                        <div class="col-md-4" style="background-image: url('/images/listings/{{$listing->id}}/thumbnails/{{$data[$entry->id]}}');background-position: center;"></div>
+                                        @elseif($listing->thumbnail == null)
+                                        <div class="col-md-4" style="background-image: url('/images/listings/vector-house-icon.jpg');background-position: center;"></div>
+                                        @endif
                                     </div>
                                 </div>
                             </a>

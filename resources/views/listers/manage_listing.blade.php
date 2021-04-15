@@ -1,4 +1,4 @@
-@extends('layouts.base_manage_listing')
+@extends('layouts.base_listing_manage')
 
 @section('title')
 <title>Manage Property - {{$listing->property_name}} | Beginners Pad</title>
