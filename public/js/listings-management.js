@@ -5,7 +5,7 @@ $(document).on('ready',function () {
             $('#form_price').show();
             tooltip = 'If this option is unchecked, you will be required to set the rent price for each individual listing that will fall under this property seperately.';
         } else {
-            $('#form_price').hide();
+            $('#form_price').attr("hidden",true);
             tooltip = 'If this option is checked, you will be required to set the rent price only once for all the listings that will fall under this property.';
         }
     });
@@ -101,45 +101,55 @@ function validateListingCreateForm() {
         || document.getElementById("stories").value.trim() == "") {
         if (document.getElementById("property_name").value.trim() == "") {
             $('#alert_name_listing_create').html('<li>Required</li>').show();
-            $('#property_name').addClass('alert alert-danger');
+            $('#alert_name_listing_create').attr("hidden",false);
+            $('#property_name').addClass('bp-input-validation-error');
         }
         if (document.getElementById("description").value.trim() == "") {
             $('#alert_desc_listing_create').html('<li>Required</li>').show();
-            $('#description').addClass('alert alert-danger');
+            $('#alert_desc_listing_create').attr("hidden",false);
+            $('#description').addClass('bp-input-validation-error');
         }
         if (document.getElementById("zone_entry_id").value.trim() == "") {
             $('#alert_subzone_listing_create').html('<li>Required</li>').show();
-            $('#zone_entry_id').addClass('alert alert-danger');
+            $('#alert_subzone_listing_create').attr("hidden",false);
+            $('#zone_entry_id').addClass('bp-input-validation-error');
         }
         if (document.getElementById("lat").value.trim() == "") {
             $('#alert_lat_listing_create').html('<li>Required</li>').show();
-            $('#lat').addClass('alert alert-danger');
+            $('#alert_lat_listing_create').attr("hidden",false);
+            $('#lat').addClass('bp-input-validation-error');
         }
         if (document.getElementById("lng").value.trim() == "") {
             $('#alert_lng_listing_create').html('<li>Required</li>').show();
-            $('#lng').addClass('alert alert-danger');
+            $('#alert_lng_listing_create').attr("hidden",false);
+            $('#lng').addClass('bp-input-validation-error');
         }
         if (document.getElementById("listing_type").value.trim() == "") {
             $('#alert_type_listing_create').html('<li>Required</li>').show();
-            $('#listing_type').addClass('alert alert-danger');
+            $('#alert_type_listing_create').attr("hidden",false);
+            $('#listing_type').addClass('bp-input-validation-error');
         }
         if (document.getElementById("stories").value.trim() == "") {
             $('#alert_stories_listing_create').html('<li>Required</li>').show();
-            $('#stories').addClass('alert alert-danger');
+            $('#alert_stories_listing_create').attr("hidden",false);
+            $('#stories').addClass('bp-input-validation-error');
         }
         return false;
     } else {
         if (document.getElementById("checkbox").checked && document.getElementById("price").value.trim() == "") {
             $('#alert_price_listing_create').html('<li>Required</li>').show();
-            $('#price').addClass('alert alert-danger');
+            $('#alert_price_listing_create').attr("hidden",false);
+            $('#price').addClass('bp-input-validation-error');
             return false;
         } else if (document.getElementById("property_name").value.trim().length > 50) {
             $('#alert_name_listing_create').html('<li>Name should contain 100 characters or less</li>').show();
-            $('#property_name').addClass('alert alert-danger');
+            $('#alert_name_listing_create').attr("hidden",false);
+            $('#property_name').addClass('bp-input-validation-error');
             return false;
         } else if (document.getElementById("description").value.trim().length > 5000) {
             $('#alert_desc_listing_create').html('<li>Description should contain 5000 characters or less</li>').show();
-            $('#description').addClass('alert alert-danger');
+            $('#alert_desc_listing_create').attr("hidden",false);
+            $('#description').addClass('bp-input-validation-error');
             return false;
         } else {
             if(!document.getElementById("checkbox").checked){
@@ -152,56 +162,56 @@ function validateListingCreateForm() {
 
 function hideListingCreateAlert() {
     $('#property_name').on('input', function () {
-        $('#alert_name_listing_create').hide();
-        $('#property_name').removeClass('alert alert-danger');
+        $('#alert_name_listing_create').attr("hidden",true);
+        $('#property_name').removeClass('bp-input-validation-error');
     });
     $('#description').on('input', function () {
-        $('#alert_desc_listing_create').hide();
-        $('#description').removeClass('alert alert-danger');
+        $('#alert_desc_listing_create').attr("hidden",true);
+        $('#description').removeClass('bp-input-validation-error');
     });
     $('#zone_entry_id').on('input', function () {
-        $('#alert_subzone_listing_create').hide();
-        $('#zone_entry_id').removeClass('alert alert-danger');
+        $('#alert_subzone_listing_create').attr("hidden",true);
+        $('#zone_entry_id').removeClass('bp-input-validation-error');
     });
     $('#lat').on('input', function () {
-        $('#alert_lat_listing_create').hide();
-        $('#lat').removeClass('alert alert-danger');
+        $('#alert_lat_listing_create').attr("hidden",true);
+        $('#lat').removeClass('bp-input-validation-error');
     });
     $('#lng').on('input', function () {
-        $('#alert_lng_listing_create').hide();
-        $('#lng').removeClass('alert alert-danger');
+        $('#alert_lng_listing_create').attr("hidden",true);
+        $('#lng').removeClass('bp-input-validation-error');
     });
     $('#listing_type').on('input', function () {
-        $('#alert_type_listing_create').hide();
-        $('#listing_type').removeClass('alert alert-danger');
+        $('#alert_type_listing_create').attr("hidden",true);
+        $('#listing_type').removeClass('bp-input-validation-error');
     });
     $('#stories').on('input', function () {
-        $('#alert_stories_listing_create').hide();
-        $('#stories').removeClass('alert alert-danger');
+        $('#alert_stories_listing_create').attr("hidden",true);
+        $('#stories').removeClass('bp-input-validation-error');
     });
     $('#price').on('input', function () {
-        $('#alert_price_listing_create').hide();
-        $('#price').removeClass('alert alert-danger');
+        $('#alert_price_listing_create').attr("hidden",true);
+        $('#price').removeClass('bp-input-validation-error');
     });
 }
 
 function clearAlerts() {
-    $('#alert_name_listing_create').hide();
-    $('#property_name').removeClass('alert alert-danger');
-    $('#alert_desc_listing_create').hide();
-    $('#description').removeClass('alert alert-danger');
-    $('#alert_subzone_listing_create').hide();
-    $('#zone_entry_id').removeClass('alert alert-danger');
-    $('#alert_lat_listing_create').hide();
-    $('#lat').removeClass('alert alert-danger');
-    $('#alert_lng_listing_create').hide();
-    $('#lng').removeClass('alert alert-danger');
-    $('#alert_type_listing_create').hide();
-    $('#listing_type').removeClass('alert alert-danger');
-    $('#alert_stories_listing_create').hide();
-    $('#stories').removeClass('alert alert-danger');
-    $('#alert_price_listing_create').hide();
-    $('#price').removeClass('alert alert-danger');
+    $('#alert_name_listing_create').attr("hidden",true);
+    $('#property_name').removeClass('bp-input-validation-error');
+    $('#alert_desc_listing_create').attr("hidden",true);
+    $('#description').removeClass('bp-input-validation-error');
+    $('#alert_subzone_listing_create').attr("hidden",true);
+    $('#zone_entry_id').removeClass('bp-input-validation-error');
+    $('#alert_lat_listing_create').attr("hidden",true);
+    $('#lat').removeClass('bp-input-validation-error');
+    $('#alert_lng_listing_create').attr("hidden",true);
+    $('#lng').removeClass('bp-input-validation-error');
+    $('#alert_type_listing_create').attr("hidden",true);
+    $('#listing_type').removeClass('bp-input-validation-error');
+    $('#alert_stories_listing_create').attr("hidden",true);
+    $('#stories').removeClass('bp-input-validation-error');
+    $('#alert_price_listing_create').attr("hidden",true);
+    $('#price').removeClass('bp-input-validation-error');
 }
 
 function populateListingUpdateForm(lst){

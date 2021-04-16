@@ -130,7 +130,6 @@
 	let entryObj = '';
 </script>
 @yield('management_script')
-<script src="{{asset('js/listing-entries.js')}}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{$API_KEY}}&callback=initMap" async defer></script>
 <script src="{{asset('js/map-static-listings.js')}}"></script>
 <script src="{{asset('js/map-listings.js')}}"></script>

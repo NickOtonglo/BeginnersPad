@@ -15,6 +15,9 @@
 	</div>
 	<br>
     <div class="row">
+        @yield('lister_forms')
+    </div>
+    <div class="row">
         <div class="col-md-6">
             <small>Listing Details</small>
             <div style="border:1px solid lightgrey; padding:16px">
