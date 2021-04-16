@@ -1,9 +1,5 @@
 @extends('layouts.base_no_panel')
 
-@section('title')
-<title>Manage Property - {{$listing->property_name}} | Beginners Pad</title>
-@endsection
-
 @section ('content')
 <div class="container">
 	@if(session()->has('message'))
@@ -26,7 +22,9 @@
 				<h3>{{$listing->property_name}}</h3>
 				<hr>
 				<img class="img-rounded" id="listing_img_thumb" style="width:375px;height:300px;display:block;margin-left:auto;margin-right:auto;" src="/images/listings/{{$listing->id}}/thumbnails/{{$listing->thumbnail}}" alt="unable to display image">
-				@yield('thumbnail_button')
+				<div style="padding-top: 15px;width: inherit">
+					@yield('thumbnail_button')
+				</div>
                 <hr>
 				<div class="card-text">
 					<p>Status:
@@ -79,7 +77,11 @@
 					<div class="post">
 						<div class="row">
 							@forelse($entries as $entry)
+							@if(Auth::user()->user_type == 3 || Auth::user()->user_type == 2 || Auth::user()->user_type == 1)
 							<a role="button" href="{{route('admin.manageListingEntry',['listingId'=>$listing->id,'entryId'=>$entry->id])}}">
+							@elseif(Auth::user()->user_type == 4)
+							<a role="button" href="{{route('lister.manageListingEntry',['listingId'=>$listing->id,'entryId'=>$entry->id])}}">
+							@endif
                                 <div class="card mb-3" style="max-width: 540px;margin: auto">
                                     <div class="row g-0">
                                         <div class="col-md-8">

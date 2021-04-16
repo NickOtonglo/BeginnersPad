@@ -141,6 +141,11 @@ ul ul a {
   border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
+.card-big-clickable:hover {
+  margin-top: -5px;
+  box-shadow: 0 20px 30px 0 rgba(0, 0, 0, 0.2);
+}
+
 .card-img-clickable {
   position: relative;
   display: block;
@@ -151,9 +156,11 @@ ul ul a {
   border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
-.card-big-clickable:hover {
+.card-img-clickable:hover {
   margin-top: -5px;
   box-shadow: 0 20px 30px 0 rgba(0, 0, 0, 0.2);
+  position: absolute;
+  z-index: 1;
 }
 
 .btn-top-delete, .btn-top-delete-xs {
@@ -172,46 +179,52 @@ ul ul a {
     right:-5px;
 }
 
-.btn-outline-danger {
+.btn-top-delete-gallery {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.bp-btn-outline-danger {
   color: #d9534f;
   background-image: none;
   background-color: white;
   border-color: #d9534f;
 }
 
-.btn-outline-danger:hover {
+.bp-btn-outline-danger:hover {
   color: #fff;
   background-color: #d9534f;
   border-color: #d9534f;
 }
 
-.btn-outline-danger:focus, .btn-outline-danger.focus {
+.bp-btn-outline-danger:focus, .bp-btn-outline-danger.focus {
   color: #fff;
   background-color: #d9534f;
   border-color: #d9534f;
 }
 
-.btn-outline-danger:active, .btn-outline-danger.active,
-.open > .btn-outline-danger.dropdown-toggle {
+.bp-btn-outline-danger:active, .bp-btn-outline-danger.active,
+.open > .bp-btn-outline-danger.dropdown-toggle {
   color: #fff;
   background-color: #d9534f;
   border-color: #d9534f;
 }
 
-.btn-outline-danger:active:hover, .btn-outline-danger:active:focus, .btn-outline-danger:active.focus, .btn-outline-danger.active:hover, .btn-outline-danger.active:focus, .btn-outline-danger.active.focus,
-.open > .btn-outline-danger.dropdown-toggle:hover,
-.open > .btn-outline-danger.dropdown-toggle:focus,
-.open > .btn-outline-danger.dropdown-toggle.focus {
+.bp-btn-outline-danger:active:hover, .bp-btn-outline-danger:active:focus, .bp-btn-outline-danger:active.focus, .bp-btn-outline-danger.active:hover, .bp-btn-outline-danger.active:focus, .bp-btn-outline-danger.active.focus,
+.open > .bp-btn-outline-danger.dropdown-toggle:hover,
+.open > .bp-btn-outline-danger.dropdown-toggle:focus,
+.open > .bp-btn-outline-danger.dropdown-toggle.focus {
   color: #fff;
   background-color: #ac2925;
   border-color: #8b211e;
 }
 
-.btn-outline-danger.disabled:focus, .btn-outline-danger.disabled.focus, .btn-outline-danger:disabled:focus, .btn-outline-danger:disabled.focus {
+.bp-btn-outline-danger.disabled:focus, .bp-btn-outline-danger.disabled.focus, .bp-btn-outline-danger:disabled:focus, .bp-btn-outline-danger:disabled.focus {
   border-color: #eba5a3;
 }
 
-.btn-outline-danger.disabled:hover, .btn-outline-danger:disabled:hover {
+.bp-btn-outline-danger.disabled:hover, .bp-btn-outline-danger:disabled:hover {
   border-color: #eba5a3;
 }
 
@@ -258,9 +271,56 @@ a.navbar-account:hover, a.navbar-account:active {
   padding: 30px;
 }
 
-.bp-cover {
+/* https://www.w3schools.com/css/css_image_gallery.asp */
+div.gallery {
+  border: 1px solid #ccc;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+  box-shadow: 0 20px 30px 0 rgba(0, 0, 0, 0.2);
+  transition: all 0.5s ease;
+}
+
+div.gallery img {
   width: 100%;
-  height: 180px;
-  background: url("https://source.unsplash.com/7JX0-bfiuxQ/1200x1200") no-repeat center;
-  background-size: cover;
+  height: auto;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.responsive {
+  padding: 0 6px;
+  float: left;
+  width: 24.99999%;
+}
+
+@media only screen and (max-width: 700px) {
+  .responsive {
+    width: 49.99999%;
+    margin: 6px 0;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .responsive {
+    width: 100%;
+  }
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.bp-gallery-container {
+  position: relative;
 }

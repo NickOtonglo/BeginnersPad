@@ -98,8 +98,7 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" role="button" onclick="location.href='{{route('logout')}}';
                 event.preventDefault();
-                document.getElementById('logout-form').submit();"
-                href="#">Logout</a>
+                document.getElementById('logout-form').submit();">Logout</a>
                 <form action="{{route('logout')}}" id="logout-form" method="POST" style="display: none;">
                   {{ csrf_field() }}
                 </form>

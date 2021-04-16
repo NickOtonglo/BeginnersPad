@@ -6,7 +6,7 @@
 
 @section('top_buttons')
 <div class="pull-right">
-	<a class="btn btn-sm btn-info" role="button" data-toggle="modal" data-target="#modalCreateEntry">+ Add Listing Entry</a>
+	<a class="btn btn-sm btn-outline-primary" role="button" data-toggle="modal" data-target="#modalCreateEntry">+ Add Listing Entry</a>
 </div>
 @endsection
 
@@ -168,6 +168,16 @@
 		</div>
 	</div>
 </div>
+@endsection
+
+@section('thumbnail_button')
+<form id="listing_thumb_form" method="post" action="{{route('lister.storeListingThumb',['id'=>$listing->id])}}" enctype="multipart/form-data">
+    {{csrf_field()}}
+    <div hidden>
+        <input class="file-path-wrapper" accept="image/*" name="btn_thumb_listing_real" id="btn_thumb_listing_real" type="file" onchange="loadListingThumb(event)" />
+    </div>
+</form>
+<input class="btn btn-sm btn-outline-primary btn-block" style="border-radius: 25px;display: block;margin: auto;" type="submit" name="btn_submit" id="btn_thumb_listing_faux" value="Change Thumbnail">
 @endsection
 
 @section('action_controls')
