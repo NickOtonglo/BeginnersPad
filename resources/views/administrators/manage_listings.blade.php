@@ -13,7 +13,7 @@
         <div class="card-header">Properties listed by {{$statusItem}}</div>
         @endif
     @else
-    <div class="card-header">{{$statusItem}} Properties Listed</div>
+    <div class="card-header text-capitalize">{{$statusItem}} Properties Listed</div>
     @endif
     <div class="card-body">
         <div class="post">

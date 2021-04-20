@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-md-3 col-md-offset-0">
                 <h5>Property Categories</h5>
-                <div class="list-group" style="margin-bottom: 18px;">
+                <div class="list-group" style="margin-bottom: 28px;">
                     <a href="{{route('admin.allListings')}}" class="list-group-item list-group-item-action">All</a>
                     @if(count((array)$allListings->where('status','pending'))==0)
                     <a href="#" class="list-group-item">Pending</a>
@@ -30,7 +30,7 @@
                     @endif
                 </div>
                 <h5>Filter by Zone</h5>
-                <div class="list-group" style="margin-bottom: 18px;">
+                <div class="list-group" style="margin-bottom: 28px;">
                     <select class="form-select" id="nav_zone_id" name="nav_zone_id">
                         <option value="" selected>--select zone--</option>
                         @forelse($zones as $zone)
@@ -49,7 +49,7 @@
                     </select>
                 </div>
                 <h5>Filter by Sub-Zone</h5>
-                <div class="list-group" style="margin-bottom: 18px;">
+                <div class="list-group" style="margin-bottom: 28px;">
                     <select class="form-select" id="nav_zone_entry_id" name="nav_zone_entry_id">
                         <option value="" selected>--select sub-zone--</option>
                         @forelse($subZones as $subZone)
@@ -68,7 +68,7 @@
                     </select>
                 </div>
                 <h5>Filter by Property Lister</h5>
-                <div class="list-group" style="margin-bottom: 18px;">
+                <div class="list-group" style="margin-bottom: 28px;">
                     <select class="form-select" id="nav_lister_id" name="nav_lister_id">
                         <option value="" selected>--select property lister--</option>
                         @forelse($listers_list as $lister)
@@ -87,16 +87,16 @@
                     </select>
                 </div>
                 <h5>Quick Links</h5>
-                <div class="list-group">
+                <div class="list-group" style="margin-bottom: 28px;">
                     <a href="{{route('admin.viewListingManagementLogs',['target'=>''])}}" class="list-group-item">My Management History</a>
                 </div>
             </div>
-            <div class="col-md-6 col-md-offset-0">
+            <div class="col-md-6 col-md-offset-0" style="margin-bottom: 28px;">
                 @yield('lister_col_centre')
             </div>
             <div class="col-md-3 col-md-offset-0">
                 <small>Listing Stats</small>
-                <div style="border:1px solid lightgrey; padding:16px">
+                <div class="bp-mini-panel">
                     Number of properties: <strong>{{$listings_stats->count()}}</strong>
                     <br>Pending:  <strong>{{$listings_stats->where('status','pending')->count()}}</strong>
                     <br>Approved: <strong>{{$listings_stats->where('status','approved')->count()}}</strong>

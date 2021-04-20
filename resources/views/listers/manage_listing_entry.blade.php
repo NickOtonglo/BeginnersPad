@@ -5,24 +5,21 @@
 @endsection
 
 @section('top_buttons')
-<div class="col-md-6">
+<div class="col-md-3">
     <button class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#modalUpdateEntry" onclick="populateEntryUpdateForm('{{$entry}}',this);">Edit Listing Entry</button>
 </div>
-<div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
-    <div class="btn-group" role="group" aria-label="...">   
-        <form method="post" action="{{route('lister.updateListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
-            {{csrf_field()}}
-            {{method_field('PUT')}}
-            @if($entry->status == 'active')
-            <input class="btn btn-sm btn-outline-secondary btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Make Inactive (hide)" name="btn_submit">
-            @elseif($entry->status == 'inactive')
-            <input class="btn btn-sm btn-outline-secondary btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Activate" name="btn_submit">
-            @elseif($entry->status == 'occupied')
-            <input class="btn btn-sm btn-outline-secondary btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Declare Vacant" name="btn_submit">
-            @endif
-        </form>
-        <input class="btn btn-sm btn-outline-secondary btn-block btn-entry-delete" style="margin-top:5px" type="submit" value="Delete Listing" name="btn_submit" disabled>
-    </div>
+<br>
+<div class="col-md-9 d-grid gap-2 d-md-flex justify-content-md-end">
+	<div class="btn-group" role="group" aria-label="...">
+        @if($entry->status == 'active')
+		<button type="button" class="btn btn-sm btn-outline-secondary" onclick="$('#btn_inactivate').trigger('click');">Make Inactive (hide)</button>
+        @elseif($entry->status == 'inactive')
+		<button type="button" class="btn btn-sm btn-outline-secondary" onclick="$('#btn_activate').trigger('click');">Activate</button>
+        @elseif($entry->status == 'occupied')
+		<button type="button" class="btn btn-sm btn-outline-secondary" onclick="$('#btn_vacate').trigger('click');">Declare Vacant</button>
+        @endif
+		<button type="button" class="btn btn-sm btn-outline-secondary" onclick="$('#btn_delete').trigger('click');" disabled>Delete Listing</button>
+	</div>
 </div>
 @endsection
 
@@ -41,19 +38,21 @@
 
 @section('lister_controls')
 @if(Auth::user()->user_type === 4)
-<!-- <br>
-<form method="post" action="{{route('lister.updateListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
-    {{csrf_field()}}
-    {{method_field('PUT')}}
-    @if($entry->status == 'active')
-    <input class="btn btn-lg btn-danger btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Make Inactive (hide)" name="btn_submit">
-    @elseif($entry->status == 'inactive')
-    <input class="btn btn-lg btn-success btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Activate" name="btn_submit">
-    @elseif($entry->status == 'occupied')
-    <input class="btn btn-lg btn-danger btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Declare Vacant" name="btn_submit">
-    @endif
-</form>
-<input class="btn btn-lg btn-danger btn-block btn-entry-delete" style="margin-top:5px" type="submit" value="Delete Listing" name="btn_submit" disabled> -->
+<br>
+<div hidden>
+    <form method="post" action="{{route('lister.updateListingEntry',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
+        {{csrf_field()}}
+        {{method_field('PUT')}}
+        @if($entry->status == 'active')
+        <input class="btn btn-lg btn-danger btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Make Inactive (hide)" name="btn_submit" id="btn_inactivate">
+        @elseif($entry->status == 'inactive')
+        <input class="btn btn-lg btn-success btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Activate" name="btn_submit" id="btn_activate">
+        @elseif($entry->status == 'occupied')
+        <input class="btn btn-lg btn-danger btn-block btn-entry-edit" style="margin-top:5px" type="submit" value="Declare Vacant" name="btn_submit" id="btn_vacate">
+        @endif
+    </form>
+    <input class="btn btn-lg btn-danger btn-block btn-entry-delete" style="margin-top:5px" type="submit" value="Delete Listing" name="btn_submit" id="btn_delete" disabled>
+</div>
 @endif
 @endsection
 
@@ -136,7 +135,7 @@
 <div class="row">
     <div class="responsive" style="padding: 10px;width:150px;height:150px;" id="images_upload">
         <div class="gallery">
-            <img id="images_virtual" src="/images/btn-add.png" alt="unable to display image">
+            <img id="images_virtual" type="button" src="/images/btn-add.png" alt="unable to display image">
             <form id="image_form" method="post" action="{{route('lister.storeListingEntryImage',['listingId'=>$entry->listing->id,'entryId'=>$entry->id])}}" enctype="multipart/form-data">
                 {{csrf_field()}}
                 <div hidden>
@@ -151,5 +150,5 @@
 
 @section('entries_scripts')
 <script src="{{asset('js/listings-management.js')}}"></script>
-<script src="{{asset('js/listing-entries.js')}}"></script>
+<script src="{{asset('js/listing-entries-management.js')}}"></script>
 @endsection

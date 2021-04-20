@@ -4,9 +4,9 @@
 <div class="container">
     @if(session()->has('message'))
     <div class="row">
-        <div class="alert alert-success alert-dismissible">
-            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <div class="alert alert-success alert-dismissible fade show">
             <strong>Success!</strong> {{ session()->get('message') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
     @endif
@@ -96,7 +96,7 @@
         </div>
     </div>
     <br>
-    <!-- Remove the row below this line for a different effect -->
+    <!-- Remove the 'row' below this line for a different effect -->
     <div class="row">
         @forelse($entry->ListingFile->where('category','regular') as $image)
         <div class="responsive" style="padding: 10px;">

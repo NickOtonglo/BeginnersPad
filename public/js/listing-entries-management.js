@@ -47,7 +47,7 @@ $('.btn-entry-edit').on('click',function (e) {
 });
 
 $('.btn-entry-delete').on('click',function (e) {
-    if (confirm("Are you sure you want to perform this action?")) {
+    if (confirm("Are you sure you want to delete this entry?")) {
         e.stopPropagation();
         return true;
     } else {
@@ -97,7 +97,7 @@ $('#btn_thumb_faux').on('click',function (){
     if($('#btn_thumb_real').val()){
         $('#thumb_form').trigger('submit');
     } else {
-        $('#btn_thumb_real').on('click',);
+        $('#btn_thumb_real').trigger('click',);
     }
 });
 
@@ -286,7 +286,7 @@ function populateEntryUpdateForm(ent){
             document.getElementById("checkbox_deposit").checked = true;
             document.getElementById("initial_deposit").value = entry.initial_deposit;
             document.getElementById("initial_deposit_period").value = entry.initial_deposit_period;
-            $('#form_deposit').show();
+            $('#form_deposit').attr("hidden",false);
         }
         // document.getElementById('output').src = '/images/listings/'+listing.id+'/thumbnails/'+entry.thumbnail;
     } catch (error) {

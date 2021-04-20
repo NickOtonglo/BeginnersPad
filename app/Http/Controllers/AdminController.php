@@ -249,11 +249,19 @@ class AdminController extends Controller
         }
 
         $user = Auth::user();
+        $entries = ListingEntry::get();
 
         $utype = $user->user_type;
         if ($utype==3 || $utype==2 || $utype==1) {
             $bookmarks = AdminBookmark::where('admin_id',$user->id)->orderBy('created_at','id')->get();
-            return view('administrators.bookmarks',compact('bookmarks'));
+
+        // ListingEntries thumbnails array
+        $data = [];
+        foreach ($entries as $entry) {
+            $data[$entry->id] = $entry->listingFile()->where('category','thumbnail')->first()->file_name;
+        }
+
+            return view('administrators.bookmarks',compact('bookmarks','data'));
         } else {
             return redirect()->route('listings.list');
         }

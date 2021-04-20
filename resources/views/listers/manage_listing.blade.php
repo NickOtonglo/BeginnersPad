@@ -5,24 +5,19 @@
 @endsection
 
 @section('top_buttons')
-<div class="col-md-6">
+<div class="col-md-3">
 	<a class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#modalCreateEntry">+ Add Listing Entry</a>
 </div>
-<div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
+<br>
+<div class="col-md-9 d-grid gap-2 d-md-flex justify-content-md-end">
 	<div class="btn-group" role="group" aria-label="...">
-		<input class="btn btn-sm btn-outline-secondary" type="button" value="Edit" name="btn_edit" data-bs-toggle="modal" data-bs-target="#modalUpdateListing" onclick="populateListingUpdateForm('{{$listing}}',this);">
-		<form method="post" action="{{route('lister.manageListing',['$id'=>$listing->id])}}" enctype="multipart/form-data">
-			{{csrf_field()}}
-			{{method_field('PUT')}}
-			@if(count($entries)>=1)
-				@if($listing->status=='unpublished')
-				<input class="btn btn-sm btn-outline-secondary" style="border-radius: 0px;" type="submit" value="Submit for Approval" name="btn_submit" id="btn_submit">
-				@elseif($listing->status=='pending')
-				<input class="btn btn-sm btn-outline-secondary" style="border-radius: 0px;" type="submit" value="Withdraw Submission" name="btn_submit" id="btn_revoke">
-				@endif
-			@endif
-		</form>
-		<input class="btn btn-sm btn-outline-secondary" type="butt	on" value="Delete Property" name="btn_delete" disabled>
+		<button type="button" class="btn btn-sm btn-outline-secondary" onclick="$('#btn_edit').trigger('click');">Edit</button>
+		@if($listing->status=='unpublished')
+		<button type="button" class="btn btn-sm btn-outline-secondary" onclick="$('#btn_submit').trigger('click');">Submit for Approval</button>
+		@elseif($listing->status=='pending')
+		<button type="button" class="btn btn-sm btn-outline-secondary" onclick="$('#btn_revoke').trigger('click');">Withdraw Submission for Approval</button>
+		@endif
+		<button type="button" class="btn btn-sm btn-outline-secondary" disabled>Delete Property</button>
 	</div>
 </div>
 @endsection
@@ -90,7 +85,7 @@
 							<input class="form-control" name="stories" type="number" id="stories">
 						</div>
 						<div class="mb-3">
-							<input type="checkbox" value="checkbox" id="checkbox"> <strong id="checkbox-tag" data-toggle="tooltip" title="Loading...">Price all listings under this property equally (what's this?)</strong>
+							<input type="checkbox" value="checkbox" id="checkbox"> <strong id="checkbox-tag" data-toggle="tooltip" data-orginal-title="Loading..." data-placement="auto">Price all listings under this property equally (what's this?)</strong>
 						</div>
 						<div class="mb-3" id="form_price" hidden>
 							<label for="price">Price of rent/month for all listings under this property *</label>
@@ -198,19 +193,21 @@
 @endsection
 
 @section('action_controls')
-<!-- <input class="btn btn-lg btn-primary btn-block" style="margin-top:5px" type="button" value="Edit" name="btn_edit" data-bs-toggle="modal" data-bs-target="#modalUpdateListing" onclick="populateListingUpdateForm('{{$listing}}',this);">
-<form method="post" action="{{route('lister.manageListing',['$id'=>$listing->id])}}" enctype="multipart/form-data">
-	{{csrf_field()}}
-	{{method_field('PUT')}}
-	@if(count($entries)>=1)
-		@if($listing->status=='unpublished')
-		<input class="btn btn-lg btn-info btn-block" style="margin-top:5px" type="submit" value="Submit for Approval" name="btn_submit" id="btn_submit">
-		@elseif($listing->status=='pending')
-		<input class="btn btn-lg btn-warning btn-block" style="margin-top:5px" type="submit" value="Withdraw Submission for Approval" name="btn_submit" id="btn_revoke">
+<div hidden>
+	<input class="btn btn-lg btn-primary btn-block" style="margin-top:5px" type="button" value="Edit" name="btn_edit" id="btn_edit" data-bs-toggle="modal" data-bs-target="#modalUpdateListing" onclick="populateListingUpdateForm('{{$listing}}',this);">
+	<form method="post" action="{{route('lister.manageListing',['$id'=>$listing->id])}}" enctype="multipart/form-data">
+		{{csrf_field()}}
+		{{method_field('PUT')}}
+		@if(count($entries)>=1)
+			@if($listing->status=='unpublished')
+			<input class="btn btn-lg btn-info btn-block" style="margin-top:5px" type="submit" value="Submit for Approval" name="btn_submit" id="btn_submit">
+			@elseif($listing->status=='pending')
+			<input class="btn btn-lg btn-warning btn-block" style="margin-top:5px" type="submit" value="Withdraw Submission for Approval" name="btn_submit" id="btn_revoke">
+			@endif
 		@endif
-	@endif
-</form>
-<input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Delete Property" name="btn_delete" disabled> -->
+	</form>
+	<input class="btn btn-lg btn-danger btn-block" style="margin-top:5px" type="submit" value="Delete Property" name="btn_delete" disabled>
+</div>
 @endsection
 
 @section('management_script')

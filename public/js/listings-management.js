@@ -1,29 +1,30 @@
-$(document).on('ready',function () {
-    tooltip = 'If this option is checked, you will be required to set the rent price only once for all the listings that will fall under this property.';
-    $('#checkbox').on('change',function () {
-        if (this.checked) {
-            $('#form_price').show();
-            tooltip = 'If this option is unchecked, you will be required to set the rent price for each individual listing that will fall under this property seperately.';
-        } else {
-            $('#form_price').attr("hidden",true);
-            tooltip = 'If this option is checked, you will be required to set the rent price only once for all the listings that will fall under this property.';
-        }
-    });
-    $('#checkbox-tag').on('hover',function () {
-        $('#checkbox-tag').attr('data-original-title', tooltip).tooltip('show');
-    });
+tooltip = 'If this option is checked, you will be required to set the rent price only once for all the listings that will fall under this property.';
+$('#checkbox-tag').attr('title',tooltip);
 
-    $('#checkbox-tag').on('click',function () {
-        $('#checkbox-tag').attr('data-original-title', tooltip).tooltip('show');
-    });
-
-    $('.modal').on('hide.bs.modal', function (e) {
-        clearAlerts();
-    });
-    // $('.modal').on('shown.bs.modal', function (e){
-    //     populateListingUpdateForm();
-    // });
+$('#checkbox').on('change',function () {
+    if (this.checked) {
+        $('#form_price').attr("hidden",false);
+        tooltip = 'If this option is unchecked, you will be required to set the rent price for each individual listing that will fall under this property seperately.';
+    } else {
+        $('#form_price').attr("hidden",true);
+        tooltip = 'If this option is checked, you will be required to set the rent price only once for all the listings that will fall under this property.';
+    }
+    $('#checkbox-tag').attr('title',tooltip);
 });
+$('#checkbox-tag').on('mouseenter',function () {
+    $('#checkbox-tag').tooltip('show');
+});
+
+$('#checkbox-tag').on('click',function () {
+    $('#checkbox-tag').tooltip('show');
+});
+
+$('.modal').on('hide.bs.modal', function (e) {
+    clearAlerts();
+});
+// $('.modal').on('shown.bs.modal', function (e){
+//     populateListingUpdateForm();
+// });
 
 hideListingCreateAlert();
 

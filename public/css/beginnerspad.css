@@ -324,3 +324,9 @@ div.desc {
 .bp-gallery-container {
   position: relative;
 }
+
+.bp-mini-panel {
+  border: 1px solid lightgrey;
+  padding: 16px;
+  margin-bottom: 28px;
+}
