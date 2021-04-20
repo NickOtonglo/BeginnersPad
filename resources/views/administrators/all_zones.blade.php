@@ -5,74 +5,74 @@
 @endsection
 
 @section ('content')
-<div class="container-width">
-    <div class="row">
+<div class="container">
+    <div class="row" style="margin-bottom: 16px;">
         @if(session()->has('message'))
-        <div class="alert alert-success alert-dismissible">
-            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <div class="alert alert-success alert-dismissible fade show">
             <strong>Success!</strong> {{ session()->get('message') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         @endif
-        <div class="pull-right">
-            <input class="btn btn-sm btn-info btn-block" style="margin-top:5px" type="submit" value="+ Add Zone" name="btn_new" data-toggle="modal" data-target="#modalCreateZone">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <input class="btn btn-sm btn-outline-primary" type="button" value="+ Add Zone" name="btn_new" data-bs-toggle="modal" data-bs-target="#modalCreateZone">
         </div>
     </div>
     <div class="row">
-        <div class="modal fade" id="modalCreateZone" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal fade" id="modalCreateZone" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="modalLabel">New Zone</h4>
+                        <h4 class="modal-title" id="modalLabel">Create Zone</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form method="post" action="/manage-zone/new" enctype="multipart/form-data" onsubmit="return validateZoneCreateForm();">
                         <div class="modal-body">
                             {{csrf_field() }}
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="name">Name of zone *</label>
                                 <div class="alert alert-danger" id="alert_name_zone_create" hidden></div>
                                 <input class="form-control" name="name" type="text" id="name">
                             </div>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="country">Country *</label>
                                 <div class="alert alert-danger" id="alert_country_zone_create" hidden></div>
-                                <select class="form-control" id="country" name="country">
+                                <select class="form-select" id="country" name="country">
                                     <option value="" selected="selected">Select Country</option>
                                     <option value="KE">Kenya</option>
                                 </select>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="county">County *</label>
                                 <div class="alert alert-danger" id="alert_county_zone_create" hidden></div>
                                 <input class="form-control" name="county" type="text" id="county">
                             </div>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="lat">Latitude</label>
                                 <div class="alert alert-danger" id="alert_lat_zone_create" hidden></div>
                                 <input class="form-control" name="lat" type="number" step="any" id="lat">
                             </div>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="lng">Longitude</label>
                                 <div class="alert alert-danger" id="alert_lng_zone_create" hidden></div>
                                 <input class="form-control" name="lng" type="number" step="any" id="lng">
                             </div>
-                            <div class="form-group" style="height:100%; width:100%;">
+                            <div class="mb-3" style="height:100%; width:100%;">
                                 <div id="map" style="clear:both; height:300px;"></div>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="radius">Radius (km)</label>
                                 <div class="alert alert-danger" id="alert_radius_zone_create" hidden></div>
                                 <input class="form-control" name="radius" type="number" step=".01" id="radius">
                             </div>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="timezone">Timezone</label>
                                 <div class="alert alert-danger" id="alert_timezone_zone_create" hidden></div>
                                 <input class="form-control" name="timezone" type="text" id="timezone">
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <input id="btnCreate" class="btn btn-primary" value="Create" type="submit">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <input id="btnCreate" class="btn btn-outline-primary" value="Create" type="submit">
                         </div>
                     </form>
                 </div>
@@ -94,10 +94,10 @@
             <div class="row">
                 <div class="flex-title" style="text-align:left;">Zones</div>
                 @forelse($zones as $zone)
-                <a class="card-big-clickable card-block" style="margin:9px; " role="button" href="/manage-zone/{{$zone->id}}">
+                <a class="card card-big-clickable" style="margin:9px; " role="button" href="/manage-zone/{{$zone->id}}">
                     <div class="row">
                         <div class="col-md-12">
-                            <h4 class="text-capitalize">{{$zone->name}} <small>({{$zone->country}})</small></h4>
+                            <h5 class="text-capitalize" style="padding-top: 25px;">{{$zone->name}} <small>({{$zone->country}})</small></h5>
                         </div>
                     </div>
                     <hr>
@@ -137,7 +137,7 @@
                                 @endif
                             </p>
                             <p>
-                                <small>Created at: {{$zone->created_at}}</small>
+                                <small>Created on: {{$zone->created_at}}</small>
                             </p>
                         </div>
                     </div>

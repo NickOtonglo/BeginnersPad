@@ -206,41 +206,33 @@ function validateEntryCreateForm() {
 function hideEntryCreateAlert() {
     $('#listing_name').on('input', function () {
         $('#alert_name_entry_create').attr("hidden",true);
-        $('#alert_name_entry_create').attr("hidden",true);
         $('#listing_name').removeClass('bp-input-validation-error');
     });
     $('#entry_description').on('input', function () {
-        $('#alert_desc_entry_create').attr("hidden",true);
         $('#alert_desc_entry_create').attr("hidden",true);
         $('#entry_description').removeClass('bp-input-validation-error');
     });
     $('#floor_area').on('input', function () {
         $('#alert_floor_area_entry_create').attr("hidden",true);
-        $('#alert_floor_area_entry_create').attr("hidden",true);
         $('#floor_area').removeClass('bp-input-validation-error');
     });
     $('#disclaimer').on('input', function () {
-        $('#alert_disclaimer_entry_create').attr("hidden",true);
         $('#alert_disclaimer_entry_create').attr("hidden",true);
         $('#disclaimer').removeClass('bp-input-validation-error');
     });
     $('#features').on('input', function () {
         $('#alert_features_entry_create').attr("hidden",true);
-        $('#alert_features_entry_create').attr("hidden",true);
         $('#features').removeClass('bp-input-validation-error');
     });
     $('#initial_deposit').on('input', function () {
-        $('#alert_initial_deposit_entry_create').attr("hidden",true);
         $('#alert_initial_deposit_entry_create').attr("hidden",true);
         $('#initial_deposit').removeClass('bp-input-validation-error');
     });
     $('#initial_deposit_period').on('input', function () {
         $('#alert_deposit_period_entry_create').attr("hidden",true);
-        $('#alert_deposit_period_entry_create').attr("hidden",true);
         $('#initial_deposit_period').removeClass('bp-input-validation-error');
     });
     $('#entry_price').on('input', function () {
-        $('#alert_price_entry_create').attr("hidden",true);
         $('#alert_price_entry_create').attr("hidden",true);
         $('#entry_price').removeClass('bp-input-validation-error');
     });
@@ -248,27 +240,19 @@ function hideEntryCreateAlert() {
 
 function clearAlerts() {
     $('#alert_name_entry_create').attr("hidden",true);
-    $('#alert_name_entry_create').attr("hidden",true);
     $('#listing_name').removeClass('bp-input-validation-error');
-    $('#alert_desc_entry_create').attr("hidden",true);
     $('#alert_desc_entry_create').attr("hidden",true);
     $('#entry_description').removeClass('bp-input-validation-error');
     $('#alert_floor_area_entry_create').attr("hidden",true);
-    $('#alert_floor_area_entry_create').attr("hidden",true);
     $('#floor_area').removeClass('bp-input-validation-error');
-    $('#alert_disclaimer_entry_create').attr("hidden",true);
     $('#alert_disclaimer_entry_create').attr("hidden",true);
     $('#disclaimer').removeClass('bp-input-validation-error');
     $('#alert_features_entry_create').attr("hidden",true);
-    $('#alert_features_entry_create').attr("hidden",true);
     $('#features').removeClass('bp-input-validation-error');
-    $('#alert_initial_deposit_entry_create').attr("hidden",true);
     $('#alert_initial_deposit_entry_create').attr("hidden",true);
     $('#initial_deposit').removeClass('bp-input-validation-error');
     $('#alert_deposit_period_entry_create').attr("hidden",true);
-    $('#alert_deposit_period_entry_create').attr("hidden",true);
     $('#initial_deposit_period').removeClass('bp-input-validation-error');
-    $('#alert_price_entry_create').attr("hidden",true);
     $('#alert_price_entry_create').attr("hidden",true);
     $('#entry_price').removeClass('bp-input-validation-error');
 }
