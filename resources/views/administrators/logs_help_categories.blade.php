@@ -20,7 +20,7 @@
     @endforeach
     @if($targetUser == 'all')
 	<div class="pull-right btn-group" role="group">
-        <a class="btn btn-mid btn-default" role="button" id="btn_logs" href="{{route('admin.viewHelpCategoryLogs',['target'=>'me'])}}">View My Activity</a>
+        <a class="btn btn-sm btn-outline-secondary" role="button" id="btn_logs" href="{{route('admin.viewHelpCategoryLogs',['target'=>'me'])}}">View My Activity</a>
 	</div>
     @endif
 </div>
@@ -28,43 +28,39 @@
 @endsection
 
 @section ('col_centre')
-<div class="panel panel-default">
-    <div class="panel-heading text-capitalize">Help Category Activity Logs</div>
-    <div class="panel-body">
-        <div class="post">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Ticket ID</th>
-                        <th scope="col">Name/Title</th>
-                        <th scope="col">Priority</th>
-                        <th scope="col">Action</th>
-                        @if($targetUser == 'all')
-                        <th scope="col">Admin</th>
-                        @endif
-                        <th scope="col">Timestamp</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($logs as $log)
-                    <tr class="row-clickable">
-                        <th id="t_body_id" scope="row">{{$log->id}}</th>
-                        <td id="t_body_ticket">{{$log->parent_id}}</td>
-                        <td id="t_body_name">{{$log->name}}</td>
-                        <td id="t_body_priority">{{$log->priority}}</td>
-                        <td id="t_body_action">{{$log->action}}</td>
-                        @if($targetUser == 'all')
-                        <td id="t_body_admin">{{$log->user->name}}</td>
-                        @endif
-                        <td id="t_body_time">{{$log->created_at}}</td>
-                    </tr>
-                    @empty
-                    <tr>No entries</tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="table-responsive">
+    <h5>Help Category Activity Logs</h5>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Ticket ID</th>
+                <th scope="col">Name/Title</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Action</th>
+                @if($targetUser == 'all')
+                <th scope="col">Admin</th>
+                @endif
+                <th scope="col">Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($logs as $log)
+            <tr class="row-clickable">
+                <th id="t_body_id" scope="row">{{$log->id}}</th>
+                <td id="t_body_ticket">{{$log->parent_id}}</td>
+                <td id="t_body_name">{{$log->name}}</td>
+                <td id="t_body_priority">{{$log->priority}}</td>
+                <td id="t_body_action">{{$log->action}}</td>
+                @if($targetUser == 'all')
+                <td id="t_body_admin">{{$log->user->name}}</td>
+                @endif
+                <td id="t_body_time">{{$log->created_at}}</td>
+            </tr>
+            @empty
+            <tr>No entries</tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 @endsection

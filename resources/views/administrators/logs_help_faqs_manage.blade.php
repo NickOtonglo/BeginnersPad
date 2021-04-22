@@ -7,63 +7,59 @@
 @section('top_buttons')
 <div class="container">
 	<div class="pull-right">
-    @if($target=='all')
-    <a class="btn btn-sm btn-default" role="button" href="{{route('admin.viewHelpFAQLogs',['target'=>'me'])}}">My Management History</a>
-    @endif
+        @if($target=='all')
+        <a class="btn btn-sm btn-outline-secondary" role="button" href="{{route('admin.viewHelpFAQLogs',['target'=>'me'])}}">My Management History</a>
+        @endif
 	</div>
 </div>
 <br>
 @endsection
 
 @section ('col_centre')
-<div class="panel panel-default">
-    <div class="panel-heading text-capitalize">Activity History</div>
-    <div class="panel-body">
-        <div class="post">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Parent ID</th>
-                        <th scope="col">Question</th>
-                        <th id="t_head_admin" scope="col">Admin</th>
-                        <th scope="col">Action</th>
-                        <th scope="col">Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($logs as $log)
-                    <tr class="row-clickable" role="button" data-toggle="modal" data-target="#modalLog" onclick="populateModal('{{$log->id}}',this);">
-                        <th id="t_body_id" scope="row">{{$log->id}}</th>
-                        <td id="t_body_parent">{{$log->entry_id}}</td>
-                        <td id="t_body_question" style="width: 300px; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;display:inline-block;">{{$log->question}}</td>
-                        @isset($log->actionBy->name)
-                        <td id="t_body_admin">{{$log->actionBy->name}}</td>
-                        @else
-                        <td id="t_body_admin">deleted [id {{$log->action_by}}]</td>
-                        @endif
-                        <td id="t_body_action">{{$log->action}}</td>
-                        <td id="t_body_time">{{$log->created_at}}</td>
-                    </tr>
-                    @empty
-                    <tr>No history</tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="table-responsive">
+    <h5>Activity History</h5>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">FAQ #</th>
+                <th scope="col">Question</th>
+                <th id="t_head_admin" scope="col">Admin</th>
+                <th scope="col">Action</th>
+                <th scope="col">Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($logs as $log)
+            <tr class="row-clickable" role="button" data-bs-toggle="modal" data-bs-target="#modalLog" onclick="populateModal('{{$log->id}}',this);">
+                <th id="t_body_id" scope="row">{{$log->id}}</th>
+                <td id="t_body_parent">{{$log->entry_id}}</td>
+                <td id="t_body_question" style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:200px;">{{$log->question}}</td>
+                @isset($log->actionBy->name)
+                <td id="t_body_admin">{{$log->actionBy->name}}</td>
+                @else
+                <td id="t_body_admin">deleted [id {{$log->action_by}}]</td>
+                @endif
+                <td id="t_body_action">{{$log->action}}</td>
+                <td id="t_body_time">{{$log->created_at}}</td>
+            </tr>
+            @empty
+            <tr>No history</tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 
 <div class="modal fade" id="modalLog" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="modalLabel">View Log</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div>
-                    <label for="parent" class="text-muted">Parent ID</label>
+                    <label for="parent" class="text-muted">FAQ #</label>
                     <h4 id="parent" type="text" name="parent">Loading...</h4>
                 </div>
                 <hr>
@@ -98,7 +94,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
             </div>
         </div>
     </div>

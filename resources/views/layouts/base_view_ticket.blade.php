@@ -42,8 +42,8 @@
     </div>
     <br>
 </div>
-<div class="container">
-    <div class=" pull-right">
+<div class="container-width">
+    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
         <h2>{{$ticket->topic}}</h2>
     </div>
 </div>

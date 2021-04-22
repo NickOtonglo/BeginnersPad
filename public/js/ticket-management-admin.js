@@ -5,7 +5,6 @@ let assignedTo;
 
 $('.row-clickable').on('click',function(){
     $('#modalViewTicket').modal('show');
-
 });
 
 $('#btn_view_user').on('click',function(e){
@@ -21,9 +20,9 @@ $('#btn_open_ticket').on('click',function(e){
 });
 
 $('#modalViewTicket').on('hide.bs.modal', function (e) {
+    $('#btn_view_user').attr("hidden",true);
     hideActions();
     removeAssignedTo();
-    $('#btn_view_user').addClass('hidden');
 });
 
 $('#btn_pick').on('click',function(e){
@@ -119,36 +118,36 @@ function populateActionForm(arg){
         let ticketStatus = ticket.status;
         switch (ticketStatus){
             case 'open':
-                $('#pick_ticket').show();
-                $('#close_resolved_ticket').show();
-                $('#close_ticket').show();
-                $('#release_ticket').hide();
+                $('#pick_ticket').attr("hidden",false);
+                $('#close_resolved_ticket').attr("hidden",false);
+                $('#close_ticket').attr("hidden",false);
+                $('#release_ticket').attr("hidden",true);
                 break;
             case 'pending':
                 if(authUser.id == ticket.assigned_to || authUser.user_type == 1){
-                    $('#release_ticket').show();
-                    $('#close_resolved_ticket').show();
-                    $('#close_ticket').show();
+                    $('#release_ticket').attr("hidden",false);
+                    $('#close_resolved_ticket').attr("hidden",false);
+                    $('#close_ticket').attr("hidden",false);
                 }
-                $('#pick_ticket').hide();
+                $('#pick_ticket').attr("hidden",true);
                 break;
             case 'resolved':
-                $('#pick_ticket').hide();
-                $('#release_ticket').hide();
-                $('#close_resolved_ticket').hide();
-                $('#close_ticket').hide();
+                $('#pick_ticket').attr("hidden",true);
+                $('#release_ticket').attr("hidden",true);
+                $('#close_resolved_ticket').attr("hidden",true);
+                $('#close_ticket').attr("hidden",true);
                 break;
             case 'closed':
-                $('#pick_ticket').hide();
-                $('#release_ticket').hide();
-                $('#close_resolved_ticket').hide();
-                $('#close_ticket').hide();
+                $('#pick_ticket').attr("hidden",true);
+                $('#release_ticket').attr("hidden",true);
+                $('#close_resolved_ticket').attr("hidden",true);
+                $('#close_ticket').attr("hidden",true);
                 break;
             case 'reopened':
-                $('#pick_ticket').show();
-                $('#close_resolved_ticket').show();
-                $('#close_ticket').show();
-                $('#release_ticket').hide();
+                $('#pick_ticket').attr("hidden",false);
+                $('#close_resolved_ticket').attr("hidden",false);
+                $('#close_ticket').attr("hidden",false);
+                $('#release_ticket').attr("hidden",true);
                 break;
         }
 
@@ -165,7 +164,7 @@ function populateActionForm(arg){
 }
 
 function hideActions(){
-    $('.list-action').hide();
+    $('.list-action').attr("hidden",true);
 }
 
 function setPriority(args){
@@ -200,7 +199,7 @@ function showViewUser(args){
 
     }
     if(args != ''){
-        $('#btn_view_user').removeClass('hidden');
+        $('#btn_view_user').attr("hidden",false);
     }
 }
 

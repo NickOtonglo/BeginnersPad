@@ -50,8 +50,8 @@
     </div>
     <br>
 </div>
-<div class="container">
-    <div class=" pull-right">
+<div class="container-width">
+    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
         <h2>{{$ticket->topic}}</h2>
     </div>
 </div>
@@ -68,18 +68,18 @@
             {{csrf_field()}}
             <div class="btn-group" role="group" aria-label="...">
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-lg btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></button>
+                    <button type="button" class="btn btn-lg btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         @if($ticket->status == 'open' || $ticket->status == 'reopened')
-                        <li class="list-action" id="pick_ticket"><a role="button" onclick="">Pick Ticket</a></li>
-                        <li class="list-action" id="close_resolved_ticket"><a role="button" onclick="">Close as 'Resolved'</a></li>
-                        <li class="list-action" id="close_ticket"><a role="button" onclick="">Close Ticket</a></li>
+                        <li class="list-action" id="pick_ticket"><a class="dropdown-item" role="button" onclick="">Pick Ticket</a></li>
+                        <li class="list-action" id="close_resolved_ticket"><a class="dropdown-item" role="button" onclick="">Close as 'Resolved'</a></li>
+                        <li class="list-action" id="close_ticket"><a class="dropdown-item" role="button" onclick="">Close Ticket</a></li>
                         @endif
                         @if($ticket->status == 'pending')
                             @if($ticket->assignedTo == Auth::user()->id || Auth::user()->user_type === 1)
-                            <li class="list-action" id="release_ticket"><a role="button" onclick="">Release Ticket</a></li>
-                            <li class="list-action" id="close_resolved_ticket"><a role="button" onclick="">Close as 'Resolved'</a></li>
-                            <li class="list-action" id="close_ticket"><a role="button" onclick="">Close Ticket</a></li>
+                            <li class="list-action" id="release_ticket"><a class="dropdown-item" role="button" onclick="">Release Ticket</a></li>
+                            <li class="list-action" id="close_resolved_ticket"><a class="dropdown-item" role="button" onclick="">Close as 'Resolved'</a></li>
+                            <li class="list-action" id="close_ticket"><a class="dropdown-item" role="button" onclick="">Close Ticket</a></li>
                             @endif
                         @endif
                     </ul>

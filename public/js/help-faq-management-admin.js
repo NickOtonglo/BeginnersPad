@@ -52,16 +52,16 @@ function validateEntryCreateForm(){
      || document.getElementById('ans_create').value.trim() == ''
      || document.getElementById('cat_create').value.trim() == ''){
         if(document.getElementById('qn_create').value.trim() == ''){
-            $('#alert_qn_create').html('<li>Required</li>').show();
-            $('#qn_create').addClass('alert alert-danger');
+            $('#alert_qn_create').html('<li>Required</li>').attr("hidden",false);
+            $('#qn_create').addClass('bp-input-validation-error');
         }
         if(document.getElementById('ans_create').value.trim() == ''){
-            $('#alert_ans_create').html('<li>Required</li>').show();
-            $('#ans_create').addClass('alert alert-danger');
+            $('#alert_ans_create').html('<li>Required</li>').attr("hidden",false);
+            $('#ans_create').addClass('bp-input-validation-error');
         }
         if(document.getElementById('cat_create').value.trim() == ''){
-            $('#alert_cat_create').html('<li>Required</li>').show();
-            $('#cat_create').addClass('alert alert-danger');
+            $('#alert_cat_create').html('<li>Required</li>').attr("hidden",false);
+            $('#cat_create').addClass('bp-input-validation-error');
         }
         return false;
     } else {
@@ -74,16 +74,16 @@ function validateEntryUpdateForm(){
      || document.getElementById('answer').value.trim() == ''
      || document.getElementById('category').value.trim() == ''){
         if(document.getElementById('question').value.trim() == ''){
-            $('#alert_qn').html('<li>Required</li>').show();
-            $('#question').addClass('alert alert-danger');
+            $('#alert_qn').html('<li>Required</li>').attr("hidden",false);
+            $('#question').addClass('bp-input-validation-error');
         }
         if(document.getElementById('answer').value.trim() == ''){
-            $('#alert_ans').html('<li>Required</li>').show();
-            $('#answer').addClass('alert alert-danger');
+            $('#alert_ans').html('<li>Required</li>').attr("hidden",false);
+            $('#answer').addClass('bp-input-validation-error');
         }
         if(document.getElementById('category').value.trim() == ''){
-            $('#alert_cat').html('<li>Required</li>').show();
-            $('#category').addClass('alert alert-danger');
+            $('#alert_cat').html('<li>Required</li>').attr("hidden",false);
+            $('#category').addClass('bp-input-validation-error');
         }
         return false;
     } else {
@@ -93,48 +93,48 @@ function validateEntryUpdateForm(){
 
 function hideCreateAlerts(){
     $('#qn_create').on('input',function(){
-        $('#alert_qn_create').hide();
-        $('#qn_create').removeClass('alert alert-danger');
+        $('#alert_qn_create').attr("hidden",true);
+        $('#qn_create').removeClass('bp-input-validation-error');
     });
     $('#ans_create').on('input',function(){
-        $('#alert_ans_create').hide();
-        $('#ans_create').removeClass('alert alert-danger');
+        $('#alert_ans_create').attr("hidden",true);
+        $('#ans_create').removeClass('bp-input-validation-error');
     });
     $('#cat_create').on('input',function(){
-        $('#alert_cat_create').hide();
-        $('#cat_create').removeClass('alert alert-danger');
+        $('#alert_cat_create').attr("hidden",true);
+        $('#cat_create').removeClass('bp-input-validation-error');
     });
 }
 
 function hideUpdateAlerts(){
     $('#question').on('input',function(){
-        $('#alert_qn').hide();
-        $('#question').removeClass('alert alert-danger');
+        $('#alert_qn').attr("hidden",true);
+        $('#question').removeClass('bp-input-validation-error');
     });
     $('#answer').on('input',function(){
-        $('#alert_ans').hide();
-        $('#answer').removeClass('alert alert-danger');
+        $('#alert_ans').attr("hidden",true);
+        $('#answer').removeClass('bp-input-validation-error');
     });
     $('#category').on('input',function(){
-        $('#alert_cat').hide();
-        $('#category').removeClass('alert alert-danger');
+        $('#alert_cat').attr("hidden",true);
+        $('#category').removeClass('bp-input-validation-error');
     });
 }
 
 function clearAlerts(){
-    $('#alert_qn_create').hide();
-    $('#qn_create').removeClass('alert alert-danger');
-    $('#alert_ans_create').hide();
-    $('#ans_create').removeClass('alert alert-danger');
-    $('#alert_cat_create').hide();
-    $('#cat_create').removeClass('alert alert-danger');
+    $('#alert_qn_create').attr("hidden",true);
+    $('#qn_create').removeClass('bp-input-validation-error');
+    $('#alert_ans_create').attr("hidden",true);
+    $('#ans_create').removeClass('bp-input-validation-error');
+    $('#alert_cat_create').attr("hidden",true);
+    $('#cat_create').removeClass('bp-input-validation-error');
 
-    $('#alert_qn').hide();
-    $('#question').removeClass('alert alert-danger');
-    $('#alert_ans').hide();
-    $('#answer').removeClass('alert alert-danger');
-    $('#alert_cat').hide();
-    $('#category').removeClass('alert alert-danger');
+    $('#alert_qn').attr("hidden",true);
+    $('#question').removeClass('bp-input-validation-error');
+    $('#alert_ans').attr("hidden",true);
+    $('#answer').removeClass('bp-input-validation-error');
+    $('#alert_cat').attr("hidden",true);
+    $('#category').removeClass('bp-input-validation-error');
 }
 
 function populateEntryUpdateForm(arg){
