@@ -1,9 +1,9 @@
 if (authUser.avatar == null){
-    $('#btn_remove_avatar').hide();
+    $('#btn_remove_avatar').attr("hidden",true);
 }
 
 $('#btn_edit_profile').on('click',function (e) {
-    $('#div_img').hide();
+    $('#div_img').attr("hidden",true);
     $('#modal').modal('show');
 });
 
@@ -102,42 +102,42 @@ function validateDetailsForm(){
         || document.getElementById("telephone").value.trim() == ""
         || document.getElementById("username").value.trim() == "") {
         if (document.getElementById("name").value.trim() == "") {
-            $('#alert_name').html('<li>Required</li>').show();
-            $('#name').addClass('alert alert-danger');
+            $('#alert_name').html('<li>Required</li>').attr("hidden",false);
+            $('#name').addClass('bp-input-validation-error');
         }
         if (document.getElementById("email").value.trim() == "") {
-            $('#alert_email').html('<li>Required</li>').show();
-            $('#email').addClass('alert alert-danger');
+            $('#alert_email').html('<li>Required</li>').attr("hidden",false);
+            $('#email').addClass('bp-input-validation-error');
         }
         if (document.getElementById("telephone").value.trim() == "") {
-            $('#alert_phone').html('<li>Required</li>').show();
-            $('#telephone').addClass('alert alert-danger');
+            $('#alert_phone').html('<li>Required</li>').attr("hidden",false);
+            $('#telephone').addClass('bp-input-validation-error');
         }
         if (document.getElementById("username").value.trim() == "") {
-            $('#alert_username').html('<li>Required</li>').show();
-            $('#username').addClass('alert alert-danger');
+            $('#alert_username').html('<li>Required</li>').attr("hidden",false);
+            $('#username').addClass('bp-input-validation-error');
         }
         return false;
     } else {
         if (document.getElementById("name").value.trim().length > 255) {
-            $('#alert_name').html('<li>Name should contain between 2 and 255 characters</li>').show();
-            $('#name').addClass('alert alert-danger');
+            $('#alert_name').html('<li>Name should contain between 2 and 255 characters</li>').attr("hidden",false);
+            $('#name').addClass('bp-input-validation-error');
             return false;
         } else if (document.getElementById("email").value.trim().length > 255) {
-            $('#alert_email').html('<li>Email must contain not more than 255 characters</li>').show();
-            $('#email').addClass('alert alert-danger');
+            $('#alert_email').html('<li>Email must contain not more than 255 characters</li>').attr("hidden",false);
+            $('#email').addClass('bp-input-validation-error');
             return false;
         } else if (!validateEmail(document.getElementById("email").value.trim())) {
-            $('#alert_email').html('<li>Email must be in the format "name@example.com"</li>').show();
-            $('#email').addClass('alert alert-danger');
+            $('#alert_email').html('<li>Email must be in the format "name@example.com"</li>').attr("hidden",false);
+            $('#email').addClass('bp-input-validation-error');
             return false;
         } else if (document.getElementById("telephone").value.trim().length < 10 || document.getElementById("telephone").value.trim().length > 13) {
-            $('#alert_phone').html('<li>Phone number must contain between 10 and 13 characters</li>').show();
-            $('#telephone').addClass('alert alert-danger');
+            $('#alert_phone').html('<li>Phone number must contain between 10 and 13 characters</li>').attr("hidden",false);
+            $('#telephone').addClass('bp-input-validation-error');
             return false;
         } else if (!validatePhone(document.getElementById("telephone").value.trim())) {
-            $('#alert_phone').html('<li>Phone number must be in the format "+254XXXXXXXXX"</li>').show();
-            $('#telephone').addClass('alert alert-danger');
+            $('#alert_phone').html('<li>Phone number must be in the format "+254XXXXXXXXX"</li>').attr("hidden",false);
+            $('#telephone').addClass('bp-input-validation-error');
             return false;
         }  else {
             return true;
@@ -150,27 +150,27 @@ function validatePasswordForm(){
         || document.getElementById("password").value.trim() == ""
         || document.getElementById("password_confirmation").value.trim() == "") {
         if (document.getElementById("password_current").value.trim() == "") {
-            $('#alert_password_current').html('<li>Required</li>').show();
-            $('#password_current').addClass('alert alert-danger');
+            $('#alert_password_current').html('<li>Required</li>').attr("hidden",false);
+            $('#password_current').addClass('bp-input-validation-error');
         }
         if (document.getElementById("password").value.trim() == "") {
-            $('#alert_password').html('<li>Required</li>').show();
-            $('#password').addClass('alert alert-danger');
+            $('#alert_password').html('<li>Required</li>').attr("hidden",false);
+            $('#password').addClass('bp-input-validation-error');
         }
         if (document.getElementById("password_confirmation").value.trim() == "") {
-            $('#alert_password_confirmation').html('<li>Required</li>').show();
-            $('#password_confirmation').addClass('alert alert-danger');
+            $('#alert_password_confirmation').html('<li>Required</li>').attr("hidden",false);
+            $('#password_confirmation').addClass('bp-input-validation-error');
         }
         return false;
     } else {
         if (!validatePassword(document.getElementById("password").value.trim())) {
-            $('#alert_password').html('<li>Password must be of at least 6 characters, and consist of no spaces</li>').show();
-            $('#password').addClass('alert alert-danger');
+            $('#alert_password').html('<li>Password must be of at least 6 characters, and consist of no spaces</li>').attr("hidden",false);
+            $('#password').addClass('bp-input-validation-error');
             return false;
         } else if (document.getElementById("password").value.trim() != document.getElementById("password_confirmation").value.trim()) {
-            $('#alert_password').html('<li>These passwords do not match!</li>').show();
-            $('#password').addClass('alert alert-danger');
-            $('#password_confirmation').addClass('alert alert-danger');
+            $('#alert_password').html('<li>These passwords do not match!</li>').attr("hidden",false);
+            $('#password').addClass('bp-input-validation-error');
+            $('#password_confirmation').addClass('bp-input-validation-error');
             return false;
         }  else {
             return true;
@@ -180,23 +180,23 @@ function validatePasswordForm(){
 
 function hideDetailsAlerts(){
     $('#name').on('input', function () {
-        $('#alert_name').hide();
-        $('#name').removeClass('alert alert-danger');
+        $('#alert_name').attr("hidden",true);
+        $('#name').removeClass('bp-input-validation-error');
         toggleUpdateButton();
     });
     $('#email').on('input', function () {
-        $('#alert_email').hide();
-        $('#email').removeClass('alert alert-danger');
+        $('#alert_email').attr("hidden",true);
+        $('#email').removeClass('bp-input-validation-error');
         toggleUpdateButton();
     });
     $('#telephone').on('input', function () {
-        $('#alert_phone').hide();
-        $('#telephone').removeClass('alert alert-danger');
+        $('#alert_phone').attr("hidden",true);
+        $('#telephone').removeClass('bp-input-validation-error');
         toggleUpdateButton();
     });
     $('#username').on('input', function (e) {
-        $('#alert_username').hide();
-        $('#username').removeClass('alert alert-danger');
+        $('#alert_username').attr("hidden",true);
+        $('#username').removeClass('bp-input-validation-error');
         // $(this).val($(this).val().replace(/\s+/g, ''));
         $(this).val($(this).val().replace(/[|&;$%@"<>(){},]/g, ''));
         //toggleUpdateButton();
@@ -205,37 +205,37 @@ function hideDetailsAlerts(){
 
 function hidePasswordsAlerts(){
     $('#password_current').on('input', function () {
-        $('#alert_password_current').hide();
-        $('#password_current').removeClass('alert alert-danger');
+        $('#alert_password_current').attr("hidden",true);
+        $('#password_current').removeClass('bp-input-validation-error');
         togglePasswordButton();
     });
     $('#password').on('input', function () {
-        $('#alert_password').hide();
-        $('#password').removeClass('alert alert-danger');
+        $('#alert_password').attr("hidden",true);
+        $('#password').removeClass('bp-input-validation-error');
         togglePasswordButton();
     });
     $('#password_confirmation').on('input', function () {
-        $('#alert_password_confirmation').hide();
-        $('#password_confirmation').removeClass('alert alert-danger');
+        $('#alert_password_confirmation').attr("hidden",true);
+        $('#password_confirmation').removeClass('bp-input-validation-error');
         togglePasswordButton();
     });
 }
 
 function clearAllAlerts(){
-    $('#alert_name').hide();
-    $('#name').removeClass('alert alert-danger');
-    $('#alert_email').hide();
-    $('#email').removeClass('alert alert-danger');
-    $('#alert_phone').hide();
-    $('#telephone').removeClass('alert alert-danger');
-    $('#alert_username').hide();
-    $('#username').removeClass('alert alert-danger');
-    $('#alert_password_current').hide();
-    $('#password_current').removeClass('alert alert-danger');
-    $('#alert_password').hide();
-    $('#password').removeClass('alert alert-danger');
-    $('#alert_password_confirmation').hide();
-    $('#password_confirmation').removeClass('alert alert-danger');
+    $('#alert_name').attr("hidden",true);
+    $('#name').removeClass('bp-input-validation-error');
+    $('#alert_email').attr("hidden",true);
+    $('#email').removeClass('bp-input-validation-error');
+    $('#alert_phone').attr("hidden",true);
+    $('#telephone').removeClass('bp-input-validation-error');
+    $('#alert_username').attr("hidden",true);
+    $('#username').removeClass('bp-input-validation-error');
+    $('#alert_password_current').attr("hidden",true);
+    $('#password_current').removeClass('bp-input-validation-error');
+    $('#alert_password').attr("hidden",true);
+    $('#password').removeClass('bp-input-validation-error');
+    $('#alert_password_confirmation').attr("hidden",true);
+    $('#password_confirmation').removeClass('bp-input-validation-error');
 }
 
 function toggleUpdateButton() {

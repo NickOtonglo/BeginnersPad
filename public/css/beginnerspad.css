@@ -330,3 +330,11 @@ div.desc {
   padding: 16px;
   margin-bottom: 28px;
 }
+
+.bp-text-line-clamp {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}

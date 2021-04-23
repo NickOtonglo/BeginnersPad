@@ -1,7 +1,7 @@
 @extends('layouts.base_no_panel')
 
 @section('title')
-Help - Frequently Asked Questions | Beginners Pad
+<title>Help - Frequently Asked Questions | Beginners Pad</title>
 @endsection
 
 @section ('content')

@@ -93,7 +93,7 @@
                 <div class="row">
                     <div class="mb-3">
                         <div class="col-md-4 col-md-offset-0"></div>
-                        <div class="col-md-4 col-md-offset-0">
+                        <div class="col-md-4 col-md-offset-0" style="display: block;width:100%">
                             <form id="formAvatar" method="post" action="{{route('updateAccountDetails')}}" enctype="multipart/form-data">
                                 {{csrf_field()}}
                                 <div id="div_img" >
@@ -101,20 +101,21 @@
                                 </div>
                             </form>
                             <div class="row">
-                                <div class="cst-card" style="width:150px;height:150px;margin: auto;border-radius:50%" data-toggle="tooltip" title="Click to change" id="btn_img_faux">
+                                <div class="card-big-clickable" style="width:150px;height:150px;margin: auto;border-radius:50%;padding: 0px"
+                                 data-toggle="tooltip" title="Click to change" id="btn_img_faux" type="button">
                                     @if ($targetUser->avatar != null)
-                                    <img style="width:150px;height:150px; display:block;margin-left:auto;margin-right:auto; border-radius:50%"
+                                    <img style="width:150px;height:150px; display:block;margin:auto; border-radius:50%"
                                      src="/images/avatar/{{$targetUser->id}}/{{$targetUser->avatar}}" alt="unable to display image" id="img_avatar">
                                     @elseif ($targetUser->avatar == null)
-                                    <img style="width:150px;height:150px; display:block;margin-left:auto;margin-right:auto; border-radius:50%"
+                                    <img style="width:150px;height:150px; display:block;margin:auto; border-radius:50%"
                                      src="/images/avatar/avatar.png" alt="unable to display image" id="img_avatar">
                                     @endif
+                                    <form id="formNoAvatar" method="post" action="{{route('updateAccountDetails')}}" enctype="multipart/form-data">
+                                        {{csrf_field()}}
+                                        <input class="btn btn-sm btn-danger btn-top-delete btn-delete" style="border-radius:50%;margin: 15px" type="submit" value="X" name="btn_submit" data-toggle="tooltip"
+                                            title="Remove" id="btn_remove_avatar">
+                                    </form>
                                 </div>
-                                <form id="formNoAvatar" method="post" action="{{route('updateAccountDetails')}}" enctype="multipart/form-data">
-                                    {{csrf_field()}}
-                                    <input class="btn btn-sm btn-danger btn-top-delete btn-delete" style="border-radius:50%;margin: 25px" type="submit" value="X" name="btn_submit" data-toggle="tooltip"
-                                        title="Remove" id="btn_remove_avatar">
-                                </form>
                             </div>
                         </div>
                         <div class="col-md-4 col-md-offset-0"></div>
@@ -162,7 +163,7 @@
                         <input id="username" type="text" class="form-control" name="username" onkeyup="/*this.value = this.value.toLowerCase();*/">
                     </div>
                     <div class="mb-3">
-                        <input class="btn btn-primary" type="submit" value="Update" name="btn_submit" id="btn_update"></input>
+                        <input class="btn btn-outline-primary" type="submit" value="Update" name="btn_submit" id="btn_update"></input>
                     </div>
                 </form>
                 <hr>
@@ -197,12 +198,12 @@
                         <input class="form-control" type="password" name="password_confirmation" id="password_confirmation">
                     </div>
                     <div class="mb-3">
-                        <input class="btn btn-primary" type="submit" value="Change Password" name="btn_submit" id="btn_password"></input>
+                        <input class="btn btn-outline-primary" type="submit" value="Change Password" name="btn_submit" id="btn_password"></input>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

@@ -9,8 +9,8 @@
 	<div class="pull-right">
     @if(Auth::check())
         @if(Auth::user()->user_type === 4 || Auth::user()->user_type === 5)
-            <div style="float: right;">
-                <a class="btn btn-mid btn-default" href="{{route('viewTicketHistory')}}" role="button">Ticket History</a>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a class="btn btn-sm btn-outline-secondary" href="{{route('viewTicketHistory')}}" role="button">Ticket History</a>
             </div>
         @endif
     @endif
@@ -26,7 +26,7 @@
         <dl>
             @forelse($faqs as $faq)
             <dt>{{$faq->question}}?</dt>
-            <dd>{{$faq->answer}}.</dd>
+            <dd class="bp-text-line-clamp">{{$faq->answer}}.</dd>
             @empty
             <dd>Unavailable</dd>
             @endforelse
@@ -50,15 +50,15 @@
         </dl>
     </div>
     <div class="row" style="margin: 5px;">
-        <a class="pull-right" style="color:deepskyblue;text-decoration: underline deepskyblue;" href="">View all help topics</a>
+        <a class="pull-right" style="color:deepskyblue;text-decoration: underline deepskyblue;" href="#">View all help topics</a>
     </div>
 </div>
 @endsection
 
 @section ('col_right')
-<div class="panel panel-info">
-    <div class="panel-heading">Contact a representative</div>
-    <div class="panel-body">
+<div class="card">
+    <div class="card-header">Contact a representative</div>
+    <div class="card-body">
         @if(count($errors)>0)
             <ul>
                 @foreach($errors->all() as $error)
@@ -74,7 +74,7 @@
         
         <form method="post" action="{{route('help')}}" enctype="multipart/form-data" id="help_form">
             {{csrf_field()}}
-            <div class="form-group">
+            <div class="mb-3">
                 @if (!Auth::check())
                 <label for="email">Email Address *</label>
                 <div class="alert alert-danger" id="alert_email" hidden></div>
@@ -85,10 +85,10 @@
                 <input class="form-control" name="email" type="text" id="email" value="{{Auth::user()->email}}" readonly>
                 @endif
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <label for="category">Help Category *</label>
                 <div class="alert alert-danger" id="alert_category" hidden></div>
-                <select class="form-control" id="category" name="category">
+                <select class="form-select" id="category" name="category">
                     <option value="">Select Category</option>
                     @forelse($helpCats as $category)
                     <option value="{{$category->name}}">{{$category->name}}</option>
@@ -97,13 +97,13 @@
                     @endforelse
                 </select>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <label for="description">Text (Describe your problem in detail) *</label>
                 <div class="alert alert-danger" id="alert_description" hidden></div>
                 <textarea class="form-control" name="description" type="text" id="description" rows="10"></textarea>
             </div>
-            <div class="form-group">
-                <input class="btn btn-primary" value="Submit" type="submit" id="btn_submit">
+            <div class="mb-3">
+                <input class="btn btn-outline-primary" value="Submit" type="submit" id="btn_submit">
             </div>
         </form>
     </div>

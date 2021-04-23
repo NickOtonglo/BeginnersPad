@@ -54,7 +54,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-md-12 col-md-offset-0" style="margin:2px">
-                                <p style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                                <p class="bp-text-line-clamp">
                                     {{($entry->answer)}}
                                 </p>
                             </div>
@@ -70,7 +70,7 @@
 </div>
 
 <div class="modal fade" id="modalCreateEntry" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="modalLabel">New Entry</h4>
@@ -104,7 +104,7 @@
     </div>
 </div>
 <div class="modal fade" id="modalUpdateEntry" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="modalLabel">Edit Entry</h4>

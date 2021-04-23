@@ -2,17 +2,17 @@
 
 @section('content')
 <div class="row">
-    <div class="container">
+    <div class="container-width">
         @if(session()->has('message'))
         <div class="alert alert-success alert-dismissible">
-            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <strong>Success!</strong> {{ session()->get('message') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         @endif
         @foreach ($errors->all() as $error)
         <div class="alert alert-danger alert-dismissible">
-            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
             {{ $errors->first() }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         @endforeach
     </div>
@@ -24,9 +24,9 @@
                 <div class="col-md-3 col-md-offset-0">
                     <div class="row">
                         @if ($targetUser->avatar != null)
-                            <img class="bp-user-avatar" src="/images/avatar/{{$targetUser->id}}/{{$targetUser->avatar}}" alt="unable to display image">
+                            <img class="bp-user-avatar" style="width:180px;height:180px; display:block;margin:auto; border-radius:50%" src="/images/avatar/{{$targetUser->id}}/{{$targetUser->avatar}}" alt="unable to display image">
                         @elseif ($targetUser->avatar == null)
-                            <img class="bp-user-avatar" src="/images/avatar/avatar.png" alt="unable to display image">
+                            <img class="bp-user-avatar" style="width:180px;height:180px; display:block;margin:auto; border-radius:50%" src="/images/avatar/avatar.png" alt="unable to display image">
                         @endif
                     </div>
                     <div class="row">
