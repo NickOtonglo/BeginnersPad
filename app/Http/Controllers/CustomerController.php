@@ -14,18 +14,12 @@ use Illuminate\Support\Facades\Auth;
 class CustomerController extends Controller
 {
 
-    public function checkUserState(){
-        if (Auth::check() && Auth::user()->status == 'suspended') {
-            return false;
-        } else return true;
+    public function __construct()
+    {
+        $this->middleware('checkUserStatus')->except('logout');
     }
 
     public function makeApplication(Request $request,$id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $utype = Auth::user()->user_type;
         $user = Auth::user();
         $postData = $request->all();
@@ -108,11 +102,6 @@ class CustomerController extends Controller
     }
 
     public function myApplications(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $applications = ListingApplication::where('customer_id',$user->id)->orderBy('created_at','id')->get();
         $listings = Listing::all();
@@ -121,18 +110,13 @@ class CustomerController extends Controller
 
         $utype = $user->user_type;
         if ($utype==5) {
-            return view('listings.my_applications',compact('applications','listings','p_listings','p_favourites'));
+            return view('layouts.my_applications',compact('applications','listings','p_listings','p_favourites'));
         } else {
             return redirect()->route('listings.list');
         }
     }
 
     public function myFavourites(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $favourites = Customer::where('customer_id',$user->id)->orderBy('created_at','id')->get();
         $p_listings = Listing::orderBy('created_at','id')->take(3)->get();
@@ -140,18 +124,13 @@ class CustomerController extends Controller
 
         $utype = Auth::user()->user_type;
         if ($utype==5) {
-            return view('listings.my_favourites',compact('favourites','p_listings','p_favourites'));
+            return view('layouts.my_favourites',compact('favourites','p_listings','p_favourites'));
         } else {
             return redirect()->route('listings.list');
         }
     }
 
     public function reviewListing($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $listings = Listing::all();
 
         $utype = Auth::user()->user_type;
@@ -164,11 +143,6 @@ class CustomerController extends Controller
     }
 
     public function myReviews(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $reviews = Review::where('customer_id',$user->id)->orderBy('created_at','id')->get();
         $p_listings = Listing::orderBy('created_at','id')->take(3)->get();
@@ -187,11 +161,6 @@ class CustomerController extends Controller
         $this->validate($request,[
             'review'=>'required|max:6000'            
             ]);
-
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
 
         $utype = Auth::user()->user_type;
         $user = Auth::user();
@@ -227,11 +196,6 @@ class CustomerController extends Controller
     }
 
     public function editReview($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $utype = Auth::user()->user_type;
         $user = Auth::user();
 
@@ -244,11 +208,6 @@ class CustomerController extends Controller
     }
 
     public function updateReview(Request $request,$id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $utype = Auth::user()->user_type;
         $user = Auth::user();
         $userId = Review::where('customer_id','=',$user->id)->where('property_id','=',$id)->first()->customer_id;
@@ -266,11 +225,6 @@ class CustomerController extends Controller
     }
 
     public function deleteReview($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-        
         $user = Auth::user();
         $utype = Auth::user()->user_type;
         
@@ -287,10 +241,6 @@ class CustomerController extends Controller
 
     public function loadWaitingList(){
     	$user = Auth::user();
-    	if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
         if ($user->user_type == 5) {
             $p_listings = Listing::orderBy('created_at','id')->take(3)->get();
             $p_favourites = Customer::where('customer_id',$user->id)->orderBy('created_at','id')->get();

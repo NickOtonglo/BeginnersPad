@@ -5,7 +5,7 @@
 @endsection
 
 @section ('content')
-<div class="container">
+<div class="container-width">
     <div class="row" style="margin-bottom: 16px;">
         @if(session()->has('message'))
         <div class="alert alert-success alert-dismissible fade show">

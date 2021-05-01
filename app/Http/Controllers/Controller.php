@@ -32,6 +32,11 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public function __construct()
+    {
+        $this->middleware('checkUserStatus')->except('logout');
+    }
+
     public function msgRepo($intent){
         //error_incorrect_password
         //error_error_occured
@@ -43,6 +48,7 @@ class Controller extends BaseController
         }
     }
 
+    //Not in use anymore
     public function checkUserState(){
         if (Auth::check() && Auth::user()->status == 'suspended') {
             return false;
@@ -54,11 +60,6 @@ class Controller extends BaseController
     }
 
     public function index(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         // return view('listings.index');
         $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
 
@@ -67,16 +68,8 @@ class Controller extends BaseController
 
     public function main(){
     	if (!Auth::guest()) {
-    		if (Auth::user()->status=='active') {
-	    		$listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
-                return view('welcome',compact('listings'));
-	    	} elseif (Auth::user()->status=='inactive') {
-	    		Auth::logout();
-	            return redirect('/login')->withErrors(['msg'=>'Sorry, your account is pending activation by the system administrator.']);
-	    	} elseif (Auth::user()->status=='suspended') {
-	    		Auth::logout();
-	            return redirect('/login')->withErrors(['msg'=>'Sorry, your account has been suspended. Contact a representative or administrator for assistance.']);
-	    	}
+            $listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
+            return view('welcome',compact('listings'));
     	} elseif (Auth::guest()) {
 
     		$listings = Listing::where('status','approved')->orderBy('created_at','id')->get();
@@ -86,10 +79,6 @@ class Controller extends BaseController
     }
 
     public function view($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
         $API_KEY = config('constants.API_KEY.maps');
         $listing = Listing::where('id',$id)->find($id);
         $reviews = Review::where('property_id',$id)->orderBy('updated_at','id')->get();
@@ -127,11 +116,6 @@ class Controller extends BaseController
 
     public function manageAccount(){
         $user = Auth::user();
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $users = $user;
         $id = $user->id;
         $targetUser = $users;
@@ -182,7 +166,6 @@ class Controller extends BaseController
     }
 
     public function updateDetails(Request $request){
-
         $user = Auth::user();
         switch ($request->input('btn_submit')) {
 
@@ -364,12 +347,6 @@ class Controller extends BaseController
     }
 
     public function viewTicket($id,Request $request){
-        $userType = Auth::user()->user_type;
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 4 || $userType == 5) {
             $ticket = HelpTicket::where('id',$id)->first();

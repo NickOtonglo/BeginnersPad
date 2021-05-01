@@ -27,6 +27,13 @@ use File;
 
 class ListerController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('checkUserStatus')->except('logout');
+    }
+
+    //Not in use anymore
     public function checkUserState(){
         if (Auth::check() && Auth::user()->status == 'suspended') {
             return false;
@@ -34,11 +41,6 @@ class ListerController extends Controller
     }
 
     public function manageListings(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
     	$user = Auth::user();
     	$userType = $user->user_type;
         $API_KEY = config('constants.API_KEY.maps');
@@ -53,11 +55,6 @@ class ListerController extends Controller
     }
 
     public function createListing(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $utype = Auth::user()->user_type;
         $API_KEY = config('constants.API_KEY.maps');
         $subZonesList = ZoneEntry::orderBy('name')->get();
@@ -82,11 +79,6 @@ class ListerController extends Controller
     		'stories'=>'required',
             'thumbnail.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
     		]);
-
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
 
         $user = Auth::user();
         $postId = Listing::orderBy('id','desc')->first()->id;
@@ -121,11 +113,6 @@ class ListerController extends Controller
     }
 
     public function addListingEntry($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $utype = Auth::user()->user_type;
         $API_KEY = config('constants.API_KEY.maps');
         $listing = Listing::where('id',$id)->first();
@@ -163,11 +150,6 @@ class ListerController extends Controller
     		'floor_area'=>'required',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:20480'
     		]);
-
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
 
         $user = Auth::user();
         $parent = Listing::where('id',$id)->first();
@@ -265,11 +247,6 @@ class ListerController extends Controller
     }
 
     public function manageListing($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         $API_KEY = config('constants.API_KEY.maps');
@@ -299,12 +276,6 @@ class ListerController extends Controller
     }
 
     public function updateListing(Request $request,$id){
-
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $post = Listing::where('id',$id)->first();
         $postId = $post->id;
@@ -384,11 +355,6 @@ class ListerController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
     		]);
 
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         $post = Listing::where('id',$id)->first();
@@ -422,11 +388,6 @@ class ListerController extends Controller
     }
 
     public function manageListingEntry($listingId,$entryId){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         $entry = ListingEntry::where('id',$entryId)->first();
@@ -453,11 +414,6 @@ class ListerController extends Controller
     	// 	'floor_area'=>'required'
         //     ]);
             
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         $parent = Listing::where('id',$listingId)->first();
@@ -512,11 +468,6 @@ class ListerController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
     		]);
 
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         $parent = Listing::where('id',$listingId)->first();
@@ -567,11 +518,6 @@ class ListerController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:20480'
     		]);
 
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         $parent = Listing::where('id',$listingId)->first();
@@ -614,11 +560,6 @@ class ListerController extends Controller
     }
 
     public function deleteListingEntryImage(Request $request,$listingId,$entryId,$imageId){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         $parent = Listing::where('id',$listingId)->first();
@@ -674,12 +615,7 @@ class ListerController extends Controller
     }
 
     public function listingReviews($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
-    	$user = Auth::user();
+        $user = Auth::user();
     	$reviews = Review::where('listing_entry_id',$id)->orderBy('updated_at','id')->get();
         $propertyDetails = Listing::where('id',$id)->first();
 
@@ -697,12 +633,7 @@ class ListerController extends Controller
     }
 
     public function myApplications(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-        
-    	$user = Auth::user();
+        $user = Auth::user();
     	$userType = $user->user_type;
 
     	$listings = Listing::where('lister_id',$user->id)->where('status','pending')->orderBy('created_at','id')->get();

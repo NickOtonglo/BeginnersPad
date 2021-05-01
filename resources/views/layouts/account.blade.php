@@ -128,12 +128,12 @@
                         <h3>Account Details</h3>
                     </div>
                     <div class="mb-3">
-                        <label for="name">Full name</label>
+                        <label for="name">Full Name</label>
                         <div class="alert alert-danger" id="alert_name" hidden></div>
                         @if ($errors->has('name'))
-                            <span class="help-block">
+                            <div class="alert alert-danger alert-dismissible fade show">
                                 <strong class="text-danger">{{ $errors->first('name') }}</strong><br>
-                            </span>
+                            </div>
                         @endif
                         <input id="name" class="form-control" type="text" name="name">
                     </div>
@@ -141,9 +141,10 @@
                         <label for="email">Email</label>
                         <div class="alert alert-danger" id="alert_email" hidden></div>
                         @if ($errors->has('email'))
-                            <span class="help-block">
-                                <strong class="text-danger">{{ $errors->first('email') }}</strong><br>
-                            </span>
+                        <br>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong>{{ $errors->first('email') }}</strong>
+                        </div>
                         @endif
                         <input id="email" class="form-control" type="text" name="email">
                     </div>
@@ -151,9 +152,9 @@
                         <label for="telephone">Phone Number (254xxxxxxxxx)</label>
                         <div class="alert alert-danger" id="alert_phone" hidden></div>
                         @if ($errors->has('telephone'))
-                            <span class="help-block">
-                                <strong class="text-danger">{{ $errors->first('telephone') }}</strong><br>
-                            </span>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong class="text-danger">{{ $errors->first('telephone') }}</strong><br>
+                        </div>
                         @endif
                         <input id="telephone" type="text" class="form-control" name="telephone">
                     </div>
@@ -176,9 +177,9 @@
                         <label for="password_current">Current Password</label>
                         <div class="alert alert-danger" id="alert_password_current" hidden></div>
                         @if ($errors->has('password_current'))
-                            <span class="help-block">
-                                <strong class="text-danger">{{ $errors->first('password_current') }}</strong><br>
-                            </span>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong class="text-danger">{{ $errors->first('password_current') }}</strong><br>
+                        </div>
                         @endif
                         <input class="form-control" type="password" name="password_current" id="password_current">
                     </div>
@@ -186,9 +187,9 @@
                         <label for="password">New Password</label>
                         <div class="alert alert-danger" id="alert_password" hidden></div>
                         @if ($errors->has('password'))
-                            <span class="help-block">
-                                <strong class="text-danger">{{ $errors->first('password') }}</strong><br>
-                            </span>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong class="text-danger">{{ $errors->first('password') }}</strong><br>
+                        </div>
                         @endif
                         <input class="form-control" type="password" name="password" id="password">
                     </div>

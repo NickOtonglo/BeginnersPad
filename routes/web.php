@@ -16,8 +16,6 @@
 // 	'middleware' => 'checkUserStatus',
 // ]);
 
-use App\Http\Controllers\AdminController;
-
 Route::get('/about', function () {
     return view('about');
 });
@@ -27,17 +25,13 @@ Route::get('/', function () {
 });
 
 Route::get('/listings','Controller@index')->name('listings.list');
-
 Route::get('/listings/{listings}/view','Controller@view')->name('listing.view');
-
-// Route::get('/listings/{listings}/review/{review}','ListingsController@review')->name('listing.review');
-
 Route::get('/listings/{listings}/reviews','Controller@viewReviews')->name('listing.viewReviews');
 Route::get('/help','Controller@help')->name('help');
 Route::get('/help/faq','Controller@helpFAQ')->name('helpFAQ');
 Route::post('/help','Controller@createTicket')->name('createTicket');
 
-Route::group(['middleware'=>'auth'],function(){
+Route::group(['middleware'=>['auth','checkUserStatus']],function(){
 	//Common Routes
 	Route::get('/account','Controller@manageAccount')->name('manageAccount');
 	Route::post('/account','Controller@updateDetails')->name('updateAccountDetails');
@@ -147,20 +141,46 @@ Route::group(['middleware'=>'auth'],function(){
 
 Auth::routes();
 
-// //Login Routes
-// Route::get('login', ['as' => 'auth.login', 'uses' => 'Auth\AuthController@showLoginForm']);
-// Route::post('login', ['as' => 'auth.login', 'uses' => 'Auth\AuthController@login']);
-// Route::get('logout', ['as' => 'auth.logout', 'uses' => 'Auth\AuthController@logout']);
+// // Authentication Routes
+// Route::get('login', [
+// 	'as' => 'login',
+// 	'uses' => 'Auth\LoginController@showLoginForm'
+// ]);
+// Route::post('login', [
+// 	'as' => '',
+// 	'uses' => 'Auth\LoginController@login'
+// ]);
+// Route::post('logout', [
+// 	'as' => 'logout',
+// 	'uses' => 'Auth\LoginController@logout'
+// ]);
 
-// //Registration Routes
-// Route::get('register', ['as' => 'auth.register', 'uses' => 'Auth\AuthController@showRegistrationForm']);
-// Route::post('register', ['as' => 'auth.register', 'uses' => 'Auth\AuthController@register']);
+// // Password Reset Routes
+// Route::post('password/email', [
+// 	'as' => 'password.email',
+// 	'uses' => 'Auth\ForgotPasswordController@sendResetLinkEmail'
+// ]);
+// Route::get('password/reset', [
+// 	'as' => 'password.request',
+// 	'uses' => 'Auth\ForgotPasswordController@showLinkRequestForm'
+// ]);
+// Route::post('password/reset', [
+// 	'as' => 'password.update',
+// 	'uses' => 'Auth\ResetPasswordController@reset'
+// ]);
+// Route::get('password/reset/{token}', [
+// 	'as' => 'password.reset',
+// 	'uses' => 'Auth\ResetPasswordController@showResetForm'
+// ]);
 
-// //Password Reset Routes
-// Route::get('password/reset/{token?}', ['as' => 'auth.password.reset', 'uses' => 'Auth\PasswordController@showResetForm']);
-// Route::post('password/email', ['as' => 'auth.password.email', 'uses' => 'Auth\PasswordController@sendResetLinkEmail']);
-// Route::post('password/reset', ['as' => 'auth.password.reset', 'uses' => 'Auth\PasswordController@reset']);
+// // Registration Routes
+// Route::get('register', [
+// 	'as' => 'register',
+// 	'uses' => 'Auth\RegisterController@showRegistrationForm'
+// ]);
+// Route::post('register', [
+// 	'as' => '',
+// 	'uses' => 'Auth\RegisterController@register'
+// ]);
 
 Route::get('/', 'Controller@main')->name('home');
-
-// Route::get('/home', 'ListingsController@index')->name('home');

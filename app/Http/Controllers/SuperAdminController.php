@@ -16,18 +16,12 @@ use Illuminate\Support\Facades\Hash;
 
 class SuperAdminController extends Controller
 {
-    public function checkUserState(){
-        if (Auth::check() && Auth::user()->status == 'suspended') {
-            return false;
-        } else return true;
+    public function __construct()
+    {
+        $this->middleware('checkUserStatus')->except('logout');
     }
 
     public function createUser(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact the system administrator for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         if ($utype==2 || $utype==1){
@@ -45,11 +39,6 @@ class SuperAdminController extends Controller
             'password' => 'required|string|min:6',
             'telephone' => 'required|string|min:10|max:13',
     		]);
-
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact the system administrator for assistance.');
-            Auth::logout();
-        }
 
         $user = Auth::user();
         $utype = $user->user_type;

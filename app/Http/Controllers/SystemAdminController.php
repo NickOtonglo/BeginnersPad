@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Hash;
 
 class SystemAdminController extends Controller
 {
+	public function __construct()
+	{
+		$this->middleware('checkUserStatus')->except('logout');
+	}
 
 	public function deleteUser($id){
 		$user = Auth::user();

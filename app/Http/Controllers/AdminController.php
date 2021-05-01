@@ -33,6 +33,11 @@ use App\HelpCategoryLog;
 class AdminController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('checkUserStatus')->except('logout');
+    }
+
     public function msgRepo($intent){
         //permission_denied_not_authorised
         //permission_denied_reason_required
@@ -56,15 +61,12 @@ class AdminController extends Controller
         if (Auth::check() && Auth::user()->status == 'suspended') {
             return false;
         } else return true;
+        return true;
     }
 
     public function manageListings($status){
     	$user = Auth::user();
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
+        
     	$userType = $user->user_type;
 
         $listings_stats = Listing::where('status','!=','deleted')->where('status','!=','unpublished')->orderBy('created_at','id')->get();
@@ -84,10 +86,6 @@ class AdminController extends Controller
 
     public function manageAllListings(){
         $user = Auth::user();
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
 
     	$userType = $user->user_type;
         $statusItem = 'all';
@@ -107,10 +105,6 @@ class AdminController extends Controller
 
     public function filterListings($category,$value){
     	$user = Auth::user();
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
 
     	$userType = $user->user_type;
 
@@ -142,11 +136,6 @@ class AdminController extends Controller
     }
 
     public function manageListing($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         $API_KEY = config('constants.API_KEY.maps');
@@ -176,11 +165,6 @@ class AdminController extends Controller
     }
 
     public function manageListingEntry($listingId,$entryId){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         $entry = ListingEntry::where('id',$entryId)->first();
@@ -200,11 +184,6 @@ class AdminController extends Controller
     }
 
     public function performListingAction(Request $request,$id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         $listing = Listing::where('id',$id)->first();
@@ -243,11 +222,6 @@ class AdminController extends Controller
     }
 
     public function manageBookmarks(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $entries = ListingEntry::get();
 
@@ -268,11 +242,6 @@ class AdminController extends Controller
     }
 
     public function addListingBookmark(Request $request,$listingId){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
 
@@ -304,11 +273,6 @@ class AdminController extends Controller
     }
 
     public function addListingEntryBookmark(Request $request,$listingId,$entryId){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
 
@@ -340,11 +304,6 @@ class AdminController extends Controller
     }
 
     public function removeBookmark(Request $request,$id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $bookmark = AdminBookmark::where('admin_id',$user->id)->where('id',$id)->first();
 
@@ -362,11 +321,6 @@ class AdminController extends Controller
     }
 
     public function listUsers(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $customer = 5;
         $lister = 4;
@@ -390,8 +344,8 @@ class AdminController extends Controller
 
     // public function suspendUser($id){
     //     if (!$this->checkUserState()) {
-    //         return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-    //         Auth::logout();
+    //         //return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+    //         //Auth::logout();
     //     }
 
     //     $user = Auth::user();
@@ -419,8 +373,8 @@ class AdminController extends Controller
 
     // public function activateUser($id){
     //     if (!$this->checkUserState()) {
-    //         return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-    //         Auth::logout();
+    //         //return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+    //         //Auth::logout();
     //     }
 
     //     $user = Auth::user();
@@ -448,10 +402,6 @@ class AdminController extends Controller
 
     public function performUserAction($id,$action){
         if ($id != 'logs' && ($action != '' || $action != 'all')){
-            if (!$this->checkUserState()) {
-                return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-                Auth::logout();
-            }
 
             $user = Auth::user();
 
@@ -495,8 +445,8 @@ class AdminController extends Controller
     // public function viewUser($id){
     //     if ($id != 'logs'){
     //         if (!$this->checkUserState()) {
-    //             return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-    //             Auth::logout();
+    //             //return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+    //             //Auth::logout();
     //         }
 
     //         $user = Auth::user();
@@ -581,11 +531,6 @@ class AdminController extends Controller
 
     public function viewUser($id){
         if ($id != 'logs'){
-            if (!$this->checkUserState()) {
-                return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-                Auth::logout();
-            }
-
             $user = Auth::user();
             $targetUser = User::where('id',$id)->first();
 
@@ -616,11 +561,6 @@ class AdminController extends Controller
     }
 
     public function fetchUserData($id,$type){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $targetUser = User::where('id',$id)->first();
         $tickets = HelpTicket::where('email',$targetUser->email)->get();
@@ -676,11 +616,6 @@ class AdminController extends Controller
     }
 
     public function manageReviews($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $propertyDetails = Listing::where('id',$id)->first();
         $reviews = Review::where('property_id',$id)->orderBy('updated_at','id')->get();
         $mean = Review::where('property_id',$id)->avg('review_rating');
@@ -690,11 +625,6 @@ class AdminController extends Controller
     }
 
     public function deleteReview($listing,$review){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        }
-
         $user = Auth::user();
         $utype = $user->user_type;
         
@@ -724,11 +654,6 @@ class AdminController extends Controller
     }
 
     public function performTicketAction(Request $request,$id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $user = Auth::user();
 
         $utype = $user->user_type;
@@ -822,11 +747,6 @@ class AdminController extends Controller
 
     public function viewTicket($id,Request $request){
         $userType = Auth::user()->user_type;
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $ticket = HelpTicket::where('id',$id)->first();
@@ -838,11 +758,6 @@ class AdminController extends Controller
     }
 
     public function assignedTickets($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             if($id == 'me'){
@@ -859,11 +774,6 @@ class AdminController extends Controller
     }
 
     public function viewTicketLogs($ticket){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             if($ticket == '' || $ticket == 'all'){
@@ -878,11 +788,6 @@ class AdminController extends Controller
     }
 
     public function viewAdminTicketLogs($user){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             if($user == '' || $user == 'me'){
@@ -897,11 +802,6 @@ class AdminController extends Controller
     }
 
     public function viewUserTicket($email){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $tickets = HelpTicket::where('email',$email)->orderBy('updated_at')->get();
@@ -913,11 +813,6 @@ class AdminController extends Controller
     }
 
     public function viewHelpCategories(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $user = Auth::user();
         $userType = $user->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
@@ -929,11 +824,6 @@ class AdminController extends Controller
     }
 
     public function performHelpCategoryTask($id,Request $request){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-        
         switch($request->input('btn_task')){
             case 'Create':
                 return $this->addHelpCategory($request);
@@ -952,10 +842,6 @@ class AdminController extends Controller
     		'name'=>'required|max:50',
             'priority'=>'required',
             ]);
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
 
         $user = Auth::user();
         $userType = $user->user_type;
@@ -980,10 +866,6 @@ class AdminController extends Controller
     		'name'=>'required|max:50',
             'priority'=>'required',
             ]);
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
 
         $user = Auth::user();
         $userType = $user->user_type;
@@ -1003,11 +885,6 @@ class AdminController extends Controller
     }
 
     public function deleteHelpCategory($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $user = Auth::user();
         $userType = $user->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
@@ -1038,11 +915,6 @@ class AdminController extends Controller
     }
 
     public function viewHelpCategoryLogs($target = null){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $targetUser = '';
 
         if($target == 'me'){
@@ -1062,11 +934,6 @@ class AdminController extends Controller
     }
 
     public function viewHelpFAQs(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $entries = FAQ::orderBy('created_at','DESC')->get();
         
         $userType = Auth::user()->user_type;
@@ -1078,12 +945,6 @@ class AdminController extends Controller
     }
 
     public function addHelpFAQ(Request $request){
-        //validation required
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1){
             $entry = new FAQ();
@@ -1099,12 +960,6 @@ class AdminController extends Controller
     }
 
     public function updateHelpFAQ($id,Request $request){
-        //validation required
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1){
             $entry = FAQ::find($id);
@@ -1117,11 +972,6 @@ class AdminController extends Controller
     }
 
     public function deleteHelpFAQ($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1){
             $entry = FAQ::find($id);
@@ -1147,11 +997,6 @@ class AdminController extends Controller
     }
     
     public function viewHelpFAQLogs($target){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             
@@ -1169,11 +1014,6 @@ class AdminController extends Controller
     }
 
     public function listZones(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $user = Auth::user();
         $API_KEY = config('constants.API_KEY.maps');
         $userType = $user->user_type;
@@ -1187,11 +1027,6 @@ class AdminController extends Controller
     }
 
     public function createZone(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $API_KEY = config('constants.API_KEY.maps');
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
@@ -1208,11 +1043,6 @@ class AdminController extends Controller
             'country'=>'required',
             'county'=>'required|max:50',
     		]);
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             Zone::create($request->all());
@@ -1227,11 +1057,6 @@ class AdminController extends Controller
     }
 
     public function viewZone($id,Request $request){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $API_KEY = config('constants.API_KEY.maps');
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
@@ -1244,11 +1069,6 @@ class AdminController extends Controller
     }
 
     public function editZone($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $zone = Zone::where('id',$id)->first();
@@ -1264,11 +1084,6 @@ class AdminController extends Controller
             'country'=>'required',
             'county'=>'required|max:50',
             ]);
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $input = Zone::find($id);
@@ -1283,11 +1098,6 @@ class AdminController extends Controller
     }
 
     public function addZoneEntry($id){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $zone = Zone::where('id',$id)->first();
@@ -1307,11 +1117,6 @@ class AdminController extends Controller
             'timezone'=>'required',
             'radius'=>'numeric',
             ]);
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $request->request->add(['parent_id' => $id]);
@@ -1326,11 +1131,6 @@ class AdminController extends Controller
     }
 
     public function editZoneEntry($zoneId,$entryId){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $zone = Zone::where('id',$zoneId)->first();
@@ -1350,11 +1150,6 @@ class AdminController extends Controller
             'timezone'=>'required|timezone',
             'radius'=>'numeric',
             ]);
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $request->request->add(['parent_id' => $zoneId]);
@@ -1370,11 +1165,6 @@ class AdminController extends Controller
     }
 
     public function deleteZoneEntry($zoneId,$entryId){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $userType = Auth::user()->user_type;
         if ($userType == 3 || $userType == 2 || $userType == 1) {
             $input = ZoneEntry::find($entryId);
@@ -1390,8 +1180,8 @@ class AdminController extends Controller
 
     // public function viewListingManagementLogs(){
     //     if (!$this->checkUserState()) {
-    //         return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-    //         Auth::logout();
+    //         //return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+    //         //Auth::logout();
     //     } else
 
     //     $logs = ListingAdminLog::where('admin_id',Auth::user()->id)->orderBy('created_at','DESC')->get();
@@ -1409,8 +1199,8 @@ class AdminController extends Controller
 
     // public function viewListingManagementLogsAll(){
     //     if (!$this->checkUserState()) {
-    //         return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-    //         Auth::logout();
+    //         //return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
+    //         //Auth::logout();
     //     } else
 
     //     $logs = ListingAdminLog::orderBy('created_at','DESC')->get();
@@ -1427,11 +1217,6 @@ class AdminController extends Controller
     // }
 
     public function viewListingManagementLogs($target){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $targetUsers = '';
 
         if($target == ''){
@@ -1452,11 +1237,6 @@ class AdminController extends Controller
     }
 
     public function viewUserManagementLogs($target){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $targetUsers = '';
 
         if($target == ''){
@@ -1480,11 +1260,6 @@ class AdminController extends Controller
     }
 
     public function listTopics(){
-        if (!$this->checkUserState()) {
-            return redirect('/login')->with('error_login','Sorry, your account has been suspended. Contact a representative for assistance.');
-            Auth::logout();
-        } else
-
         $entries = '';
         
         return view('administrators.topics_all',compact('entries'));
