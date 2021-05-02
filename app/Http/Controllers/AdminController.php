@@ -1260,9 +1260,14 @@ class AdminController extends Controller
     }
 
     public function listTopics(){
-        $entries = '';
-        
-        return view('administrators.topics_all',compact('entries'));
+        $user = Auth::user();
+        $userType = $user->user_type;
+        if ($userType == 3 || $userType == 2 || $userType == 1) {
+            $entries = '';
+            return view('administrators.topics_all',compact('entries'));
+        } else {
+            return redirect()->route('listings.list');
+        }
     }
 
 }

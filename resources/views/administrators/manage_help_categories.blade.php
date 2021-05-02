@@ -7,15 +7,15 @@
 @section('top_buttons')
 <div class="container">
     @if(session()->has('message'))
-        <div class="alert alert-success alert-dismissible">
-            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <div class="alert alert-success alert-dismissible fade show">
             <strong>Success!</strong> {{ session()->get('message') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
     @foreach ($errors->all() as $error)
-        <div class="alert alert-danger alert-dismissible">
-            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <div class="alert alert-danger alert-dismissible fade show">
             {{ $errors->first() }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endforeach
 	<div class="pull-right btn-group" role="group">

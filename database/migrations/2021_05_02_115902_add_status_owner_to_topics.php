@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddProfilePictureToUsers extends Migration
+class AddStatusOwnerToTopics extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddProfilePictureToUsers extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('avatar')->nullable()->after('telephone');
-            // $table->string('telephone')->nullable()->after('user_type');
+        Schema::table('topics', function (Blueprint $table) {
+            $table->string('status')->after('user_group');
+            $table->string('manager')->after('author');
         });
     }
 
@@ -26,8 +26,8 @@ class AddProfilePictureToUsers extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('avatar');
+        Schema::table('topics', function (Blueprint $table) {
+            $table->dropColumn(['status','manager']);
         });
     }
 }
