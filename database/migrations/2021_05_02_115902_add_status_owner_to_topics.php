@@ -14,8 +14,8 @@ class AddStatusOwnerToTopics extends Migration
     public function up()
     {
         Schema::table('topics', function (Blueprint $table) {
-            $table->string('status')->after('user_group');
-            $table->string('manager')->after('author');
+            $table->string('status')->after('user_group'); //published,unpublished,suspended,hidden,locked
+            $table->integer('manager')->after('author'); //UID of user responsible for managing topic/article
         });
     }
 
